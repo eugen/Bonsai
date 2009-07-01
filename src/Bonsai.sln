@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 10
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell", "Shell\Shell.csproj", "{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{91F11088-3F86-482F-8A77-F52AE1DFE0F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Grammars", "Grammars", "{48D6514C-0865-4205-AA05-EF89B56D7682}"
+	ProjectSection(SolutionItems) = preProject
+		Grammars\Bonsai.g = Grammars\Bonsai.g
+		Grammars\BonsaiTree.g = Grammars\BonsaiTree.g
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Haskell", "Haskell", "{173F0D50-B73D-40CC-BCF5-4D2450CD1FC7}"
+	ProjectSection(SolutionItems) = preProject
+		Haskell\Parser.hs = Haskell\Parser.hs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runtime", "Runtime\Runtime.csproj", "{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9972F6C2-5B61-409D-8772-CE1C3E62C4BE}.Release|x86.ActiveCfg = Release|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{91F11088-3F86-482F-8A77-F52AE1DFE0F5}.Release|x86.ActiveCfg = Release|Any CPU
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Debug|x86.ActiveCfg = Debug|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Debug|x86.Build.0 = Debug|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Release|Any CPU.ActiveCfg = Release|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Release|Mixed Platforms.Build.0 = Release|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Release|x86.ActiveCfg = Release|x86
+		{6CBE58B2-447E-4EA8-B0A7-3E1F0BA08912}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		version = 0.1
+		StartupItem = Bonsai.Shell\Bonsai.Shell.csproj
+	EndGlobalSection
+EndGlobal
