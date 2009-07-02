@@ -12,7 +12,7 @@ using ArrayList 	= System.Collections.ArrayList;
 using Stack 		= Antlr.Runtime.Collections.StackList;
 
 
-public partial class BonsaiLexer : Lexer {
+partial class BonsaiLexer : Lexer {
     public const int SYMBOL = 11;
     public const int SIMPLE_STRING = 15;
     public const int T__23 = 23;

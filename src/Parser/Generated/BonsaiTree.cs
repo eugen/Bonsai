@@ -4,7 +4,7 @@
 #pragma warning disable 168, 219
 // Unreachable code detected.
 #pragma warning disable 162
-namespace  Bonsai.Ast 
+namespace  Bonsai.Ast.Generated
 {
  
 	using Bonsai.Ast;
@@ -19,7 +19,7 @@ using Stack 		= Antlr.Runtime.Collections.StackList;
 
 
 
-public partial class BonsaiTree : TreeParser
+partial class BonsaiTree : TreeParser
 {
     public static readonly string[] tokenNames = new string[] 
 	{

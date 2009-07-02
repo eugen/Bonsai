@@ -7,10 +7,5 @@ namespace Bonsai.Ast {
         public Block() {
             this.Statements = new List<Call>();
         }
-
-        public override SLE.Expression Generate()
-		{
-			throw new System.NotImplementedException ();
-		}
     }
 }

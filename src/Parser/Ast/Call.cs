@@ -13,18 +13,5 @@ namespace Bonsai.Ast {
         public Call() {
             this.Arguments = new List<Expression>();
         }
-
-        public override SLE.Expression Generate()
-		{
-            var argList = new List<SLE.Expression>(Arguments.Count + 1);
-            argList.Add(Target.Generate());
-            argList.AddRange(Arguments.Select(a => a.Generate()));
-
-            throw new NotImplementedException();
-            //return SLE.Expression.Dynamic(
-            //    new BonsaiCallBinder(),
-            //    typeof(Object),
-            //    argList);
-		}
     }
 }

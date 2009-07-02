@@ -12,10 +12,5 @@ namespace Bonsai.Ast {
         public Sequence(IList<Call> calls) {
             this.Statements = new List<Call>(calls);
         }
-
-        public override SLE.Expression Generate() {
-            return SLE.Expression.Block(
-                Statements.ConvertAll(call => call.Generate()));
-        }
     }
 }

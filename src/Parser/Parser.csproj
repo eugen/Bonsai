@@ -15,7 +15,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
-    <RootNamespace>Bonsai</RootNamespace>
+    <RootNamespace>Bonsai.Parser</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,9 +69,10 @@
     <Compile Include="Ast\Sequence.cs" />
     <Compile Include="Ast\String.cs" />
     <Compile Include="Ast\Symbol.cs" />
-    <Compile Include="BonsaiLexer.cs" />
     <Compile Include="BonsaiParser.cs" />
-    <Compile Include="BonsaiTree.cs" />
+    <Compile Include="Generated\BonsaiLexer.cs" />
+    <Compile Include="Generated\BonsaiParser.cs" />
+    <Compile Include="Generated\BonsaiTree.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

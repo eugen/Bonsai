@@ -6,11 +6,11 @@ using SLE=System.Linq.Expressions;
 using Antlr.Runtime;
 using Antlr.Runtime.Tree;
 
-using Bonsai.Ast;
 using Microsoft.Scripting.Runtime;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Ast;
 using Microsoft.Scripting.Interpretation;
+using Bonsai.Ast;
 
 namespace Bonsai.Runtime
 {
@@ -29,19 +29,8 @@ namespace Bonsai.Runtime
 
 		protected override ScriptCode CompileSourceCode( SourceUnit sourceUnit, CompilerOptions options, ErrorSink errorSink ) {
             string text = sourceUnit.GetCode();
-            
-            ANTLRStringStream strStream = new ANTLRStringStream(text);
-			BonsaiLexer lexer = new BonsaiLexer(strStream);
-            CommonTokenStream tokStream = new CommonTokenStream(lexer);
-            BonsaiParser parser = new BonsaiParser(tokStream);
-            var returnValue = parser.program();
-			CommonTree tree = (CommonTree)returnValue.Tree;
-			CommonTreeNodeStream treeNodeStream = new CommonTreeNodeStream((CommonTree)returnValue.Tree);
-			Bonsai.Ast.BonsaiTree treeWalker = new BonsaiTree(treeNodeStream);
-            var calls = treeWalker.program().result.Statements;
-
-            var sequence = new Sequence(calls);
-            SLE.Expression expr = sequence.Generate();
+            var sequence = BonsaiParser.ParseString(text);
+            SLE.Expression expr = BonsaiExpressionGenerator.Walk(sequence);
 
             var lambda = Utils.Lambda(typeof(object), "Root");
             lambda.Parameters.Add(SLE.Expression.Parameter(typeof(BonsaiContext))); 
