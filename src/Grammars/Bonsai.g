@@ -85,18 +85,11 @@ IDENTIFIER
 STRING 
 	:	SIMPLE_STRING
 	|	ESCAPED_STRING
-	|	MULTILINE_STRING
-	;
 
 fragment SIMPLE_STRING
 	:	'\'' (~'\'')* '\''
 	;
 	
-
-fragment MULTILINE_STRING 
-	:	'"""' .* '"""'
-	;
-
 fragment ESCAPED_STRING
 	:	'"' (~'"')* '"'
 	;

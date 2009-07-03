@@ -570,7 +570,7 @@ partial class BonsaiTree : TreeParser
 
                     		adaptor.AddChild(root_0, str_tree);
 
-                    	 retval.result =  new Bonsai.Ast.String() { Value = str.Text }; 
+                    	 retval.result =  new Bonsai.Ast.String() { Value = str.Text.Substring(1, str.Text.Length - 2) }; 
 
                     }
                     break;
