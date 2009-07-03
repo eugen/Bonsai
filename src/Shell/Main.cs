@@ -31,10 +31,7 @@ namespace Bonsai.Shell
             ScriptRuntime runtime = new ScriptRuntime(runtimeSetup);
             ScriptScope global = runtime.CreateScope();
             ScriptEngine engine = runtime.GetEngineByTypeName(typeof(BonsaiContext).AssemblyQualifiedName);
-
-            ScriptSource source = engine.CreateScriptSourceFromString("'zomg caps' .ToUpper\n def 3");
-            
-            Console.WriteLine(source.Execute(global));
+            Console.WriteLine(engine.Execute("(\"zomg i'm writing caps!\" .ToUpper) .Substring 5"));
       	}
 	}
 }

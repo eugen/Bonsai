@@ -6,6 +6,7 @@ using System.Text;
 using Ast=Bonsai.Ast;
 using Microsoft.Scripting.Utils;
 using System.Dynamic;
+using System.Reflection;
 
 namespace Bonsai.Runtime {
     public static class BonsaiExpressionGenerator {
@@ -50,7 +51,11 @@ namespace Bonsai.Runtime {
             Assert.NotNull(node);
             var method = typeof(BonsaiExpressionGenerator).GetMethod("Walk", new Type[] { node.GetType() });
             Assert.NotNull(method);
-            return (Expression)method.Invoke(null, new object[] {node});
+            try {
+                return (Expression)method.Invoke(null, new object[] { node });
+            } catch (TargetInvocationException ex) {
+                throw ex.InnerException;
+            }
         }
     }
 }

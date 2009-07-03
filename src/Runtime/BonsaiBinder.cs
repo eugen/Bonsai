@@ -37,7 +37,7 @@ namespace Bonsai.Runtime {
                     expression,
                     BindingRestrictions.Empty);
             }
-            // "normal" objects evaluate to themselves when called
+            // "normal" objects evaluate to themselves when called with no arguments
             if(args.Length == 0)
                 return target;
 
@@ -48,6 +48,9 @@ namespace Bonsai.Runtime {
             // if the second argument is a symbol, fallback to invoking a member called like that
             if (args[0].Value is SymbolId) {
                 string name = ((SymbolId)args[0].Value).ToString();
+                // setters end with =
+                if (name.EndsWith("="))
+                    name = name.Substring(0, name.Length - 1);
 
                 var members = target.LimitType.GetMember(
                     name,
@@ -65,6 +68,20 @@ namespace Bonsai.Runtime {
                     }
                     return new DynamicMetaObject(
                         Expression.Call(target.Expression, (MethodInfo)method, callArgs), 
+                        BindingRestrictions.Empty);
+                }
+                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 1) {
+                    return new DynamicMetaObject(
+                        Expression.Property(target.Expression, (PropertyInfo)members[0]),
+                        BindingRestrictions.Empty);
+                }
+                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 2) {
+                    var callArg = Expression.Convert(args[0].Expression, ((PropertyInfo)members[0]).PropertyType);
+
+                    return new DynamicMetaObject(
+                        Expression.Call(target.Expression,
+                            ((PropertyInfo)members[0]).GetSetMethod(),
+                            new Expression[] { callArg }),
                         BindingRestrictions.Empty);
                 }
             }
