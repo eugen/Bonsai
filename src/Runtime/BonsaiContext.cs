@@ -11,6 +11,8 @@ using Microsoft.Scripting;
 using Microsoft.Scripting.Ast;
 using Microsoft.Scripting.Interpretation;
 using Bonsai.Ast;
+using System.Text;
+using System.Diagnostics;
 
 namespace Bonsai.Runtime
 {
@@ -30,7 +32,25 @@ namespace Bonsai.Runtime
 		protected override ScriptCode CompileSourceCode( SourceUnit sourceUnit, CompilerOptions options, ErrorSink errorSink ) {
             string text = sourceUnit.GetCode();
             var sequence = BonsaiParser.ParseString(text);
-            SLE.Expression expr = BonsaiExpressionGenerator.Walk(sequence);
+            var scope = new DictionaryBonsaiFunction();
+            scope["print"] = new DelegateBonsaiFunction(
+                args => {
+                    var str = args
+                        .Select(a => (a ?? string.Empty).ToString())
+                        .Aggregate(new StringBuilder(), (sb, s) => sb.Append(s).Append(","));
+                    Console.WriteLine(str);
+                    return str;
+                });
+            scope["="] = new DelegateBonsaiFunction(
+                args => {
+                    Debug.Assert(args.Length == 2);
+                    scope[(SymbolId)args[0]] = (BonsaiFunction)args[1];
+                    return args[1];
+                });
+
+            SLE.Expression expr = BonsaiExpressionGenerator.Walk(
+                SLE.Expression.Constant(scope),
+                sequence);
 
             var lambda = Utils.Lambda(typeof(object), "Root");
             lambda.Parameters.Add(SLE.Expression.Parameter(typeof(BonsaiContext))); 

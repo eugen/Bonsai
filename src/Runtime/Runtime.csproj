@@ -57,7 +57,11 @@
   <ItemGroup>
     <Compile Include="BonsaiBinder.cs" />
     <Compile Include="BonsaiContext.cs" />
+    <Compile Include="DelegateBonsaiFunction.cs" />
+    <Compile Include="DictionaryBonsaiFunction.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="BonsaiFunction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.csproj">

@@ -27,11 +27,41 @@ namespace Bonsai.Shell
                         new string[] {".bon"})
                 }
             };
-            
+                
             ScriptRuntime runtime = new ScriptRuntime(runtimeSetup);
             ScriptScope global = runtime.CreateScope();
             ScriptEngine engine = runtime.GetEngineByTypeName(typeof(BonsaiContext).AssemblyQualifiedName);
-            Console.WriteLine(engine.Execute("(\"zomg i'm writing caps!\" .ToUpper) .Substring 5"));
+            //Console.WriteLine(engine.Execute("(\"zomg i'm writing caps!\" .ToUpper) .Substring 5"));
+            var result = engine.Execute(@"
+            = .a print 
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)
+            print (a 3)");
+            Console.WriteLine(result);
       	}
 	}
 }
