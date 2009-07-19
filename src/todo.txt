@@ -1,7 +1,7 @@
 
-=== Create a new scope when a function is called
-
 === Blocks and functions
+
+=== Create a new scope when a function is called
 
 === Lexical scoping
 

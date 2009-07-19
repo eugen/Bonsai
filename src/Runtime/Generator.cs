@@ -38,7 +38,9 @@ namespace Bonsai.Runtime {
         }
 
         public static Expression Walk(ConstantExpression scope, Ast.Block block) {
-            throw new NotImplementedException();
+            return Expression.New(
+                typeof(BlockBonsaiFunction).GetConstructor(new Type[] { typeof(Func<object>) }),
+                Expression.Lambda(Expression.Block(block.Statements.Select(st => Walk(scope, st)))));
         }
 
         public static Expression Walk(ConstantExpression scope, Ast.Reference reference) {

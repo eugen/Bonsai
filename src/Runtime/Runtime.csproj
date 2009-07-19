@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockBonsaiFunction.cs" />
     <Compile Include="BonsaiBinder.cs" />
     <Compile Include="BonsaiContext.cs" />
     <Compile Include="DelegateBonsaiFunction.cs" />
