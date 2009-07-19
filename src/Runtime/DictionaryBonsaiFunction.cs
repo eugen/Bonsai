@@ -24,7 +24,6 @@ namespace Bonsai.Runtime {
             set { Dict[SymbolTable.StringToId(symbolName)] = value; }
         }
 
-
         public override object Call(object[] arguments) {
             if (arguments.Length > 0 &&
                 arguments[0] is SymbolId &&

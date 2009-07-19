@@ -35,9 +35,7 @@ namespace Bonsai.Runtime
             var scope = new DictionaryBonsaiFunction();
             scope["print"] = new DelegateBonsaiFunction(
                 args => {
-                    var str = args
-                        .Select(a => (a ?? string.Empty).ToString())
-                        .Aggregate(new StringBuilder(), (sb, s) => sb.Append(s).Append(","));
+                    var str = args.Aggregate("", (s, arg) => s + (s.Length > 0 ? ", " : "") + arg);
                     Console.WriteLine(str);
                     return str;
                 });
