@@ -32,3 +32,8 @@ defun .main {
    }
 }
 
+defun .using_mock .disposable .block {
+    print .entering_try_finally
+    block .Invoke
+    print .disposing
+}

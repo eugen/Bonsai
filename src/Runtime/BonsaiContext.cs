@@ -42,7 +42,10 @@ namespace Bonsai.Runtime
             scope["="] = new DelegateBonsaiFunction(
                 args => {
                     Debug.Assert(args.Length == 2);
-                    scope[(SymbolId)args[0]] = (BonsaiFunction)args[1];
+                    if (args[1] is BonsaiFunction)
+                        scope[(SymbolId)args[0]] = (BonsaiFunction)args[1];
+                    else
+                        scope[(SymbolId)args[0]] = new DelegateBonsaiFunction(_ => args[1]);
                     return args[1];
                 });
 
