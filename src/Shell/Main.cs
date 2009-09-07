@@ -31,9 +31,11 @@ namespace Bonsai.Shell
             ScriptRuntime runtime = new ScriptRuntime(runtimeSetup);
             ScriptScope global = runtime.CreateScope();
             ScriptEngine engine = runtime.GetEngineByTypeName(typeof(BonsaiContext).AssemblyQualifiedName);
-            //Console.WriteLine(engine.Execute("(\"zomg i'm writing caps!\" .ToUpper) .Substring 5"));
+            Console.WriteLine(engine.Execute("(\"zomg i'm writing caps!\" .ToUpper) .Substring 5"));
             //engine.Execute("= .a print \n a 1 .2 \"3\"");
-            engine.Execute("= .printa { print .a } \n print .printa_este \n printa .Invoke)");
+            //engine.Execute("= .printa { print .a } \n print .printa_is: \n print printa)");
+            engine.Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n print .fromInside a } \n print .outside a");
+            engine.Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n print .fromInside a } \n b .Invoke \n print .outside a");
       	}
 	}
 }

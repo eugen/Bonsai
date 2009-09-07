@@ -35,18 +35,21 @@ namespace Bonsai.Runtime
             var scope = new DictionaryBonsaiFunction();
             scope["print"] = new DelegateBonsaiFunction(
                 args => {
+                    args = args.Subarray(1, args.Length - 1);
                     var str = args.Aggregate("", (s, arg) => s + (s.Length > 0 ? ", " : "") + arg);
                     Console.WriteLine(str);
                     return str;
                 });
             scope["="] = new DelegateBonsaiFunction(
                 args => {
-                    Debug.Assert(args.Length == 2);
-                    if (args[1] is BonsaiFunction)
-                        scope[(SymbolId)args[0]] = (BonsaiFunction)args[1];
+                    Debug.Assert(args.Length == 3);
+                    Debug.Assert(args[0] is DictionaryBonsaiFunction);
+                    var callScope = (DictionaryBonsaiFunction)args[0];
+                    if (args[2] is BonsaiFunction)
+                        callScope[(SymbolId)args[1]] = (BonsaiFunction)args[2];
                     else
-                        scope[(SymbolId)args[0]] = new DelegateBonsaiFunction(_ => args[1]);
-                    return args[1];
+                        callScope[(SymbolId)args[1]] = new DelegateBonsaiFunction(_ => args[2]);
+                    return args[2];
                 });
 
             SLE.Expression expr = BonsaiExpressionGenerator.Walk(

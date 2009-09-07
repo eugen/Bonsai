@@ -23,10 +23,11 @@ namespace Bonsai.Runtime {
             if (target.LimitType.IsSubclassOf(typeof(Delegate))) {
                 var parms = target.LimitType.GetMethod("Invoke").GetParameters();
                 Expression[] callArgs = new Expression[args.Length];
-                for (int i = 0; i < args.Length; i++) {
+                // convert the parameters, but skip the 1st parameter, which is the scope
+                for (int i = 1; i < args.Length; i++) {
                     Expression argExpr = args[i].Expression;
-                    argExpr = Expression.Convert(argExpr, parms[i].ParameterType);
-                    callArgs[i] = argExpr;
+                    argExpr = Expression.Convert(argExpr, parms[i-1].ParameterType);
+                    callArgs[i-1] = argExpr;
                 }
 
                 var expression = Expression.Invoke(
@@ -38,7 +39,7 @@ namespace Bonsai.Runtime {
                     BindingRestrictions.Empty);
             }
             // "normal" objects evaluate to themselves when called with no arguments
-            if(args.Length == 0)
+            if(args.Length == 1)
                 return target;
 
             // TODO: implement math
@@ -46,36 +47,40 @@ namespace Bonsai.Runtime {
             } 
 
             // if the second argument is a symbol, fallback to invoking a member called like that
-            if (args[0].Value is SymbolId) {
-                string name = ((SymbolId)args[0].Value).ToString();
-                // setters end with =
+            if (args[1].Value is SymbolId) {
+                string name = ((SymbolId)args[1].Value).ToString();
+                // setters end with =, so remove that when searching for members
                 if (name.EndsWith("="))
-                    name = name.Substring(0, name.Length - 1);
+                    name = name.Substring(1, name.Length - 1);
 
                 var members = target.LimitType.GetMember(
                     name,
                     MemberTypes.Property | MemberTypes.Method,
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
 
+                // method call
                 if (members.Length > 0 && members[0] is MethodInfo) {
                     var method = (MethodInfo)members[0];
                     var parms = method.GetParameters();
-                    Expression[] callArgs = new Expression[args.Length-1];
-                    for (int i = 0; i < args.Length - 1; i++) {
-                        Expression argExpr = args[i+1].Expression;
-                        argExpr = Expression.Convert(argExpr, parms[i].ParameterType);
-                        callArgs[i] = argExpr;
+                    Expression[] callArgs = new Expression[args.Length-2];
+                    // skip the target and the scope
+                    for (int i = 2; i < args.Length; i++) {
+                        Expression argExpr = args[i].Expression;
+                        argExpr = Expression.Convert(argExpr, parms[i-2].ParameterType);
+                        callArgs[i-2] = argExpr;
                     }
                     return new DynamicMetaObject(
                         Expression.Call(target.Expression, (MethodInfo)method, callArgs), 
                         BindingRestrictions.Empty);
                 }
-                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 1) {
+                // getter
+                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 2) {
                     return new DynamicMetaObject(
                         Expression.Property(target.Expression, (PropertyInfo)members[0]),
                         BindingRestrictions.Empty);
                 }
-                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 2) {
+                // setter
+                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 3) {
                     var callArg = Expression.Convert(args[0].Expression, ((PropertyInfo)members[0]).PropertyType);
 
                     return new DynamicMetaObject(

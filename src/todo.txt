@@ -1,8 +1,8 @@
 
-=== Blocks and functions
+[DONE!!!] Blocks 
 
-=== Create a new scope when a function is called
+[_______] Functions
 
-=== Lexical scoping
+[DONE!!!] Lexical scoping
 
-=== Add support for calling existing .NET classes
+[_______] Add support for calling existing .NET classes

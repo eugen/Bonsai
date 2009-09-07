@@ -14,10 +14,14 @@ using Microsoft.Scripting;
 namespace Bonsai.Runtime {
     public static class BonsaiExpressionGenerator {
         public static Expression Walk(ConstantExpression scope, Ast.Call call) {
+            Debug.Assert(scope.Value is DictionaryBonsaiFunction);
             var arguments = new List<Expression>(call.Arguments.Count);
             arguments.Add(Walk(scope, call.Target));
+            arguments.Add(scope);
             foreach (var arg in call.Arguments)
-                arguments.Add(Walk(scope, arg));
+                arguments.Add(
+                    Expression.Dynamic(
+                    new BonsaiBinder(new CallInfo(2)), typeof(object), Walk(scope, arg), scope));
             return Expression.Dynamic(
                 new BonsaiBinder(new CallInfo(arguments.Count)),
                 typeof(object),
@@ -38,9 +42,13 @@ namespace Bonsai.Runtime {
         }
 
         public static Expression Walk(ConstantExpression scope, Ast.Block block) {
+            Debug.Assert(scope.Value is DictionaryBonsaiFunction);
+            var oldScope = (DictionaryBonsaiFunction)scope.Value;
+            var newScope = new DictionaryBonsaiFunction(oldScope);
+            var newScopeExpression = Expression.Constant(newScope);
             return Expression.New(
                 typeof(BlockBonsaiFunction).GetConstructor(new Type[] { typeof(Func<object>) }),
-                Expression.Lambda(Expression.Block(block.Statements.Select(st => Walk(scope, st)))));
+                Expression.Lambda(Expression.Block(block.Statements.Select(st => Walk(newScopeExpression, st)))));
         }
 
         public static Expression Walk(ConstantExpression scope, Ast.Reference reference) {
