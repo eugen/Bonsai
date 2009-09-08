@@ -28,7 +28,7 @@ defun .main {
    def .counter (create-counter 0 limit)
 
    while { counter > 0 } {
-      print "the counter still hasn't reached" .+ x
+      print "the counter still hasn't reached " x
    }
 }
 

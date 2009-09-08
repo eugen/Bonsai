@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Dynamic;
 using Microsoft.Scripting;
 using System.Reflection;
+using Bonsai.Runtime.Primitives;
 
 namespace Bonsai.Runtime {
     public class BonsaiBinder : InvokeBinder {
@@ -42,8 +43,16 @@ namespace Bonsai.Runtime {
             if(args.Length == 1)
                 return target;
 
-            // TODO: implement math
+            // Try to fallback to a BonsaiNumberFunction
             if (value is decimal) {
+                //TODO: refactor this; copied from BonsaiFunction.cs; also, not very DLR-ish
+                var bnf = new BonsaiNumberFunction(32M);
+                var callArgs = new object[args.Length + 1];
+                callArgs[0] = value;
+                for (int i = 0; i < args.Length; i++)
+                    callArgs[i + 1] = args[i].Value;
+                var @return = bnf.Call(callArgs);
+                return new DynamicMetaObject(Expression.Constant(@return), BindingRestrictions.Empty, value);
             } 
 
             // if the second argument is a symbol, fallback to invoking a member called like that
@@ -91,7 +100,7 @@ namespace Bonsai.Runtime {
                 }
             }
 
-            throw new InvalidOperationException();
+            throw new Exception("Binding failed");
         }
     }
 }

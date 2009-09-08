@@ -54,6 +54,9 @@
   <ItemGroup>
     <Compile Include="BonsaiTestClass.cs" />
     <Compile Include="BuiltinTests.cs" />
+    <Compile Include="DefunTests.cs" />
+    <Compile Include="MathTests.cs" />
+    <Compile Include="OverridePrimitivesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BlockTests.cs" />
     <Compile Include="StringTests.cs" />

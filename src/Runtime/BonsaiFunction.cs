@@ -21,7 +21,6 @@ namespace Bonsai.Runtime {
             }
 
             public override DynamicMetaObject BindInvoke(InvokeBinder binder, DynamicMetaObject[] args) {
-                
                 var value = Function.Call(args.Select(dmo => dmo.Value).ToArray());
                 return new DynamicMetaObject(Expression.Constant(value), BindingRestrictions.Empty, value);
             }
