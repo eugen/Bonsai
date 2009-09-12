@@ -13,15 +13,16 @@ using Microsoft.Scripting;
 
 namespace Bonsai.Runtime {
     public static class BonsaiExpressionGenerator {
-        public static Expression Walk(ConstantExpression scope, Ast.Call call) {
-            Debug.Assert(scope.Value is DictionaryBonsaiFunction);
+        public static Expression Walk(ConstantExpression oldScope, Ast.Call call) {
+            Debug.Assert(oldScope.Value is DictionaryBonsaiFunction);
+            var newScope = Expression.Constant(new DictionaryBonsaiFunction((DictionaryBonsaiFunction)oldScope.Value));
             var arguments = new List<Expression>(call.Arguments.Count);
-            arguments.Add(Walk(scope, call.Target));
-            arguments.Add(scope);
+            arguments.Add(Walk(newScope, call.Target));
+            arguments.Add(newScope);
             foreach (var arg in call.Arguments)
                 arguments.Add(
                     Expression.Dynamic(
-                    new BonsaiBinder(new CallInfo(2)), typeof(object), Walk(scope, arg), scope));
+                    new BonsaiBinder(new CallInfo(2)), typeof(object), Walk(newScope, arg), newScope));
             return Expression.Dynamic(
                 new BonsaiBinder(new CallInfo(arguments.Count)),
                 typeof(object),

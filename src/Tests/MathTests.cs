@@ -20,5 +20,10 @@ namespace Tests {
 
             Assert.AreEqual(42M, ScriptEngine.Execute("42000000 ./ 1000000"));
         }
+
+        [TestMethod]
+        public void TestOperationsBetweenVariables() {
+            Assert.AreEqual(42M, Execute("= .a 40 \n = .b 2 \n a .+ b"));
+        }
     }
 }

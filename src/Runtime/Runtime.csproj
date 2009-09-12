@@ -66,6 +66,7 @@
     <Compile Include="Primitives\BonsaiNumberFunction.cs" />
     <Compile Include="Primitives\BonsaiPrimitiveFunction.cs" />
     <Compile Include="Primitives\BonsaiStringFunction.cs" />
+    <Compile Include="Primitives\BonsaiGlobalFunctions.cs" />
     <Compile Include="Primitives\MapsToSymbolAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@ using Microsoft.Scripting.Interpretation;
 using Bonsai.Ast;
 using System.Text;
 using System.Diagnostics;
+using Bonsai.Runtime.Primitives;
 
 namespace Bonsai.Runtime
 {
@@ -36,19 +37,25 @@ namespace Bonsai.Runtime
             scope["print"] = new DelegateBonsaiFunction(
                 args => {
                     args = args.Subarray(1, args.Length - 1);
-                    var str = args.Aggregate("", (s, arg) => s + (s.Length > 0 ? ", " : "") + arg);
+                    var str = args.Aggregate("", (s, arg) => s + arg);
                     Console.WriteLine(str);
                     return str;
                 });
+            scope["defun"] = new DelegateBonsaiFunction(
+                args => {
+                    return BonsaiGlobalFunctions.Defun(args);
+                });
+        
             scope["="] = new DelegateBonsaiFunction(
                 args => {
                     Debug.Assert(args.Length == 3);
                     Debug.Assert(args[0] is DictionaryBonsaiFunction);
                     var callScope = (DictionaryBonsaiFunction)args[0];
+                    var calleeScope = (DictionaryBonsaiFunction)callScope.Parent;
                     if (args[2] is BonsaiFunction)
-                        callScope[(SymbolId)args[1]] = (BonsaiFunction)args[2];
+                        calleeScope[(SymbolId)args[1]] = (BonsaiFunction)args[2];
                     else
-                        callScope[(SymbolId)args[1]] = new DelegateBonsaiFunction(_ => args[2]);
+                        calleeScope[(SymbolId)args[1]] = new DelegateBonsaiFunction(_ => args[2]);
                     return args[2];
                 });
 
