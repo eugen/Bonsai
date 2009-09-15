@@ -85,6 +85,7 @@ IDENTIFIER
 STRING 
 	:	SIMPLE_STRING
 	|	ESCAPED_STRING
+	;
 
 fragment SIMPLE_STRING
 	:	'\'' (~'\'')* '\''
