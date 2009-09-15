@@ -28,6 +28,11 @@ namespace Tests {
         }
 
         [TestMethod]
+        public void TestAccessOuterVariable() {
+            Assert.AreEqual(42M, Execute("= .a 42 \n = .b { a } \n b .Invoke"));
+        }
+
+        [TestMethod]
         public void ClosureTest() {
             Assert.AreEqual(2M, Execute(@"
                 defun .make_counter .start {
@@ -39,9 +44,10 @@ namespace Tests {
                     block
                 }
                 = .c1 (make_counter 4)
-                = .c2 (make_counter 9)
                 c1 .Invoke
+                = .c2 (make_counter 9)
                 c2 .Invoke
+
                 (c2 .Invoke) ./ (c1 .Invoke)"));
         }
     }

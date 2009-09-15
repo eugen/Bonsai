@@ -35,16 +35,14 @@ namespace Bonsai.Runtime
             string text = sourceUnit.GetCode();
             var sequence = BonsaiParser.ParseString(text);
            
-            var currentScopeVar = SLE.Expression.Variable(typeof(DictionaryBonsaiFunction), "$FirstScope"); 
-            var nextScopeVar = SLE.Expression.Variable(typeof(DictionaryBonsaiFunction), "$SecondScope");
+            var scope = SLE.Expression.Variable(typeof(DictionaryBonsaiFunction), "Prelude"); 
 
             SLE.Expression expr = SLE.Expression.Lambda(
                 SLE.Expression.Block(
-                    new ParameterExpression[] { currentScopeVar, nextScopeVar },
-                    SLE.Expression.Assign(currentScopeVar, SLE.Expression.New(typeof(PreludeFunction))),
+                    new ParameterExpression[] { scope },
+                    SLE.Expression.Assign(scope, SLE.Expression.New(typeof(PreludeFunction))),
                     BonsaiExpressionGenerator.Walk(
-                        currentScopeVar,
-                        nextScopeVar,
+                        scope,
                         sequence)));
 
             expr = SLE.Expression.Invoke(expr);

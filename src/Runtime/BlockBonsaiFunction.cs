@@ -8,11 +8,13 @@ using System.Diagnostics;
 namespace Bonsai.Runtime {
     public class BlockBonsaiFunction : BonsaiFunction {
         public Func<object> Function { get; private set; }
+        public DictionaryBonsaiFunction Scope { get; private set; }
         static readonly SymbolId InvokeSymbol = SymbolTable.StringToId("Invoke");
         static readonly SymbolId ToStringSymbol = SymbolTable.StringToId("ToString");
 
-        public BlockBonsaiFunction(Func<object> function) {
+        public BlockBonsaiFunction(Func<object> function, DictionaryBonsaiFunction scope) {
             this.Function = function;
+            this.Scope = scope;
         }
 
         public override object Call(object[] arguments) {

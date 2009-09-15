@@ -13,65 +13,60 @@ using Microsoft.Scripting;
 
 namespace Bonsai.Runtime {
     public static class BonsaiExpressionGenerator {
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.Call call) {
-            var newScopeInitializationExpression = 
-                Expression.Assign(
-                nextScopeVar, 
-                Expression.New(
-                    typeof(DictionaryBonsaiFunction).GetConstructor(new Type[] { typeof(BonsaiFunction) }),
-                    currentScopeVar));
-
-            var arguments = new List<Expression>(call.Arguments.Count);
-            arguments.Add(Walk(currentScopeVar, nextScopeVar, call.Target));
+        public static Expression Walk(Expression currentScopeVar, Ast.Call call) {
+            var arguments = new List<Expression>(call.Arguments.Count + 2);
+            arguments.Add(Walk(currentScopeVar, call.Target));
             arguments.Add(currentScopeVar);
             foreach (var arg in call.Arguments) {
                 arguments.Add(
                     Expression.Dynamic(
                         new BonsaiBinder(new CallInfo(2)),
                         typeof(object),
-                        Walk(currentScopeVar, nextScopeVar, arg),
+                        Walk(currentScopeVar, arg),
                         currentScopeVar));
             }
 
-            return Expression.Block(
-                newScopeInitializationExpression,
-                Expression.Dynamic(
-                    new BonsaiBinder(new CallInfo(arguments.Count)),
-                    typeof(object),
-                    arguments));
+            return Expression.Dynamic(
+                new BonsaiBinder(new CallInfo(arguments.Count)),
+                typeof(object),
+                arguments);
         }
 
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.Number number) {
+        public static Expression Walk(Expression currentScopeVar, Ast.Number number) {
             return Expression.Constant(number.Value);
         }
 
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.String str) {
+        public static Expression Walk(Expression currentScopeVar, Ast.String str) {
             return Expression.Constant(str.Value);
         }
 
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.Symbol symbol) {
+        public static Expression Walk(Expression currentScopeVar, Ast.Symbol symbol) {
             return Expression.Constant(
                 Microsoft.Scripting.SymbolTable.StringToId(symbol.Name));
         }
 
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.Block block) {
-            var innerCurrentScopeVar = Expression.Variable(typeof(DictionaryBonsaiFunction));
-            var innerNewScopeVariable = Expression.Variable(typeof(DictionaryBonsaiFunction));
+        public static Expression Walk(Expression currentScopeVar, Ast.Block block) {
+            var innerScopeVar = Expression.Variable(typeof(DictionaryBonsaiFunction));
 
-            var expressions = new Expression[block.Statements.Count + 1];
-            expressions[0] = Expression.Assign(innerCurrentScopeVar, nextScopeVar);
+            var expressions = new Expression[block.Statements.Count];
             for (int i = 0; i < block.Statements.Count; i++) {
-                expressions[i + 1] = Walk(currentScopeVar, nextScopeVar, block.Statements[i]);
+                expressions[i] = Walk(innerScopeVar, block.Statements[i]);
             }
 
-            return Expression.New(
-                typeof(BlockBonsaiFunction).GetConstructor(new Type[] { typeof(Func<object>) }),
-                Expression.Lambda(Expression.Block(
-                    new ParameterExpression[] { innerCurrentScopeVar, innerNewScopeVariable },
-                    expressions)));
+            return Expression.Block(
+                new ParameterExpression[] { innerScopeVar },
+                Expression.Assign(
+                    innerScopeVar,
+                    Expression.New(
+                        typeof(DictionaryBonsaiFunction).GetConstructor(new Type[] { typeof(BonsaiFunction) }),
+                        currentScopeVar)),
+                Expression.New(
+                    typeof(BlockBonsaiFunction).GetConstructor(new Type[] { typeof(Func<object>), typeof(DictionaryBonsaiFunction) }),
+                    Expression.Lambda(Expression.Block(expressions)),
+                    innerScopeVar));
         }
 
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.Reference reference) {
+        public static Expression Walk(Expression currentScopeVar, Ast.Reference reference) {
             return Expression.MakeIndex(
                 currentScopeVar,
                 typeof(DictionaryBonsaiFunction).GetProperty("Item", 
@@ -79,17 +74,17 @@ namespace Bonsai.Runtime {
                 new Expression[] { Expression.Constant(SymbolTable.StringToId(reference.Name)) });
         }
 
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.Sequence sequence) {
+        public static Expression Walk(Expression currentScopeVar, Ast.Sequence sequence) {
             return Expression.Block(
-                sequence.Statements.Select(c => Walk(currentScopeVar, nextScopeVar, c)));
+                sequence.Statements.Select(c => Walk(currentScopeVar, c)));
         }
 
-        public static Expression Walk(Expression currentScopeVar, Expression nextScopeVar, Ast.Node node) {
+        public static Expression Walk(Expression currentScopeVar, Ast.Node node) {
             Assert.NotNull(node);
-            var method = typeof(BonsaiExpressionGenerator).GetMethod("Walk", new Type[] { typeof(Expression), typeof(Expression), node.GetType() });
+            var method = typeof(BonsaiExpressionGenerator).GetMethod("Walk", new Type[] { typeof(Expression), node.GetType() });
             Assert.NotNull(method);
             try {
-                return (Expression)method.Invoke(null, new object[] { currentScopeVar, nextScopeVar, node });
+                return (Expression)method.Invoke(null, new object[] { currentScopeVar, node });
             } catch (TargetInvocationException ex) {
                 throw ex.InnerException;
             }

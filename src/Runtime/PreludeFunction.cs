@@ -26,8 +26,8 @@ namespace Bonsai.Runtime {
                 args => {
                     Debug.Assert(args.Length == 3);
                     Debug.Assert(args[0] is DictionaryBonsaiFunction);
-                    var callScope = (DictionaryBonsaiFunction)args[0];
-                    callScope[(SymbolId)args[1]] = args[2];
+                    var scope = (DictionaryBonsaiFunction)args[0];
+                    scope[(SymbolId)args[1]] = args[2];
                     return args[2];
                 });
 
