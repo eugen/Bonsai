@@ -63,6 +63,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="BonsaiFunction.cs" />
+    <Compile Include="PreludeFunction.cs" />
     <Compile Include="Primitives\BonsaiNumberFunction.cs" />
     <Compile Include="Primitives\BonsaiPrimitiveFunction.cs" />
     <Compile Include="Primitives\BonsaiStringFunction.cs" />

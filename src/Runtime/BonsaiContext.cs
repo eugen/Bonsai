@@ -14,6 +14,7 @@ using Bonsai.Ast;
 using System.Text;
 using System.Diagnostics;
 using Bonsai.Runtime.Primitives;
+using System.Linq.Expressions;
 
 namespace Bonsai.Runtime
 {
@@ -33,35 +34,20 @@ namespace Bonsai.Runtime
 		protected override ScriptCode CompileSourceCode( SourceUnit sourceUnit, CompilerOptions options, ErrorSink errorSink ) {
             string text = sourceUnit.GetCode();
             var sequence = BonsaiParser.ParseString(text);
-            var scope = new DictionaryBonsaiFunction();
-            scope["print"] = new DelegateBonsaiFunction(
-                args => {
-                    args = args.Subarray(1, args.Length - 1);
-                    var str = args.Aggregate("", (s, arg) => s + arg);
-                    Console.WriteLine(str);
-                    return str;
-                });
-            scope["defun"] = new DelegateBonsaiFunction(
-                args => {
-                    return BonsaiGlobalFunctions.Defun(args);
-                });
-        
-            scope["="] = new DelegateBonsaiFunction(
-                args => {
-                    Debug.Assert(args.Length == 3);
-                    Debug.Assert(args[0] is DictionaryBonsaiFunction);
-                    var callScope = (DictionaryBonsaiFunction)args[0];
-                    var calleeScope = (DictionaryBonsaiFunction)callScope.Parent;
-                    if (args[2] is BonsaiFunction)
-                        calleeScope[(SymbolId)args[1]] = (BonsaiFunction)args[2];
-                    else
-                        calleeScope[(SymbolId)args[1]] = new DelegateBonsaiFunction(_ => args[2]);
-                    return args[2];
-                });
+           
+            var currentScopeVar = SLE.Expression.Variable(typeof(DictionaryBonsaiFunction), "$FirstScope"); 
+            var nextScopeVar = SLE.Expression.Variable(typeof(DictionaryBonsaiFunction), "$SecondScope");
 
-            SLE.Expression expr = BonsaiExpressionGenerator.Walk(
-                SLE.Expression.Constant(scope),
-                sequence);
+            SLE.Expression expr = SLE.Expression.Lambda(
+                SLE.Expression.Block(
+                    new ParameterExpression[] { currentScopeVar, nextScopeVar },
+                    SLE.Expression.Assign(currentScopeVar, SLE.Expression.New(typeof(PreludeFunction))),
+                    BonsaiExpressionGenerator.Walk(
+                        currentScopeVar,
+                        nextScopeVar,
+                        sequence)));
+
+            expr = SLE.Expression.Invoke(expr);
 
             var lambda = Utils.Lambda(typeof(object), "Root");
             lambda.Parameters.Add(SLE.Expression.Parameter(typeof(BonsaiContext))); 

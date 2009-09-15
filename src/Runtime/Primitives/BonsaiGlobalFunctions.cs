@@ -15,18 +15,18 @@ namespace Bonsai.Runtime.Primitives {
             Debug.Assert(args[args.Length - 1] is BlockBonsaiFunction, "The last arguments should be a block");
 
             var scope = (DictionaryBonsaiFunction)args[0];
-            var calleeScope = (DictionaryBonsaiFunction)scope.Parent;
+            //var calleeScope = (DictionaryBonsaiFunction)scope.Parent;
             var name = (SymbolId)args[1];
             var parameters = new SymbolId[args.Length - 3];
             for (int i = 2; i < args.Length - 1; i++)
                 parameters[i - 2] = (SymbolId)args[i];
             var block = (BlockBonsaiFunction)args[args.Length - 1];
 
-            calleeScope[name] = new DelegateBonsaiFunction(callArgs => {
+            scope[name] = new DelegateBonsaiFunction(callArgs => {
                 Debug.Assert(callArgs.Length - 1 == parameters.Length, "The number of arguments should equal the number of parameters");
                 for(int i = 0; i < parameters.Length; i++) {
                     //Debug.Assert(callArgs[i+1] is BonsaiFunction, "All call arguments should be BonsaiFunctions");
-                    calleeScope[parameters[i]] = callArgs[i+1];
+                    scope[parameters[i]] = callArgs[i + 1];
                 }
                 return block.Function();
             });

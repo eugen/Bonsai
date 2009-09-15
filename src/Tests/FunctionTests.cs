@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Scripting;
 
 namespace Tests {
     [TestClass]
@@ -33,13 +34,18 @@ namespace Tests {
             string code = @"
                 defun .f .a .b { print a b }
                 f 4 2
-                print .this_should_not_be_declared:_ a";
+                print ""This variable should not be declared: "" a";
             ScriptEngine.Execute(code);
         }
 
-        [TestMethod, Ignore]
-        public void CallsShouldHaveDifferentScopes() {
-            throw new NotImplementedException();
-        }
+//        [TestMethod, Ignore]
+//        public void TestRecursion() {
+//            string code = @"
+//                defun .f .i { 
+//                    if { i .>= 0 } { f (i .- 1) } { .done }
+//                }
+//                f 10";
+//            Assert.AreEqual(SymbolTable.StringToId("done"), Execute(code));
+//        }
     }
 }
