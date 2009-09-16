@@ -61,5 +61,19 @@ namespace Bonsai.Runtime {
                     return ((DictionaryBonsaiFunction)Parent).Depth + 1;
             }
         }
+
+        public void UpdateOrAdd(SymbolId key, object value) {
+            var dict = this;
+            while (dict != null) {
+                if (dict.Dict.ContainsKey(key)) {
+                    dict[key] = value;
+                    return;
+                } else {
+                    dict = dict.Parent as DictionaryBonsaiFunction;
+                }
+            }
+
+            this.Dict.Add(key, value);
+        }
     }
 }

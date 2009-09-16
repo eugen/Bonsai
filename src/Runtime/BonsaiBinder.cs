@@ -45,14 +45,14 @@ namespace Bonsai.Runtime {
 
             // Try to fallback to a BonsaiNumberFunction
             if (value is decimal) {
-                //TODO: refactor this; copied from BonsaiFunction.cs; also, not very DLR-ish
-                var bnf = new BonsaiNumberFunction(32M);
-                var callArgs = new object[args.Length + 1];
-                callArgs[0] = value;
-                for (int i = 0; i < args.Length; i++)
-                    callArgs[i + 1] = args[i].Value;
-                var @return = bnf.Call(callArgs);
-                return new DynamicMetaObject(Expression.Constant(@return), BindingRestrictions.Empty, value);
+                return new DynamicMetaObject(
+                    Expression.Call(
+                        Expression.New(typeof(BonsaiNumberFunction).GetConstructor(new Type[0])),
+                        typeof(BonsaiFunction).GetMethod("Call"),
+                        Expression.NewArrayInit(
+                            typeof(object), 
+                            (new Expression[] { Expression.Convert(target.Expression, typeof(object)) }).Union(args.Select(a => Expression.Convert(a.Expression, typeof(object)))))),
+                    BindingRestrictions.GetTypeRestriction(target.Expression, typeof(decimal)));
             } 
 
             // if the second argument is a symbol, fallback to invoking a member called like that

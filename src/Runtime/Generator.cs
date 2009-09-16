@@ -46,24 +46,19 @@ namespace Bonsai.Runtime {
         }
 
         public static Expression Walk(Expression currentScopeVar, Ast.Block block) {
-            var innerScopeVar = Expression.Variable(typeof(DictionaryBonsaiFunction));
+            var innerScopeParam = Expression.Parameter(typeof(DictionaryBonsaiFunction));
 
-            var expressions = new Expression[block.Statements.Count];
-            for (int i = 0; i < block.Statements.Count; i++) {
-                expressions[i] = Walk(innerScopeVar, block.Statements[i]);
+            var expressions = new List<Expression>();
+            foreach(var statement in block.Statements) {
+                expressions.Add(Walk(innerScopeParam, statement));
             }
 
-            return Expression.Block(
-                new ParameterExpression[] { innerScopeVar },
-                Expression.Assign(
-                    innerScopeVar,
-                    Expression.New(
-                        typeof(DictionaryBonsaiFunction).GetConstructor(new Type[] { typeof(BonsaiFunction) }),
-                        currentScopeVar)),
-                Expression.New(
-                    typeof(BlockBonsaiFunction).GetConstructor(new Type[] { typeof(Func<object>), typeof(DictionaryBonsaiFunction) }),
-                    Expression.Lambda(Expression.Block(expressions)),
-                    innerScopeVar));
+            return Expression.New(
+                typeof(BlockBonsaiFunction).GetConstructor(new Type[] { typeof(Func<DictionaryBonsaiFunction, object>), typeof(DictionaryBonsaiFunction) }),
+                Expression.Lambda(
+                    Expression.Block(expressions),
+                    innerScopeParam),
+                currentScopeVar);
         }
 
         public static Expression Walk(Expression currentScopeVar, Ast.Reference reference) {

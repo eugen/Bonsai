@@ -6,15 +6,6 @@ using System.Globalization;
 
 namespace Bonsai.Runtime.Primitives {
     public class BonsaiNumberFunction : BonsaiPrimitiveFunction {
-        public decimal Value {
-            get;
-            set; 
-        }
-
-        public BonsaiNumberFunction(decimal value) {
-            this.Value = value;
-        }
-
         [MapsToSymbol("+")]
         public decimal Add(decimal target, DictionaryBonsaiFunction scope, object[] args) {
             decimal result = target;

@@ -23,11 +23,12 @@ namespace Bonsai.Runtime.Primitives {
 
             scope[name] = new DelegateBonsaiFunction(callArgs => {
                 Debug.Assert(callArgs.Length - 1 == parameters.Length, "The number of arguments should equal the number of parameters");
+                var blockScope = new DictionaryBonsaiFunction(scope);
                 for(int i = 0; i < parameters.Length; i++) {
-                    block.Scope[parameters[i]] = callArgs[i + 1];
+                    blockScope[parameters[i]] = callArgs[i + 1];
                 }
 
-                return block.Function();
+                return block.Function(blockScope);
             });
 
             return null;

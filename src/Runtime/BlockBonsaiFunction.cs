@@ -7,12 +7,13 @@ using System.Diagnostics;
 
 namespace Bonsai.Runtime {
     public class BlockBonsaiFunction : BonsaiFunction {
-        public Func<object> Function { get; private set; }
-        public DictionaryBonsaiFunction Scope { get; private set; }
         static readonly SymbolId InvokeSymbol = SymbolTable.StringToId("Invoke");
         static readonly SymbolId ToStringSymbol = SymbolTable.StringToId("ToString");
 
-        public BlockBonsaiFunction(Func<object> function, DictionaryBonsaiFunction scope) {
+        public Func<DictionaryBonsaiFunction, object> Function { get; private set; }
+        public DictionaryBonsaiFunction Scope { get; private set; }
+        
+        public BlockBonsaiFunction(Func<DictionaryBonsaiFunction, object> function, DictionaryBonsaiFunction scope) {
             this.Function = function;
             this.Scope = scope;
         }
@@ -24,7 +25,7 @@ namespace Bonsai.Runtime {
             else if (arguments.Length == 2 && arguments[1] is SymbolId) {
                 var symbol = (SymbolId)arguments[1];
                 if (symbol == InvokeSymbol) {
-                    return Function();
+                    return Function(new DictionaryBonsaiFunction(Scope)); ;
                 } else if (symbol == ToStringSymbol) {
                     return Function.ToString();
                 } else {
@@ -33,6 +34,6 @@ namespace Bonsai.Runtime {
             } else {
                 throw new MissingMethodException();
             }
-        }
+         }
     }
 }

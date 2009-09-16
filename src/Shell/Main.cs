@@ -16,9 +16,8 @@ namespace Bonsai.Shell
 	{
 		public static void Main(string[] args)
 		{
-            ScriptRuntimeSetup runtimeSetup = new ScriptRuntimeSetup()
-            {
-                DebugMode = true,     
+            ScriptRuntimeSetup runtimeSetup = new ScriptRuntimeSetup() {
+                DebugMode = true,
                 LanguageSetups = {
                       new LanguageSetup(
                         typeof(BonsaiContext).AssemblyQualifiedName,
@@ -27,7 +26,7 @@ namespace Bonsai.Shell
                         new string[] {".bon"})
                 }
             };
-                
+
             ScriptRuntime runtime = new ScriptRuntime(runtimeSetup);
             ScriptScope global = runtime.CreateScope();
             ScriptEngine engine = runtime.GetEngineByTypeName(typeof(BonsaiContext).AssemblyQualifiedName);

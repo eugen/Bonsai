@@ -21,11 +21,15 @@ namespace Tests {
             Assert.AreEqual(42M, o);
         }
 
-        [TestMethod]
-        public void TestLexicalScoping() {
-            Assert.AreEqual(SymbolTable.StringToId("InnerValue"), Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke"));
-            Assert.AreEqual(SymbolTable.StringToId("OuterValue"), Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke \n a"));
-        }
+        //[TestMethod, Ignore]
+        //public void TestScoping() {
+        //    Assert.AreEqual(
+        //        SymbolTable.StringToId("InnerValue"), 
+        //        Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke"));
+        //    Assert.AreEqual(
+        //        SymbolTable.StringToId("OuterValue"), 
+        //        Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke \n a"));
+        //}
 
         [TestMethod]
         public void TestAccessOuterVariable() {
@@ -34,21 +38,23 @@ namespace Tests {
 
         [TestMethod]
         public void ClosureTest() {
-            Assert.AreEqual(2M, Execute(@"
+            Assert.AreEqual(42M, Execute(@"
                 defun .make_counter .start {
                     = .block {
-                        print ""reached "" start
                         = .start (start .+ 1)
-                        start .- 1
+                        start
                     }
                     block
                 }
-                = .c1 (make_counter 4)
-                c1 .Invoke
-                = .c2 (make_counter 9)
-                c2 .Invoke
-
-                (c2 .Invoke) ./ (c1 .Invoke)"));
+                = .c1 (make_counter 416)
+                = .c2 (make_counter 6)
+                print (c1 .Invoke)
+                print (c2 .Invoke)
+                print (c1 .Invoke)
+                print (c2 .Invoke)
+                print (c1 .Invoke)
+                print (c2 .Invoke)
+                (c1 .Invoke) ./ (c2 .Invoke)"));
         }
     }
 }
