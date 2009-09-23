@@ -18,14 +18,8 @@ namespace Bonsai.Runtime {
             arguments.Add(Walk(currentScopeVar, call.Target));
             arguments.Add(currentScopeVar);
             foreach (var arg in call.Arguments) {
-                arguments.Add(
-                    Expression.Dynamic(
-                        new BonsaiBinder(new CallInfo(2)),
-                        typeof(object),
-                        Walk(currentScopeVar, arg),
-                        currentScopeVar));
+                arguments.Add(Walk(currentScopeVar, arg));
             }
-
             return Expression.Dynamic(
                 new BonsaiBinder(new CallInfo(arguments.Count)),
                 typeof(object),
