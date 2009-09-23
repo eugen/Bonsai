@@ -31,6 +31,13 @@ namespace Bonsai.Runtime {
                     return args[2];
                 });
 
+            this["ref"] = new DelegateBonsaiFunction(
+                args => {
+                    Debug.Assert(args.Length == 2);
+                    Debug.Assert(args[1] is SymbolId);
+                    var scope = (DictionaryBonsaiFunction)args[0];
+                    return scope[(SymbolId)args[1]];
+                });
         }
     }
 }
