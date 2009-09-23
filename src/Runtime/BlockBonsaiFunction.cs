@@ -25,7 +25,7 @@ namespace Bonsai.Runtime {
             else if (arguments.Length == 2 && arguments[1] is SymbolId) {
                 var symbol = (SymbolId)arguments[1];
                 if (symbol == InvokeSymbol) {
-                    return Function(new DictionaryBonsaiFunction(Scope)); ;
+                    return this.Invoke();
                 } else if (symbol == ToStringSymbol) {
                     return Function.ToString();
                 } else {
@@ -35,5 +35,13 @@ namespace Bonsai.Runtime {
                 throw new MissingMethodException();
             }
          }
+
+        public virtual object Invoke(DictionaryBonsaiFunction localVariables = null) {
+            var newScope = new DictionaryBonsaiFunction(Scope);
+            if (localVariables != null)
+                foreach (var key in localVariables.Dict.Keys)
+                    newScope.Dict[key] = localVariables.Dict[key];
+            return Function(newScope);
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace Tests {
             Assert.AreEqual(42M, ScriptEngine.Execute(code));
         }
 
-        [TestMethod, ExpectedException(typeof(Exception), "The variable 'a' should not be declared after the call to 'f'", AllowDerivedTypes=true)]
+        [TestMethod, ExpectedException(typeof(Exception), "The variable 'a' should not be declared after the call to 'f'", AllowDerivedTypes = true)]
         public void DontLeakArgumentsToOuterScopeTest() {
             string code = @"
                 defun .f .a .b { print a b }
@@ -47,5 +47,24 @@ namespace Tests {
 //                f 10";
 //            Assert.AreEqual(SymbolTable.StringToId("done"), Execute(code));
 //        }
+
+        [TestMethod]
+        public void ClosureTest() {
+            Assert.AreEqual(42M, Execute(@"
+                defun .make_counter .start {
+                    defun .add .increment {
+                        = .start (start .+ increment)
+                        start
+                    }
+                    ref .add
+                }
+                = .c1 (make_counter 400)
+                = .c2 (make_counter 5)
+                print (c1 5)
+                print (c2 2)
+                print (c1 5)
+                print (c2 2)
+                (c1 10) ./ (c2 1)"));
+        }
     }
 }
