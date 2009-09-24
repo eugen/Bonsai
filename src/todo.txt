@@ -1,8 +1,7 @@
+Add support for calling existing .NET classes
 
-[DONE!!!] Blocks 
+Add pattern matching for functions
 
-[_______] Functions
-
-[DONE!!!] Lexical scoping
-
-[_______] Add support for calling existing .NET classes
+Add OOP-ish behaviour through prototyping
+ - having an "object" kind of function, with state and methods
+ - support for cloning it
