@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="BonsaiTestClass.cs" />
     <Compile Include="BuiltinTests.cs" />
+    <Compile Include="ClrIntegrationTests.cs" />
     <Compile Include="FunctionTests.cs" />
     <Compile Include="MathTests.cs" />
     <Compile Include="OverridePrimitivesTest.cs" />

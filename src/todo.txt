@@ -1,4 +1,7 @@
 Add support for calling existing .NET classes
+- static properties, methods, indexers
+- instance properties, methods, indexers
+- generic types
 
 Add pattern matching for functions
 
