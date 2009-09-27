@@ -45,14 +45,14 @@ namespace Tests {
         public void TestCallInstanceProperty() {
             Assert.AreEqual(
                 0,
-                Execute("import .list .System.Collections.ArrayList \n = .l (.list .new) \n l .Count"));
+                Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .Count"));
         }
 
         [TestMethod]
         public void TestCallInstanceMethod() {
             Assert.AreEqual(
                 typeof(System.Collections.ArrayList),
-                Execute("import .list .System.Collections.ArrayList \n = .l (.list .new) \n l .GetType"));
+                Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .GetType"));
         }
     }
 }
