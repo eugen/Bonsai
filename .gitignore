@@ -4,5 +4,13 @@ obj
 *.suo
 *.user
 *~
+*.bbl
+*.log
+*.blg
+*.synctex.gz
+*.toc
+*.pdf
+*.dvi
+*.aux
 TestResults
 src/Local.testsettings
