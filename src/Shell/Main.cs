@@ -6,6 +6,8 @@ using Microsoft.Scripting.Hosting.Providers;
 
 using Bonsai.Ast;
 using Bonsai.Runtime;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace Bonsai.Shell
 {
@@ -30,7 +32,14 @@ namespace Bonsai.Shell
             ScriptRuntime runtime = new ScriptRuntime(runtimeSetup);
             ScriptScope global = runtime.CreateScope();
             ScriptEngine engine = runtime.GetEngineByTypeName(typeof(BonsaiContext).AssemblyQualifiedName);
-            Console.WriteLine(engine.Execute("(\"zomg i'm writing caps!\" .ToUpper) .Substring 5"));
+            Console.WriteLine(engine.Execute(@"
+import .arrl .System.Collections.ArrayList
+= .a (arrl .new)
+a .Add 4
+a .Add 6
+print (a .Item 0)
+print (a .Count)
+                "));
       	}
 	}
 }

@@ -3,10 +3,24 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Bonsai.Runtime;
 
 namespace Tests {
     [TestClass]
     public class ClrIntegrationTests : BonsaiTestClass {
+        [TestMethod]
+        public void TestImportNamespace() {
+            Assert.AreEqual(
+                typeof(System.Environment),
+                Execute("import .sys .System \n sys .Environment"));
+        }
+        [TestMethod]
+        public void TestImportClass() {
+            var console = Execute("import .console .System.Console \n ref .console");
+            Assert.IsInstanceOfType(console, typeof(BonsaiClrClassFunction));
+            Assert.AreEqual(typeof(System.Console), ((BonsaiClrClassFunction)console).Class);
+        }
+
         [TestMethod]
         public void TestCallStaticProperty() {
             Assert.AreEqual(
@@ -22,9 +36,9 @@ namespace Tests {
 
         [TestMethod]
         public void TestInstantiateClass() {
-            Assert.AreEqual(
-                0,
-                Execute("import .int .System.Int32 \n int .new"));
+            Assert.IsInstanceOfType(
+                Execute("import .arraylist .System.Collections.ArrayList \n arraylist .new"),
+                typeof(System.Collections.ArrayList));
         }
 
         [TestMethod]

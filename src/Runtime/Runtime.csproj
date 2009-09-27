@@ -57,6 +57,8 @@
   <ItemGroup>
     <Compile Include="BlockBonsaiFunction.cs" />
     <Compile Include="BonsaiBinder.cs" />
+    <Compile Include="BonsaiClrClassFunction.cs" />
+    <Compile Include="BonsaiClrNamespaceFunction.cs" />
     <Compile Include="BonsaiContext.cs" />
     <Compile Include="DelegateBonsaiFunction.cs" />
     <Compile Include="DictionaryBonsaiFunction.cs" />
@@ -67,7 +69,6 @@
     <Compile Include="Primitives\BonsaiNumberFunction.cs" />
     <Compile Include="Primitives\BonsaiPrimitiveFunction.cs" />
     <Compile Include="Primitives\BonsaiStringFunction.cs" />
-    <Compile Include="Primitives\BonsaiGlobalFunctions.cs" />
     <Compile Include="Primitives\MapsToSymbolAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

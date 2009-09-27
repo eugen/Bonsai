@@ -8,3 +8,7 @@ Add pattern matching for functions
 Add OOP-ish behaviour through prototyping
  - having an "object" kind of function, with state and methods
  - support for cloning it
+
+Better matching between the types of the arguments and a method's parameters
+
+Null Value?
