@@ -1,15 +1,18 @@
 \documentclass[12pt,a4paper]{memoir}
 \usepackage{url}
+\usepackage{fancyvrb}
 \usepackage{fontspec} 
 \usepackage{xunicode}
 \usepackage{xltxtra}
-
 \usepackage[romanian]{babel}
+
 \hyphenpenalty=5000
 \tolerance=1000
 
-\setmainfont[Mapping=tex-text]{Calluna}
-\setmonofont[Mapping=tex-text]{Inconsolata}
+\setmainfont{Calluna}
+\setmonofont{Inconsolata}
+
+\fvset{numbers=left,label=TreeGrammar,labelposition=all,frame=lines}
 
 \title{Bonsai\\Un limbal dinamic funcțional peste DLR}
 
@@ -17,56 +20,69 @@
 \maketitle
 \tableofcontents
 
-\chapter{Introducere}
+\chapter{Abstract}
 
-In ultimele doua decenii, programarea a fost in mare parte impartita intre doua grupe de limbaje. Limbajele imperative, cu un sistem static de tipuri, multe din ele din familia C, au fost folosite pentru a obtine performanta si scalabilitate. In schimb, flexibilitatea limbajelor precum PHP si Perl a fost apreciata pentru programarea scripturilor de sistem, a paginilor web si a altor programe pentru care eficienta nu reprezinta o prioritate.
+În ultimele doua decenii, programarea a fost în mare parte împărțită între două grupe de limbaje. Limbajele imperative, cu un sistem static de tipuri, multe dintre ele din familia C, au fost folosite pentru a obține performanță și scalabilitate. În schimb, flexibilitatea limbajelor precum Perl si PHP a fost apreciată pentru programarea scripturilor de sistem, a paginilor web și a altor programe pentru care eficiența nu reprezintă o prioritate.
 
-In ultimii ani insa, odata cu reducerea exponentiala a costurilor hardware-ului multumita legii lui Moore, accentul a inceput sa se puna din ce in ce mai putin pe eficienta si din ce in ce mai mult pe timpul de dezvoltare. Performanta limbajelor dinamice a devenit ``suficienta'', ceea ce a condus la o adevarata renastere a acestora.
+În ultimii ani însă, odată cu reducerea exponențială a costurilor hardware-ului — mulțumita legii lui Moore — accentul a început să se pună din ce în ce mai puțin pe eficiență și din ce în ce mai mult pe timpul de dezvoltare. Performanța limbajelor dinamice a devenit „suficientă”, ceea ce a condus la o adevărată renaștere a acestora.
 
-Atat Sun cat si Microsoft si-au aratat interesul pentru limbajele dinamice prin proiectele The Da Vinci Machine\cite{daVinciMachine} si Dynamic Language Runtime (DLR)\cite{dlr} si sprijinirea dezvoltarii limbajelor JRuby\cite{jruby}, Jython\cite{jython}, IronRuby\cite{ironruby}, IronPython\cite{ironpython}, etc.
+Atât Sun cât și Microsoft și-au arătat interesul pentru limbajele dinamice prin proiectele The Da Vinci Machine\cite{daVinciMachine} și Dynamic Language Runtime (DLR)\cite{dlr} și sprijinirea dezvoltării limbajelor JRuby\cite{jruby}, Jython\cite{jython}, IronRuby\cite{ironruby}, IronPython\cite{ironpython}, etc.
 
-Lucrarea de fata prezinta un limbaj dinamic numit Bonsai. Cea mai importanta caracteristica a sa este simplitatea, limbajele Lisp si Io \cite{io} reprezentand principalele surse de inspiratie. Platforma aleasa este .NET impreuna cu Dynamic Language Runtime, intreaga suita de biblioteci .NET fiind astfel disponibila, indiferent de limbajul in care au fost scrise. Bonsai este un limbaj functional, dar se integreaza bine cu alte limbaje orientate obiect prin simularea OOP-ului prin apeluri de functii. Datorita platformei pe care ruleaza si a utilizarii de biblioteci scrise in alte limbaje, transparenta referentiala a functiilor nu poate fi garantata. Programarea fara efecte laterale este in schimb incurajata: majoritatea primitivelor din Bonsai sunt functii pure, iar cele care modifica starea sunt clar
-denumite astfel incat acest lucru sa-i fie vizibil programatorului.
+Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă caracteristică a sa este simplitatea, limbajele Lisp si Io \cite{io} reprezentănd principalele surse de inspirație. Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. Bonsai este un limbaj funcțional, dar se integrează bine cu alte limbaje orientate obiect: OOP-ul este simulat în întregime prin apeluri de funcții. Datorită platformei pe care rulează și a utilizării de biblioteci scrise in alte limbaje, transparența referențială a funcțiilor nu poate fi garantată. Programarea fără efecte laterale este în schimb      ncurajată: majoritatea primitivelor din Bonsai sunt funcții pure, iar cele care modifica starea sunt clar denumite astfel încât acest lucru să-i fie vizibil programatorului.
+
+\chapter{Sintaxa limbajului}
+
+Parserul limbajului a fost generat cu ajutorul programului Antlr. Deoarece simplitatea a fost un scop principal de la bun început, gramatica limbajului are doar 18 reguli de parsare plus 3 reguli de transformare a arborelui de parsare. 
+
+Mai jos este reprodusă gramatica în întregime:
+\VerbatimInput{../src/Grammars/Bonsai.g}
+
+Bonsai utilizează pe lângă gramatica de parsare a codului sursă o gramatică de transformare a arborilor de parsare:
+\VerbatimInput{../src/Grammars/BonsaiTree.g}
 
 \chapter{Primitivele limbajului}
 
-Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze intreaga biblioteca disponibila in implementarile ``originiale'' (MRI si CPython), Bonsai incearca sa foloseasca cat mai mult clasele din .NET Framework si sa mentina biblioteca proprie de functii cat mai mica.
+Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze întreaga biblioteca disponibilă în implementarile „originale” (MRI si CPython), Bonsai încearcă să folosească cât mai mult clasele din .NET Framework și să mențină biblioteca proprie de funcții cât mai mică.
+
+\section{Numere}
+
+În Bonsai există un singur tip de numere: raționale, reprezentate in virgulă fixă. Acesta mapează peste tipul \texttt{System.Decimal} din .NET Framework. Erorile cauzate de reprezentarea in virgulă mobilă (ex. \texttt{1.1 + 1.1 + 1.1 == 3.300000000007}) sunt astfel eliminate.
+
+\section{stringuri}
+
+\section{=}
 
 \section{symbol}
 
-Tipul \texttt{symbol} din Bonsai este foarte asemanator simbolurile din din Ruby\cite{ruby_symbols} si Lisp\cite{clhs_symbols}. Un simbol se comporta de cele mai multe ori ca un string. Diferenta majora consta in faptul ca pentru orice string exista o singura instanta a unui simbol cu acel string, ceea ce transforma compararea a doua simboluri intr-o comparatie de pointeri, foarte rapida. De asemenea, utilizarea unui simbol indica de cele mai multe ori folosirea metaprogramarii. 
+Tipul \texttt{symbol} din Bonsai este foarte asemănător simbolurilor din Ruby\cite{ruby_symbols} și Lisp\cite{clhs_symbols}. Un simbol se comportă de cele mai multe ori ca un string. Diferența majoră constă în faptul că pentru orice string există o singură instanță a unui simbol cu acel string, ceea ce transformă compararea a două simboluri         într-o comparație de pointeri, foarte rapidă. De asemenea, utilizarea unui simbol indică de cele mai multe ori folosirea metaprogrămarii. 
+
+\section{blocks}
+
+Un \texttt{block} este un set de instrucțiuni împreună cu o listă de variabile locale definite in el. Un block poate fi evaluat direct, dar și analizat sau modificat la runtime, pentru a obține un alt block.
+
+\section{defun}
+
+\section{ref}
 
 \section{list}
 
-Functia \texttt{list} creaza o lista. Majoritatea apelurilor catre o lista intorc (unde este cazul) o instanta noua, fara sa modifice lista originala. Toate operatiile pe liste binecunoscute in limbajele functionale (\texttt{map, reduce, foldl, foldr,} etc) sunt disponibile.
-
-\section{block}
-
-Un \texttt{block} este un set de instructiuni impreuna cu o lista de variabile locale definite in el. Un block poate fi evaluat direct, dar si analizat sau modificat la runtime, pentru a obtine un alt block.
-
-\section{number}
-
-In Bonsai exista un singur tip de numere: rationale, reprezentate in virgula fixa. Acesta mapeaza peste tipul \texttt{System.Decimal} din .NET Framework. Erorile cauzate de reprezentarea in virgula mobila (ex. \texttt{1.1 + 1.1 + 1.1 == 3.300000000007}) sunt astfel eliminate.
-
-\chapter{Sintaxa}
-
-enter pieces of grammar here
+Funcția \texttt{list} crează o listă. Majoritatea apelurilor catre o listă întorc (unde este cazul) o instantă nouă, fără să modifice lista originală. Toate operațiile pe liste binecunoscute în limbajele funcționale (\texttt{map, reduce, foldl, foldr,} etc) sunt disponibile și în Bonsai.
 
 \chapter{Semantica}
 
-Spre deosebire de limbajele Io\cite{io} si SmallTalk\cite{smalltalk}, unde orice este un obiect, in Bonsai orice este considerat o functie. Mai mult, daca in SmallTalk si Io orice expresie reprezinta trimiterea unui mesaj catre un obiect, iar rezultatul tot un obiect, in Bonsai orice expresie este un apel de functie, iar rezultatul tot o functie. 
+Spre deosebire de limbajele Io\cite{io} și SmallTalk\cite{smalltalk}, unde orice este un obiect, în Bonsai orice este o funcție. Mai mult, dacă în SmallTalk și Io orice expresie reprezintă trimiterea unui mesaj către un obiect, iar rezultatul tot un obiect, în Bonsai orice expresie este un apel de funcție, iar rezultatul tot o funcție. 
 
-Aceasta diferenta poate parea fundamentala, dar o functie poate fi considerata generalizarea unui obiect. Intreaga paradigma OOP este ``simulata'' in Bonsai cu ajutorul functiilor. In sectiunile urmatoare se va face o detaliere pe larg a acestei comparatii. 
+Aceasta diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. Întreagă paradigma OOP este „simulata” în Bonsai cu ajutorul funcțiilor. În secțiunile următoare se va face o detaliere pe larg a acestei comparații. 
 
-\section{Functional versus OOP}
+\section{Funcțional versus OOP}
 
-Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este ``simulat'' in Bonsai printr-un apel de functie in care primul parametru este un simbol. Functia reprezinta obiectul, iar simbolul mesajul trimis. 
+Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este „simulat” în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul, mesajul trimis. 
 
-Spre exemplu, un string apelat cu simbolul \texttt{:to-upper} va returna un nou string cu toate caracterele transformate in majuscule. 
+Spre exemplu, un string apelat cu simbolul \texttt{:to-upper} va returna un nou string cu toate caracterele transformate în majuscule. 
 
-Mostenirea poate fi simulata printr-o functie care este definita doar pentru un set de pattern-uri peste parametri, apelurile cu alti parametri fiind redirectate la o alta functie (analogul clasei de baza).
+Moștenirea poate fi simulată printr-o funcție care este definită doar pentru un set de pattern-uri peste parametri, apelurile cu alți parametri fiind redirectate către o alta funcție (analogul clasei de bază).
 
-Tratarea mesajelor in acest fel poate parea primitiva si greoaie, dar in practica nu se face niciodata o tratare manuala (de tip ``case''): toate operatiile OOP ``clasice'' sunt abstractizate printr-un set de functii incluse in limbaj.
+Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în practică nu se face niciodată o tratare manuală (de tip \texttt{case}): toate operațiile OOP „clasice” sunt abstractizate printr-un set de funcțtii incluse în limbaj.
 
 \bibliography{bonsai}{}
 \bibliographystyle{plain}

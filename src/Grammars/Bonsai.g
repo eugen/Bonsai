@@ -8,7 +8,7 @@ options {
 tokens {
 	CALL;   // "function" call
 	GROUP;  // a list of expressions grouped together
-	BLOCK;  // more statements grouped together which are "lazy"
+	BLOCK;  // more statements grouped together 
 	SQUARE; // I don't know what this is supposed to do
 }
 
@@ -19,8 +19,10 @@ program
     ;
 
 statements
-	:	calls+=call (NEWLINE calls+=call?)* 			-> $calls*
-	|	NEWLINE+ (calls+=call (NEWLINE calls+=call?)*)?	-> $calls*
+	:	calls+=call (NEWLINE calls+=call?)*
+        -> $calls*
+	|	NEWLINE+ (calls+=call (NEWLINE calls+=call?)*)?
+        -> $calls*
 	;
 
 expression 
