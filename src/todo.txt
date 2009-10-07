@@ -1,14 +1,12 @@
 Add support for calling existing .NET classes
-- static properties, methods, indexers
-- instance properties, methods, indexers
-- generic types
+- better matching between the types of the arguments and a method's parameters
+- should indexers have special syntax? 
+- generics
 
 Add pattern matching for functions
 
 Add OOP-ish behaviour through prototyping
  - having an "object" kind of function, with state and methods
  - support for cloning it
-
-Better matching between the types of the arguments and a method's parameters
 
 Null Value?
