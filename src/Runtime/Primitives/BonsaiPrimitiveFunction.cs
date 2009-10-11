@@ -10,7 +10,9 @@ namespace Bonsai.Runtime.Primitives {
         public override object Call(object[] arguments) {
             if (arguments.Length >= 3 && arguments[2] is SymbolId) {
                 var symbol = (SymbolId)arguments[2];
-                foreach(MethodInfo mi in this.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)) {
+                foreach(MethodInfo mi in this.GetType().GetMethods(
+                    BindingFlags.NonPublic | BindingFlags.Public | 
+                    BindingFlags.Instance | BindingFlags.Static)) {
                     var attributes = mi.GetCustomAttributes(typeof(MapsToSymbolAttribute), false);
                     if (attributes.Length > 0) {
                         var mapper = (MapsToSymbolAttribute)attributes[0];
