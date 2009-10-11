@@ -3,8 +3,6 @@ Add support for calling existing .NET classes
 - should indexers have special syntax? 
 - generics
 
-Add pattern matching for functions
-
 Add OOP-ish behaviour through prototyping
  - having an "object" kind of function, with state and methods
  - support for cloning it
