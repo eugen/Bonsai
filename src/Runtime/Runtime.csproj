@@ -65,6 +65,10 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="BonsaiFunction.cs" />
+    <Compile Include="Patterns.cs" />
+    <Compile Include="NoMatchException.cs" />
+    <Compile Include="PatternMatchingBonsaiFunction.cs" />
+    <Compile Include="PreludeFunction.Patterns.cs" />
     <Compile Include="PreludeFunction.cs" />
     <Compile Include="Primitives\BonsaiNumberFunction.cs" />
     <Compile Include="Primitives\BonsaiPrimitiveFunction.cs" />

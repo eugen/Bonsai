@@ -8,7 +8,7 @@ using Microsoft.Scripting;
 using System.Reflection;
 
 namespace Bonsai.Runtime {
-    public class PreludeFunction : DictionaryBonsaiFunction {
+    public partial class PreludeFunction : DictionaryBonsaiFunction {
         public PreludeFunction()
             : base(null) {
             foreach(MethodInfo method in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)) {
@@ -23,7 +23,7 @@ namespace Bonsai.Runtime {
 
         [MapsToSymbol("defun")]
         public object Defun(object[] args) {
-            Debug.Assert(args.Length >= 3, "A call to defun should have at two parameters: the name of the function and its block");
+            Debug.Assert(args.Length >= 3, "A call to defun should have at least two parameters: the name of the function and its block");
             Debug.Assert(args[0] is DictionaryBonsaiFunction);
             for (int i = 1; i < args.Length - 1; i++)
                 Debug.Assert(args[i] is SymbolId, "Argument " + i + " should be a SymbolId");
@@ -40,7 +40,6 @@ namespace Bonsai.Runtime {
                 Debug.Assert(callArgs.Length - 1 == parameters.Length, "The number of arguments should equal the number of parameters");
 
                 var blockLocalVariables = new DictionaryBonsaiFunction();
-                Console.WriteLine(callArgs[0]);
                 for (int i = 0; i < parameters.Length; i++) {
                     blockLocalVariables[parameters[i]] = callArgs[i + 1];
                 }
@@ -48,7 +47,7 @@ namespace Bonsai.Runtime {
                 return block.Invoke(blockLocalVariables);
             });
 
-            return null;
+            return scope[name];
         }
 
         [MapsToSymbol("print")]

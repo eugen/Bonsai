@@ -75,5 +75,9 @@ namespace Bonsai.Runtime {
 
             this.Dict.Add(key, value);
         }
+
+        public bool Defines(SymbolId symbol) {
+            return Dict.ContainsKey(symbol);
+        }
     }
 }
