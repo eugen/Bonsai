@@ -3,6 +3,7 @@
 \usepackage{fancyvrb}
 \usepackage{fontspec} 
 \usepackage{xunicode}
+\usepackage{color}
 \usepackage{xltxtra}
 \usepackage[romanian]{babel}
 
@@ -12,15 +13,23 @@
 \setmainfont{Calluna}
 \setmonofont{Inconsolata}
 
-\fvset{numbers=left,label=TreeGrammar,labelposition=all,frame=lines}
+\fvset{numbers=left,labelposition=all,frame=lines}
 
 \title{Bonsai\\Un limbal dinamic funcțional peste DLR}
+\author{Eugen Anghel}
 
 \begin{document}
+
+\newcommand{\draft}{\textcolor{red}}
+
 \maketitle
+
+\newpage
 \tableofcontents
 
-\chapter{Abstract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introducere}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 În ultimele doua decenii, programarea a fost în mare parte împărțită între două grupe de limbaje. Limbajele imperative, cu un sistem static de tipuri, multe dintre ele din familia C, au fost folosite pentru a obține performanță și scalabilitate. În schimb, flexibilitatea limbajelor precum Perl si PHP a fost apreciată pentru programarea scripturilor de sistem, a paginilor web și a altor programe pentru care eficiența nu reprezintă o prioritate.
 
@@ -28,53 +37,79 @@
 
 Atât Sun cât și Microsoft și-au arătat interesul pentru limbajele dinamice prin proiectele The Da Vinci Machine\cite{daVinciMachine} și Dynamic Language Runtime (DLR)\cite{dlr} și sprijinirea dezvoltării limbajelor JRuby\cite{jruby}, Jython\cite{jython}, IronRuby\cite{ironruby}, IronPython\cite{ironpython}, etc.
 
-Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă caracteristică a sa este simplitatea, limbajele Lisp si Io \cite{io} reprezentănd principalele surse de inspirație. Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. Bonsai este un limbaj funcțional, dar se integrează bine cu alte limbaje orientate obiect: OOP-ul este simulat în întregime prin apeluri de funcții. Datorită platformei pe care rulează și a utilizării de biblioteci scrise in alte limbaje, transparența referențială a funcțiilor nu poate fi garantată. Programarea fără efecte laterale este în schimb      ncurajată: majoritatea primitivelor din Bonsai sunt funcții pure, iar cele care modifica starea sunt clar denumite astfel încât acest lucru să-i fie vizibil programatorului.
+Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă caracteristică a sa este simplitatea, limbajele Lisp, Javascript și Io \cite{io} reprezentând principalele surse de inspirație. Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. Bonsai este un limbaj funcțional, dar se integrează bine cu alte limbaje orientate obiect: OOP-ul este simulat în întregime prin apeluri de funcții. Datorită platformei pe care rulează și a utilizării de biblioteci scrise in alte limbaje, transparența referențială a funcțiilor nu poate fi garantată.
+\draft{Programarea fără efecte laterale este în schimb încurajată: majoritatea primitivelor din Bonsai sunt funcții pure, iar cele care modifica starea sunt clar denumite astfel încât acest lucru să-i fie vizibil programatorului}.
 
-\chapter{Sintaxa limbajului}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Gramatica și sintaxa limbajului}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Parserul limbajului a fost generat cu ajutorul programului Antlr. Deoarece simplitatea a fost un scop principal de la bun început, gramatica limbajului are doar 18 reguli de parsare plus 3 reguli de transformare a arborelui de parsare. 
+Simplitatea limbajului se reflectă și în dimensiunea gramaticii: aceasta conține doar 18 reguli de parsare si nici un cuvânt rezervat.
 
-Mai jos este reprodusă gramatica în întregime:
-\VerbatimInput{../src/Grammars/Bonsai.g}
+\VerbatimInput[label=Bonsai.g]{../src/Grammars/Bonsai.g}
 
-Bonsai utilizează pe lângă gramatica de parsare a codului sursă o gramatică de transformare a arborilor de parsare:
-\VerbatimInput{../src/Grammars/BonsaiTree.g}
+Pe lângă gramatica de parsare, Bonsai mai utilizează o gramatica de transformare a arborelui de parsare de doar 3 reguli.
 
-\chapter{Primitivele limbajului}
+\VerbatimInput[label=BonsaiTree.g]{../src/Grammars/BonsaiTree.g}
 
-Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze întreaga biblioteca disponibilă în implementarile „originale” (MRI si CPython), Bonsai încearcă să folosească cât mai mult clasele din .NET Framework și să mențină biblioteca proprie de funcții cât mai mică.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Compilarea codului sursă}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\draft{parsare}
+
+\draft{AST}
+
+\draft{Generator.cs -> Linq Expressions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Runtime-ul Bonsai}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{BonsaiBinder}
+
+\section{Tratarea tipurilor de date primitive}
+
+\section{Rezolvarea metodelor .NET}
+
+\section{Tipul BonsaiFunction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Biblioteca de funcții standard}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze întreaga biblioteca disponibilă în implementarile „originale” (MRI\cite{ruby_mri} si CPython\cite{cpython}), Bonsai încearcă să folosească cât mai mult clasele din .NET Framework și să mențină biblioteca proprie de funcții cât mai mică.
 
 \section{Numere}
 
 În Bonsai există un singur tip de numere: raționale, reprezentate in virgulă fixă. Acesta mapează peste tipul \texttt{System.Decimal} din .NET Framework. Erorile cauzate de reprezentarea in virgulă mobilă (ex. \texttt{1.1 + 1.1 + 1.1 == 3.300000000007}) sunt astfel eliminate.
 
-\section{stringuri}
+\section{Șiruri de caractere}
 
-\section{=}
-
-\section{symbol}
+\section{Symboluri}
 
 Tipul \texttt{symbol} din Bonsai este foarte asemănător simbolurilor din Ruby\cite{ruby_symbols} și Lisp\cite{clhs_symbols}. Un simbol se comportă de cele mai multe ori ca un string. Diferența majoră constă în faptul că pentru orice string există o singură instanță a unui simbol cu acel string, ceea ce transformă compararea a două simboluri         într-o comparație de pointeri, foarte rapidă. De asemenea, utilizarea unui simbol indică de cele mai multe ori folosirea metaprogrămarii. 
 
-\section{blocks}
+\section{Blocuri}
 
 Un \texttt{block} este un set de instrucțiuni împreună cu o listă de variabile locale definite in el. Un block poate fi evaluat direct, dar și analizat sau modificat la runtime, pentru a obține un alt block.
 
-\section{defun}
+\section{Funcții}
 
-\section{ref}
+\section{Pattern Matching}
 
-\section{list}
+\section{Structuri de date}
 
-Funcția \texttt{list} crează o listă. Majoritatea apelurilor catre o listă întorc (unde este cazul) o instantă nouă, fără să modifice lista originală. Toate operațiile pe liste binecunoscute în limbajele funcționale (\texttt{map, reduce, foldl, foldr,} etc) sunt disponibile și în Bonsai.
+Funcția \texttt{list} crează o listă. Majoritatea apelurilor catre o listă întorc (unde este cazul) o instanță nouă, fără să modifice lista originală. Toate operațiile pe liste binecunoscute în limbajele funcționale (\texttt{map, reduce, foldl, foldr,} etc) sunt disponibile și în Bonsai.
 
-\chapter{Semantica}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Bonsai și Programarea Orientată Obiect}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Spre deosebire de limbajele Io\cite{io} și SmallTalk\cite{smalltalk}, unde orice este un obiect, în Bonsai orice este o funcție. Mai mult, dacă în SmallTalk și Io orice expresie reprezintă trimiterea unui mesaj către un obiect, iar rezultatul tot un obiect, în Bonsai orice expresie este un apel de funcție, iar rezultatul tot o funcție. 
+\draft{Spre deosebire de limbajele Io\cite{io} și SmallTalk\cite{smalltalk}, unde orice este un obiect, în Bonsai orice este o funcție. Mai mult, dacă în SmallTalk și Io orice expresie reprezintă trimiterea unui mesaj către un obiect, iar rezultatul tot un obiect, în Bonsai orice expresie este un apel de funcție, iar rezultatul tot o funcție.}
 
-Aceasta diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. Întreagă paradigma OOP este „simulata” în Bonsai cu ajutorul funcțiilor. În secțiunile următoare se va face o detaliere pe larg a acestei comparații. 
-
-\section{Funcțional versus OOP}
+\draft{Aceasta diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. Întreagă paradigma OOP este „simulata” în Bonsai cu ajutorul funcțiilor. În secțiunile următoare se va face o detaliere pe larg a acestei comparații.}
+\section{Paralela funcțional <-> OOP}
 
 Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este „simulat” în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul, mesajul trimis. 
 
@@ -84,8 +119,35 @@ Moștenirea poate fi simulată printr-o funcție care este definită doar pentru
 
 Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în practică nu se face niciodată o tratare manuală (de tip \texttt{case}): toate operațiile OOP „clasice” sunt abstractizate printr-un set de funcțtii incluse în limbaj.
 
+\section{Creerea prototipurilor}
+
+\section{Clonarea instanțelor noi din prototipuri}
+
+Metoda \texttt{clone}
+
+\section{Encapsularea}
+
+Dicționarele \texttt{private} și \texttt{protected}
+
+\section{Polimormism?}
+
+Limbaj dinamic = polimorfism implicit
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Integrarea cu platforma .NET}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{primitiva \texttt{import}}
+
+\section{Spații de nume și clase statice}
+
+\section{Instanțierea obiectelor}
+
+\section{Pasarea de funcții/obiecte Bonsai către metode .NET}
+
+\section{Integrarea cu alte limbaje dinamice}
+
 \bibliography{bonsai}{}
 \bibliographystyle{plain}
-
 
 \end{document}
