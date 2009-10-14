@@ -3,7 +3,7 @@
 \usepackage{fancyvrb}
 \usepackage{fontspec} 
 \usepackage{xunicode}
-\usepackage{color}
+\usepackage[dvipsnames]{color}
 \usepackage{xltxtra}
 \usepackage[romanian]{babel}
 
@@ -14,6 +14,8 @@
 \setmonofont{Inconsolata}
 
 \fvset{numbers=left,labelposition=all,frame=lines}
+
+\definecolor{shadecolor}{named}{Gray}
 
 \title{Bonsai\\Un limbal dinamic funcțional peste DLR}
 \author{Eugen Anghel}
@@ -100,7 +102,7 @@ Un \texttt{block} este un set de instrucțiuni împreună cu o listă de variabi
 
 \section{Structuri de date}
 
-\draft{Funcția \texttt{list} crează o listă. Majoritatea apelurilor catre o listă întorc (unde este cazul) o instanță nouă, fără să modifice lista originală. Toate operațiile pe liste binecunoscute în limbajele funcționale (\texttt{map, reduce, foldl, foldr,} etc) sunt disponibile și în Bonsai.}
+\draft{Funcția \texttt{list} crează o listă. Majoritatea apelurilor către o listă întorc (unde este cazul) o instanță nouă, fără să modifice lista originală. Toate operațiile pe liste binecunoscute în limbajele funcționale (\texttt{map, reduce, foldl, foldr,} etc) sunt disponibile și în Bonsai.}
 
 \section{Funcții de ordin superior}
 
@@ -116,32 +118,47 @@ Un \texttt{block} este un set de instrucțiuni împreună cu o listă de variabi
 \chapter{Bonsai și Programarea Orientată Obiect}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\draft{Spre deosebire de limbajele Io\cite{io} și SmallTalk\cite{smalltalk}, unde orice este un obiect, în Bonsai orice este o funcție. Mai mult, dacă în SmallTalk și Io orice expresie reprezintă trimiterea unui mesaj către un obiect, iar rezultatul tot un obiect, în Bonsai orice expresie este un apel de funcție, iar rezultatul tot o funcție.}
+Spre deosebire de limbajele Io\cite{io} și SmallTalk\cite{smalltalk}, unde orice este un obiect, în Bonsai orice este o funcție. Mai mult, dacă în SmallTalk și Io orice expresie reprezintă trimiterea unui mesaj către un obiect, iar rezultatul tot un obiect, în Bonsai orice expresie este un apel de funcție, iar rezultatul tot o funcție.
 
-\draft{Aceasta diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. Întreagă paradigma OOP este „simulata” în Bonsai cu ajutorul funcțiilor. În secțiunile următoare se va face o detaliere pe larg a acestei comparații.}
+Această diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. În secțiunile următoare vom vedea cum toate cele trei principii fundamentale OOP – moștenirea, encapsularea și polimorfismul – sunt „simulate” în Bonsai cu ajutorul funcțiilor.
+
 \section{Paralela funcțional <-> OOP}
 
-Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este „simulat” în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul, mesajul trimis. 
+Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este emulat în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul, mesajul trimis. Spre exemplu, un string apelat cu simbolul \texttt{:upcase} va returna un nou string cu toate caracterele transformate în majuscule:
+\begin{Verbatim}
+"bonsai!" .upcase
+\end{Verbatim}
+Acest cod are același efect cu următorul cod C\#:
+\begin{Verbatim}
+"bonsai".ToUpper()
+\end{Verbatim}
+În cazul în care mesajul are mai mulți parametri, aceștia urmează după simbol:
+\begin{Verbatim}
+stringBuilder .Append " ultima parte "
+\end{Verbatim}
 
-Spre exemplu, un string apelat cu simbolul \texttt{:to-upper} va returna un nou string cu toate caracterele transformate în majuscule. 
+\begin{shaded}
+zomg wtf
+\end{shaded}
+
 
 Moștenirea poate fi simulată printr-o funcție care este definită doar pentru un set de pattern-uri peste parametri, apelurile cu alți parametri fiind redirectate către o alta funcție (analogul clasei de bază).
 
-Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în practică nu se face niciodată o tratare manuală (de tip \texttt{case}): toate operațiile OOP „clasice” sunt abstractizate printr-un set de funcțtii incluse în limbaj.
+Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în practică nu se face niciodată o tratare manuală (de tip \texttt{case}): toate operațiile OOP „clasice” sunt abstractizate printr-un set de funcțtii incluse în biblioteca standard a limbajului.
 
 \section{Creerea prototipurilor}
 
 \section{Clonarea instanțelor noi din prototipuri}
 
-Metoda \texttt{clone}
+\draft{Metoda \texttt{clone}}
 
 \section{Encapsularea}
 
-Dicționarele \texttt{private} și \texttt{protected}
+\draft{Dicționarele \texttt{private} și \texttt{protected}}
 
 \section{Polimormism?}
 
-Limbaj dinamic = polimorfism implicit
+\draft{Limbaj dinamic = polimorfism implicit (?)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Integrarea cu platforma .NET}
@@ -157,6 +174,32 @@ Limbaj dinamic = polimorfism implicit
 
 \section{Integrarea cu alte limbaje dinamice}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Părți lipsă și îmbunătățiri pentru viitor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Module}
+
+\section{Spații de nume}
+
+\section{Metaprogramare}
+
+\draft{inspectarea codului sursă al funcțiilor la rulare; modificarea și recompilarea acestuia}
+
+\draft{similar, modificarea și recompilarea AST-ului la rulare}
+
+\draft{posibilitatea evaluării non-stricte a argumentelor (à la Haskell); avantaje/dezavantaje}
+
+\section{Debugger}
+
+\draft{posibilități de realizare a unui debugger; integrarea cu VisualStudio}
+
+\section{Îmbunătățirea performanței}
+
+\section{Tratarea excepțiilor}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliography{bonsai}{}
 \bibliographystyle{plain}
 
