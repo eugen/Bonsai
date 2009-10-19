@@ -19,6 +19,7 @@ namespace Bonsai.Runtime {
                         new DelegateBonsaiFunction((Func<object[], object>)Delegate.CreateDelegate(typeof(Func<object[], object>), this, method)));
                 }
             }
+            this.Dict.Add(SymbolTable.StringToId("null"), null);
         }
 
         [MapsToSymbol("defun")]
