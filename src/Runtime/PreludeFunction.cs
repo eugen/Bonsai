@@ -96,5 +96,25 @@ namespace Bonsai.Runtime {
                 return nameSpace;
             }
         }
+
+        [MapsToSymbol("if")]
+        public object When(object[] args) {
+            Debug.Assert(args.Length == 4);
+            var scope = (DictionaryBonsaiFunction)args[0];
+            var condition = args[1];
+            var thenAction = args[2];
+            var elseAction = args[3];
+
+            object result = null;
+            if (condition != null) {
+                result = thenAction;
+            } else {
+                result = elseAction;
+            }
+            if (result != null && result is BlockBonsaiFunction) {
+                result = ((BlockBonsaiFunction)result).Invoke();
+            }
+            return result;
+        }
     }
 }
