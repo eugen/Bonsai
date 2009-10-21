@@ -8,8 +8,6 @@ using System.Reflection;
 
 namespace Bonsai.Runtime {
     public class BonsaiClrClassFunction : BonsaiFunction {
-        private Type importedType;
-
         public Type Class { get; private set; }
 
         public BonsaiClrClassFunction(Type clazz) {

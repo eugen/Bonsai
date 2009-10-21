@@ -20,6 +20,7 @@ namespace Bonsai.Runtime {
                 }
             }
             this.Dict.Add(SymbolTable.StringToId("null"), null);
+            this.Dict.Add(SymbolTable.StringToId("object"), new BonsaiPrototypeFunction());
         }
 
         [MapsToSymbol("defun")]

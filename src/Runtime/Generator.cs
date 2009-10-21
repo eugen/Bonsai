@@ -69,9 +69,9 @@ namespace Bonsai.Runtime {
         }
 
         public static Expression Walk(Expression currentScopeVar, Ast.Node node) {
-            Assert.NotNull(node);
+            Debug.Assert(node != null);
             var method = typeof(BonsaiExpressionGenerator).GetMethod("Walk", new Type[] { typeof(Expression), node.GetType() });
-            Assert.NotNull(method);
+            Debug.Assert(method != null);
             try {
                 return (Expression)method.Invoke(null, new object[] { currentScopeVar, node });
             } catch (TargetInvocationException ex) {

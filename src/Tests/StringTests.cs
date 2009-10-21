@@ -15,6 +15,8 @@ namespace Tests {
 
             Assert.AreEqual(true, Execute("\"omgwtfbbq\" .contains \"wtf\""));
             Assert.AreEqual(false, Execute("\"omgwtfbbq\" .contains \"bogus\""));
+
+            Assert.AreEqual("omgwtfbbq", Execute("\"omg\" .+ \"wtf\" \"bbq\""));
         }
     }
 }

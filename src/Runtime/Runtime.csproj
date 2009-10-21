@@ -45,11 +45,9 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Dynamic" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="Microsoft.CSharp">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -60,6 +58,8 @@
     <Compile Include="BonsaiClrClassFunction.cs" />
     <Compile Include="BonsaiClrNamespaceFunction.cs" />
     <Compile Include="BonsaiContext.cs" />
+    <Compile Include="BonsaiPrototypeFunction.cs" />
+    <Compile Include="BonsaiScriptCode.cs" />
     <Compile Include="DelegateBonsaiFunction.cs" />
     <Compile Include="DictionaryBonsaiFunction.cs" />
     <Compile Include="Extensions.cs" />

@@ -8,8 +8,6 @@ using Antlr.Runtime.Tree;
 
 using Microsoft.Scripting.Runtime;
 using Microsoft.Scripting;
-using Microsoft.Scripting.Ast;
-using Microsoft.Scripting.Interpretation;
 using Bonsai.Ast;
 using System.Text;
 using System.Diagnostics;
@@ -31,13 +29,13 @@ namespace Bonsai.Runtime
             }
         }
 
-		protected override ScriptCode CompileSourceCode( SourceUnit sourceUnit, CompilerOptions options, ErrorSink errorSink ) {
+		public override ScriptCode CompileSourceCode( SourceUnit sourceUnit, CompilerOptions options, ErrorSink errorSink ) {
             string text = sourceUnit.GetCode();
             var sequence = BonsaiParser.ParseString(text);
            
             var scope = SLE.Expression.Variable(typeof(DictionaryBonsaiFunction), "Prelude"); 
 
-            SLE.Expression expr = SLE.Expression.Lambda(
+            LambdaExpression expr = SLE.Expression.Lambda(
                 SLE.Expression.Block(
                     new ParameterExpression[] { scope },
                     SLE.Expression.Assign(scope, SLE.Expression.New(typeof(PreludeFunction))),
@@ -45,14 +43,8 @@ namespace Bonsai.Runtime
                         scope,
                         sequence)));
 
-            expr = SLE.Expression.Invoke(expr);
-
-            var lambda = Utils.Lambda(typeof(object), "Root");
-            lambda.Parameters.Add(SLE.Expression.Parameter(typeof(BonsaiContext))); 
-            lambda.Parameters.Add(SLE.Expression.Parameter(typeof(Scope)));
-            lambda.Body = Utils.Convert(expr, typeof(object));
-
-            return new InterpretedScriptCode(lambda.MakeLambda(), sourceUnit);
+            var function = (Func<object>)expr.Compile();
+            return new BonsaiScriptCode(sourceUnit, function);
         }
     }
 }

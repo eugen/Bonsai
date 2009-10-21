@@ -40,13 +40,17 @@ namespace Bonsai.Runtime {
                     BindingRestrictions.Empty);
             }
             // "normal" objects evaluate to themselves when called with no arguments
-            if(args.Length == 1)
-                return target;
+            if (args.Length == 1) {
+                if (value != null && value.GetType() == ReturnType)
+                    return target;
+                else
+                    return new DynamicMetaObject(Expression.Convert(target.Expression, ReturnType), BindingRestrictions.Empty);
+            }
 
             // try to call a primitive
-            if (value is string) return GeneratePrimitiveCallExpression<string, BonsaiStringFunction>(target, args);
-            if (value is decimal) return GeneratePrimitiveCallExpression<decimal, BonsaiNumberFunction>(target, args);
-            if (value is SymbolId) return GeneratePrimitiveCallExpression<SymbolId, BonsaiStringFunction>(target, args);
+            if (value is string) return GeneratePrimitiveCallExpression<string, BonsaiStringFunction>(target, args, ReturnType);
+            if (value is decimal) return GeneratePrimitiveCallExpression<decimal, BonsaiNumberFunction>(target, args, ReturnType);
+            if (value is SymbolId) return GeneratePrimitiveCallExpression<SymbolId, BonsaiStringFunction>(target, args, ReturnType);
 
             // if the second argument is a symbol, fallback to invoking a member called like that
             if (args[1].Value is SymbolId) {
@@ -78,7 +82,11 @@ namespace Bonsai.Runtime {
                 // getter
                 if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 2) {
                     return new DynamicMetaObject(
-                        Expression.Property(target.Expression, (PropertyInfo)members[0]),
+                        Expression.Convert(
+                            Expression.Property(
+                                Expression.Convert(target.Expression, target.LimitType),
+                                (PropertyInfo)members[0]),
+                            this.ReturnType),
                         BindingRestrictions.Empty);
                 }
                 // setter
@@ -86,7 +94,8 @@ namespace Bonsai.Runtime {
                     var callArg = Expression.Convert(args[0].Expression, ((PropertyInfo)members[0]).PropertyType);
 
                     return new DynamicMetaObject(
-                        Expression.Call(target.Expression,
+                        Expression.Call(
+                            target.Expression,
                             ((PropertyInfo)members[0]).GetSetMethod(),
                             new Expression[] { callArg }),
                         BindingRestrictions.Empty);
@@ -96,14 +105,16 @@ namespace Bonsai.Runtime {
             throw new Exception("Binding failed");
         }
 
-        private static DynamicMetaObject GeneratePrimitiveCallExpression<TValue, THandler>(DynamicMetaObject target, DynamicMetaObject[] args) {
+        private static DynamicMetaObject GeneratePrimitiveCallExpression<TValue, THandler>(DynamicMetaObject target, DynamicMetaObject[] args, Type returnType) {
             return new DynamicMetaObject(
-                Expression.Call(
-                    Expression.New(typeof(THandler).GetConstructor(new Type[0])),
-                    typeof(BonsaiFunction).GetMethod("Call"),
-                    Expression.NewArrayInit(
-                        typeof(object),
-                        (new Expression[] { Expression.Convert(target.Expression, typeof(object)) }).Union(args.Select(a => Expression.Convert(a.Expression, typeof(object)))))),
+                Expression.Convert(
+                    Expression.Call(
+                        Expression.New(typeof(THandler).GetConstructor(new Type[0])),
+                        typeof(BonsaiFunction).GetMethod("Call"),
+                        Expression.NewArrayInit(
+                            typeof(object),
+                            (new Expression[] { Expression.Convert(target.Expression, typeof(object)) }).Union(args.Select(a => Expression.Convert(a.Expression, typeof(object)))))),
+                    returnType),
                 BindingRestrictions.GetTypeRestriction(target.Expression, typeof(TValue)));
         }
     }
