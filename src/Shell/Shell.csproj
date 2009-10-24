@@ -49,6 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Scripting, Version=0.9.5.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Microsoft.Scripting.dll</HintPath>
@@ -62,6 +63,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Antlr3.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="System.Dynamic" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

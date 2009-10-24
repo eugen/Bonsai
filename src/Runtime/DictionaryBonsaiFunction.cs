@@ -8,7 +8,7 @@ using System.Dynamic;
 namespace Bonsai.Runtime {
     public class DictionaryBonsaiFunction : BonsaiFunction {
         public BonsaiFunction Parent { get; private set; }
-        public SortedList<SymbolId, object> Dict { get; private set; } 
+        public SortedList<SymbolId, object> Dict { get; set; } 
 
         public DictionaryBonsaiFunction(BonsaiFunction parent = null) {
             this.Parent = parent;
@@ -22,7 +22,7 @@ namespace Bonsai.Runtime {
                 else if (Parent != null && Parent is DictionaryBonsaiFunction)
                     return ((DictionaryBonsaiFunction)Parent)[symbol];
                 else
-                    throw new KeyNotFoundException("The key " + symbol + " was not found in the bonsai dictionary function");
+                    throw new KeyNotFoundException("The key «" + symbol + "» was not found in the bonsai dictionary function");
             }
             set { Dict[symbol] = value; }
         }
@@ -45,7 +45,7 @@ namespace Bonsai.Runtime {
                 if(callee is BonsaiFunction) {
                     return ((BonsaiFunction)callee).Call(newArguments);
                 } else {
-                    throw new Exception(GetType().Name + ": Cannot pass call an object of type " + callee.GetType().Name);
+                    throw new Exception(GetType().Name + ": Cannot pass «Call» an object of type " + callee.GetType().Name);
                 }
             } else if (Parent != null) {
                 return Parent.Call(arguments);

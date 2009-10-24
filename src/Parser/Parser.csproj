@@ -32,6 +32,7 @@
       </CustomCommands>
     </CustomCommands>
     <NoWarn>618, 612, 219</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>

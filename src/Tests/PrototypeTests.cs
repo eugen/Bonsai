@@ -8,13 +8,15 @@ namespace Tests {
     [TestClass]
     public class PrototypeTests : BonsaiTestClass {
         [TestMethod] public void TestPrototypes() {
-            Assert.AreEqual("John Johnson", Execute(@"
-                = User (object .clone .user)
-                user .set .fullName { (self .firstName) .+ "" "" (self .lastName) }
-                = john (User .clone)
-                john .set .firstName ""John""
-                john .set .lastName ""Johnson""
-                john .fullName"));
+            Assert.AreEqual("John Johnson & Mary Johnson", Execute(@"
+                = .user (object .clone .UserProto)
+                user .method .fullName { (self .firstName) .+ "" "" (self .lastName) }
+                = .john (user .clone .JohnObject)
+                john .= .firstName ""John""
+                john .= .lastName ""Johnson""
+                = .mary (john .clone .MaryObject)
+                mary .= .firstName ""Mary""
+                (john .fullName) .+ "" & "" (mary .fullName)"));
         }
     }
 }

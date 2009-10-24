@@ -5,7 +5,7 @@ using System.Text;
 using System.Dynamic;
 using Microsoft.Scripting;
 
-namespace Bonsai.Runtime.Primitives {
+namespace Bonsai.Runtime {
     public class MapsToSymbolAttribute : Attribute {
         public SymbolId Symbol { get; set; }
 

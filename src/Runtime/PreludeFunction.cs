@@ -11,20 +11,25 @@ namespace Bonsai.Runtime {
     public partial class PreludeFunction : DictionaryBonsaiFunction {
         public PreludeFunction()
             : base(null) {
-            foreach(MethodInfo method in this.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)) {
+            foreach(MethodInfo method in this.GetType().GetMethods(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)) {
                 var attrs = method.GetCustomAttributes(typeof(MapsToSymbolAttribute), false);
                 foreach(MapsToSymbolAttribute mapper in attrs) {
                     this.Dict.Add(
                         mapper.Symbol, 
-                        new DelegateBonsaiFunction((Func<object[], object>)Delegate.CreateDelegate(typeof(Func<object[], object>), this, method)));
+                        new DelegateBonsaiFunction(
+                            (Func<object[], object>)Delegate.CreateDelegate(
+                                typeof(Func<object[], object>), 
+                                method.IsStatic ? null : this, 
+                                method)));
                 }
             }
             this.Dict.Add(SymbolTable.StringToId("null"), null);
-            this.Dict.Add(SymbolTable.StringToId("object"), new BonsaiPrototypeFunction());
+            this.Dict.Add(SymbolTable.StringToId("object"), new BonsaiPrototypeFunction("MasterProto".ToSymbol()));
         }
 
         [MapsToSymbol("defun")]
-        public object Defun(object[] args) {
+        public static object Defun(object[] args) {
             Debug.Assert(args.Length >= 3, "A call to defun should have at least two parameters: the name of the function and its block");
             Debug.Assert(args[0] is DictionaryBonsaiFunction);
             for (int i = 1; i < args.Length - 1; i++)
