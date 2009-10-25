@@ -25,5 +25,11 @@ namespace Tests {
         public void TestOperationsBetweenVariables() {
             Assert.AreEqual(42M, Execute("= .a 40 \n = .b 2 \n a .+ b"));
         }
+
+        [TestMethod]
+        public void TestMathOperations() {
+            Assert.AreEqual(130691232M, ScriptEngine.Execute("42 .^ 5"));
+            Assert.AreEqual(42M, ScriptEngine.Execute("130691232 .^ 0.2"));
+        }
     }
 }

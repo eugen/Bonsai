@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace Bonsai.Runtime.Primitives {
     public class BonsaiNumberFunction : BonsaiPrimitiveFunction {
@@ -44,6 +45,12 @@ namespace Bonsai.Runtime.Primitives {
             }
 
             return result;
+        }
+
+        [MapsToSymbol("^")]
+        public decimal Power(decimal target, DictionaryBonsaiFunction scope, object[] args) {
+            Debug.Assert(args.Length == 1 && args[0] is decimal);
+            return (decimal)Math.Pow((double)target, (double)(decimal)args[0]);
         }
     }
 }
