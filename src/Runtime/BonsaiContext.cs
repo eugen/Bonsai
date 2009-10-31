@@ -29,7 +29,11 @@ namespace Bonsai.Runtime
             }
         }
 
-		public override ScriptCode CompileSourceCode( SourceUnit sourceUnit, CompilerOptions options, ErrorSink errorSink ) {
+		public override ScriptCode CompileSourceCode(
+            SourceUnit sourceUnit, 
+            CompilerOptions options, 
+            ErrorSink errorSink ) 
+        {
             string text = sourceUnit.GetCode();
             var sequence = BonsaiParser.ParseString(text);
            

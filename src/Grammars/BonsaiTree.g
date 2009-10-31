@@ -1,16 +1,16 @@
 tree grammar BonsaiTree;
 
 options {
-	tokenVocab=Bonsai;
-	language=CSharp2;
-	ASTLabelType = CommonTree;
-	output=AST;
+    tokenVocab=Bonsai;
+    language=CSharp2;
+    ASTLabelType = CommonTree;
+    output=AST;
 }
 
 @namespace { Bonsai.Parsers }
 
 @header { 
-	using Bonsai.Parsers.AST;
+    using Bonsai.Parsers.AST;
     using System.Collections.Generic;
 }
 
