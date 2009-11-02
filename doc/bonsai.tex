@@ -18,6 +18,9 @@
 
 \definecolor{shadecolor}{named}{Gray}
 
+% include subsections in the TOC %
+\setcounter{tocdepth}{4}
+
 \title{Bonsai\\Un limbal dinamic funcțional peste DLR}
 \author{Eugen Anghel}
 
@@ -94,7 +97,7 @@ List<Call> statements = treeWalker.program().result.Statements;
 
 După rulare, variabila \texttt{statements} va conține o listă de instanțe ale clasei \texttt{Call}.
 
-Este important de observat că rezultatul aplicării gramaticii de arbori reprezintă chiar instanțe de clase din namespace-ul \texttt{Bonsai.Ast}. 
+Este important de observat că rezultatul aplicării gramaticii de arbori reprezintă chiar instanțe de clase din namespace-ul \texttt{Bonsai.Ast}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Runtime-ul Bonsai}
@@ -102,17 +105,34 @@ Este important de observat că rezultatul aplicării gramaticii de arbori reprez
 
 \section{\draft{Introducere în DLR}}
 
-\section{Generarea de expresii LINQ}
+\subsection{CallSites, Binders și LanguageContext}
 
-\draft{Odată obținut AST-ul, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. Clasa răspunzătoare este \texttt{Bonsai.Runtime.Generator}.}
+\subsection{Arbori de expresii}
+
+\subsection{IDynamicMetaObjectProvider și DynamicMetaObject}
+
+\section{\draft{Generarea de expresii LINQ}}
+
+Odată obținut AST-ul, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. Clasa răspunzătoare este \texttt{Bonsai.Runtime.Generator}.
+
+\subsection{\draft{Tratarea scope-ului}}
 
 \section{\draft{BonsaiBinder}}
 
+\draft{TODO: explică cum se rezolvă la runtime apelurile de funcții.}
+
 \section{\draft{Tratarea tipurilor de date primitive}}
+
+\draft{TODO: cum sunt tipurile 'string', 'decimal', etc.  
+manipulate în Bonsai.}
 
 \section{\draft{Rezolvarea metodelor .NET}}
 
-\section{\draft{Tipul BonsaiFunction}}
+\draft{TODO: cum se determină metoda .NET corectă după tipurile argumentelor și numărul acestora.}
+
+\section{\draft{Clasa BonsaiFunction}}
+
+\draft{TODO: Descrie ce anume face clasa BonsaiFunction și clasele derivate din aceasta}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Biblioteca de funcții standard}
@@ -156,27 +176,46 @@ Tipul \texttt{symbol} din Bonsai este foarte asemănător simbolurilor din Ruby\
 
 \section{Blocuri}
 
-Un \texttt{block} este un set de instrucțiuni împreună cu o listă de variabile locale definite in el. 
+Un \texttt{block} este o secvență de instrucțiuni.
 
-\draft{Un \texttt{block} poate fi evaluat direct, dar și analizat sau modificat la runtime, pentru a obține un alt block.}
+\draft{TODO}
 
-\section{Funcții}
+\section{\draft{Funcții}}
 
-\section{Pattern-Matching}
+\section{\draft{Pattern-Matching}}
+
+\subsection{Funcția \texttt{def|}}
+
+\subsection{Șablonul \texttt{|=}}
+
+\subsection{Șablonul \texttt{|is}}
+
+\draft{TODO: Definește mai multe șabloane}
+
+\subsection{Definirea unui nou tip de șablon}
 
 \section{\draft{Structuri de date}}
 
-\draft{Funcția \texttt{list} crează o listă. Majoritatea apelurilor către o listă întorc (unde este cazul) o instanță nouă, fără să modifice lista originală. Toate operațiile pe liste binecunoscute în limbajele funcționale (\texttt{map, reduce, foldl, foldr,} etc) sunt disponibile și în Bonsai.}
+\draft{TODO: Adaugă suport pentru sintaxă de forma:}
+\begin{Verbatim}
+= .list [| 1 2 3 ]
 
-\section{Funcții de ordin superior}
+= .dict [# 
+  .a 1 
+  .b 3
+  .c 42 
+]
+\end{Verbatim}
 
-\subsection{combine}
+\subsection{\draft{Adăugarea unui nou handler de structuri de date}}
 
-\subsection{apply}
+\section{Alte funcții}
 
-\subsection{papply}
+Aceste funcții sunt disponibile în biblioteca standard, dar nu au putut fi incluse în nici una din categoriile de mai sus.
 
-\subsection{ref}
+\subsection{Funcția ref}
+
+\draft{TODO}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Bonsai și Programarea Orientată Obiect}
@@ -201,27 +240,32 @@ Acest cod Bonsai are același efect cu următorul cod C\#:
 stringBuilder .Append " ultima parte "
 \end{Verbatim}
 
-
 Moștenirea poate fi simulată printr-o funcție care este definită doar pentru un set de pattern-uri peste parametri, apelurile cu alți parametri fiind redirectate către o alta funcție (analogul clasei de bază).
 
 Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în practică nu se face niciodată o tratare manuală (de tip \texttt{case}): toate operațiile OOP „clasice” sunt abstractizate printr-un set de funcțtii incluse în biblioteca standard a limbajului.
 
-\section{Creerea prototipurilor}
+\section{Crearea prototipurilor}
+
+\draft{TODO}
 
 \section{Clonarea instanțelor noi din prototipuri}
 
+\draft{TODO}
+
 \draft{Metoda \texttt{clone}}
+
+\draft{TODO}
 
 \section{Encapsularea}
 
-\draft{Dicționarele \texttt{private} și \texttt{protected}}
+\draft{TODO: convenția \texttt{\_}, similar Python}
 
 \section{Polimormism?}
 
 \draft{Limbaj dinamic = polimorfism implicit (?)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Integrarea cu platforma .NET}
+\chapter{\draft{Integrarea cu platforma .NET}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{primitiva \texttt{import}}
@@ -235,7 +279,7 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 \section{Integrarea cu alte limbaje dinamice}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Părți lipsă și îmbunătățiri pentru viitor}
+\chapter{\draft{Posibile îmbunătățiri}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Module}
@@ -252,7 +296,7 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 
 \section{Debugger}
 
-\draft{posibilități de realizare a unui debugger; integrarea cu VisualStudio}
+\draft{posibilități de realizare a unui debugger; integrarea cu VisualStudio?}
 
 \section{Îmbunătățirea performanței}
 
@@ -262,7 +306,7 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 
 \begin{appendices}
 
-\chapter{Gramatica Bonsai}
+\chapter{Gramatica limbajului Bonsai}
 \label{app:grammar}
 \VerbatimInput[label=Bonsai.g]{../src/Grammars/Bonsai.g}
 
