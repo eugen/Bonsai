@@ -37,7 +37,7 @@
 \tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter*{Introducere}
+\chapter{Introducere}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 În ultimele doua decenii, programarea a fost în mare parte împărțită între două grupe de limbaje. Limbajele imperative, cu un sistem static de tipuri, multe dintre ele din familia C, au fost folosite pentru a obține performanță și scalabilitate. În schimb, flexibilitatea limbajelor precum Perl si PHP a fost apreciată pentru programarea scripturilor de sistem, a paginilor web și a altor programe pentru care eficiența nu reprezintă o prioritate.
@@ -46,11 +46,11 @@
 
 Atât Sun cât și Microsoft și-au arătat interesul pentru limbajele dinamice prin proiectele The Da Vinci Machine\cite{daVinciMachine} și Dynamic Language Runtime (DLR)\cite{dlr} și sprijinirea dezvoltării limbajelor JRuby\cite{jruby}, Jython\cite{jython}, IronRuby\cite{ironruby}, IronPython\cite{ironpython}, etc.
 
-Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă caracteristică a sa este simplitatea, limbajele Lisp, Javascript și Io \cite{io} reprezentând principalele surse de inspirație.
+Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă caracteristică a sa este simplitatea, limbajele Lisp, Javascript și Io\cite{io} reprezentând principalele surse de inspirație.
 
 Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. 
 
-Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .NET, transparența referențială a funcțiilor nu poate fi garantată. Bonsai nu este, așadar, pur funcționl.}, dar se integrează bine cu alte limbaje orientate obiect. OOP-ul este simulat în întregime prin apeluri de funcții. \draft{Programarea fără efecte laterale este în schimb încurajată: majoritatea primitivelor din Bonsai sunt funcții pure, iar cele care modifica starea sunt clar denumite astfel încât acest lucru să-i fie vizibil programatorului}.
+Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .NET, transparența referențială a funcțiilor nu poate fi garantată. Bonsai nu este, așadar, pur funcționl.}, dar se integrează bine cu alte limbaje orientate obiect. OOP-ul este simulat în întregime prin apeluri de funcții.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Parsarea și generarea arborilor}
@@ -279,7 +279,7 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 \section{Integrarea cu alte limbaje dinamice}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{\draft{Posibile îmbunătățiri}}
+\chapter{Posibile îmbunătățiri}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Module}
