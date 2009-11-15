@@ -91,11 +91,11 @@ var parser = new Generated.BonsaiParser(tokStream);
 var returnValue = parser.program();
 \end{code}
 
-Metoda \c{program} semnifică aplicarea regulei cu același nume. După rulare, \texttt{returnValue.Tree} va conține arborele de parsare.
+Metoda \c{program} semnifică aplicarea regulei cu același nume. După rulare, \c{returnValue.Tree} va conține arborele de parsare.
 
 \section{Generarea AST-ului}
 
-Pe lângă gramatica de parsare, Bonsai utilizează și o gramatica de arbori, de doar 3 reguli\footnote{Gramatica de arbori este listată în întregime în Anexa \ref{app:tree_grammar}}, care transformă arborele de parsare într-un arbore de sintaxă abstractă. Clasa generată este \texttt{BonsaiTree}.
+Pe lângă gramatica de parsare, Bonsai utilizează și o gramatica de arbori, de doar 3 reguli\footnote{Gramatica de arbori este listată în întregime în Anexa \ref{app:tree_grammar}}, care transformă arborele de parsare într-un arbore de sintaxă abstractă. Clasa generată din aceastra gramatică este \c{BonsaiTree}.
 
 Fragmentul următor este continuarea codului din secțiunea precedentă și arată aplicarea gramaticii de arbori pe rezultatele parsării:
 
@@ -107,9 +107,7 @@ var treeWalker = new Generated.BonsaiTree(treeNodeStream);
 List<Call> statements = treeWalker.program().result.Statements;
 \end{code}
 
-După rulare, variabila \texttt{statements} va conține o listă de instanțe ale clasei \texttt{Call}.
-
-Este important de observat că rezultatul aplicării gramaticii de arbori reprezintă chiar instanțe de clase din namespace-ul \texttt{Bonsai.Ast}.
+După rulare, variabila \c{statements} va conține o listă de instanțe ale clasei \c{Call}. Este important de observat că rezultatul aplicării gramaticii de arbori reprezintă chiar instanțe de clase din namespace-ul \c{Bonsai.Ast}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Runtime-ul Bonsai}
@@ -117,7 +115,7 @@ Este important de observat că rezultatul aplicării gramaticii de arbori reprez
 
 \section{Introducere în DLR}
 
-\draft{TODO}
+\draft{TODO:}
 
 \subsection{CallSites, Binders și LanguageContext}
 
