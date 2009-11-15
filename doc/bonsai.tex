@@ -1,12 +1,7 @@
 \documentclass[12pt,a4paper]{memoir}
-\usepackage{url}
-\usepackage{fancyvrb}
-\usepackage{fontspec} 
-\usepackage{xunicode}
-\usepackage[dvipsnames]{color}
-\usepackage{xltxtra}
 \usepackage[romanian]{babel}
-\usepackage{hyperref}
+\usepackage[dvipsnames]{color}
+\usepackage{fancyvrb,fontspec,xunicode,xltxtra,hyperref,url,framed,verbatim}
 
 \hyphenpenalty=5000
 \tolerance=1000
@@ -14,9 +9,9 @@
 \setmainfont{Calluna}
 \setmonofont{Inconsolata}
 
-\fvset{numbers=left,labelposition=all,frame=lines}
-
 \definecolor{shadecolor}{named}{Gray}
+
+\hypersetup{pdftitle={Bonsai - Un limbaj dinamic funcțional peste DLR},citebordercolor={0.8 0 0},filebordercolor={0.8 0 0},linkbordercolor={0.8 0 0},menubordercolor={0.8 0 0},urlbordercolor={0.8 0 0},runbordercolor={0.8 0 0}}
 
 % include subsections in the TOC %
 \setcounter{tocdepth}{4}
@@ -30,6 +25,23 @@
 
 % footnotes with symbols instead of numbers %
 \renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+% we don't use cedillas, so just redifine \c as \texttt
+% this is probably not ``politically correct''
+\renewcommand{\c}{\texttt}
+
+% define a new environment for code; shading is nice;
+\newenvironment{code}[1][]%
+{%
+\definecolor{shadecolor}{gray}{0.91}{#1}%
+\topsep=0ex\relax
+\shaded
+\verbatim
+}
+{
+\endverbatim
+\endshaded
+}
 
 \maketitle
 
@@ -58,7 +70,7 @@ Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .
 
 \section{Scurtă descriere a ANTLR}
 
-ANTLR 3.1\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \texttt{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (bazată pe algoritmul \texttt{LL(k)}), numărul de gramatici ce pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript.
+ANTLR 3.1\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (bazată pe algoritmul \c{LL(k)}), numărul de gramatici ce pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript.
 
 În plus, ANTLR 3.1 oferă suport pentru efectuarea de transformări arbitrare asupra arborilor: pornind de la arborele de parsare, mai multe gramatici de arbori pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}.
 
@@ -68,18 +80,18 @@ Bonsai ANTLR 3.1 pentru parsarea codului sursă și pentru generarea AST-ului di
 
 Simplitatea limbajului se reflectă în dimensiunile gramaticii: aceasta are doar 18 reguli de parsare (inclusiv lexerul) și nici un cuvânt nu este rezervat\footnote{Gramatica de parsare este listată în întregime în Anexa \ref{app:grammar}}. În urma aplicării unei reguli rezultă un arbore de parsare, generat conform instrucțiunilor din gramatică. Acesta conține încă un număr ridicat de artefacte și nu poate fi considerat un arbore de sintaxă abstractă.
 
-Din gramatică au fost generate clasele \texttt{BonsaiParser} și \texttt{BonsaiLexer}. Următorul fragment oferă un exemplu de utilizare:
+Din gramatică au fost generate clasele \c{BonsaiParser} și \c{BonsaiLexer}. Următorul fragment oferă un exemplu de utilizare:
 
-\begin{Verbatim}
+\begin{code}
 var text = "... Bonsai code ...";
 var strStream = new ANTLRStringStream(text);
 var lexer = new BonsaiLexer(strStream);
 var tokStream = new CommonTokenStream(lexer);
 var parser = new Generated.BonsaiParser(tokStream);
 var returnValue = parser.program();
-\end{Verbatim}
+\end{code}
 
-Metoda \texttt{program} semnifică aplicarea regulei cu același nume. După rulare, \texttt{returnValue.Tree} va conține arborele de parsare.
+Metoda \c{program} semnifică aplicarea regulei cu același nume. După rulare, \texttt{returnValue.Tree} va conține arborele de parsare.
 
 \section{Generarea AST-ului}
 
@@ -87,13 +99,13 @@ Pe lângă gramatica de parsare, Bonsai utilizează și o gramatica de arbori, d
 
 Fragmentul următor este continuarea codului din secțiunea precedentă și arată aplicarea gramaticii de arbori pe rezultatele parsării:
 
-\begin{Verbatim}
+\begin{code}
 var tree = (CommonTree)returnValue.Tree;
 var treeNodeStream = 
     new CommonTreeNodeStream((CommonTree)returnValue.Tree);
 var treeWalker = new Generated.BonsaiTree(treeNodeStream);
 List<Call> statements = treeWalker.program().result.Statements;
-\end{Verbatim}
+\end{code}
 
 După rulare, variabila \texttt{statements} va conține o listă de instanțe ale clasei \texttt{Call}.
 
@@ -103,7 +115,9 @@ Este important de observat că rezultatul aplicării gramaticii de arbori reprez
 \chapter{Runtime-ul Bonsai}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{\draft{Introducere în DLR}}
+\section{Introducere în DLR}
+
+\draft{TODO}
 
 \subsection{CallSites, Binders și LanguageContext}
 
@@ -111,26 +125,28 @@ Este important de observat că rezultatul aplicării gramaticii de arbori reprez
 
 \subsection{IDynamicMetaObjectProvider și DynamicMetaObject}
 
-\section{\draft{Generarea de expresii LINQ}}
+\section{Generarea expresiilor LINQ}
 
 Odată obținut AST-ul, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. Clasa răspunzătoare este \texttt{Bonsai.Runtime.Generator}.
 
-\subsection{\draft{Tratarea scope-ului}}
+\draft{TODO}
 
-\section{\draft{BonsaiBinder}}
+\subsection{Tratarea scope-ului} 
+
+\section{BonsaiBinder}
 
 \draft{TODO: explică cum se rezolvă la runtime apelurile de funcții.}
 
-\section{\draft{Tratarea tipurilor de date primitive}}
+\section{Tratarea tipurilor de date primitive}
 
 \draft{TODO: cum sunt tipurile 'string', 'decimal', etc.  
 manipulate în Bonsai.}
 
-\section{\draft{Rezolvarea metodelor .NET}}
+\section{Rezolvarea metodelor .NET}
 
 \draft{TODO: cum se determină metoda .NET corectă după tipurile argumentelor și numărul acestora.}
 
-\section{\draft{Clasa BonsaiFunction}}
+\section{Clasa BonsaiFunction}
 
 \draft{TODO: Descrie ce anume face clasa BonsaiFunction și clasele derivate din aceasta}
 
@@ -150,6 +166,7 @@ Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite s
   \hline
   .\texttt{+, .-, .*, ./} & adunare, scădere, înmulțire, împărțire \\
   .\texttt{\textasciicircum} & ridicare la putere \\
+  \draft{TODO} & \draft{Adaugă mai multe operații} \\
   \hline
 \end{tabular}
 
@@ -180,9 +197,11 @@ Un \texttt{block} este o secvență de instrucțiuni.
 
 \draft{TODO}
 
-\section{\draft{Funcții}}
+\section{Funcții}
 
-\section{\draft{Pattern-Matching}}
+\draft{TODO}
+
+\section{Pattern-Matching}
 
 \subsection{Funcția \texttt{def|}}
 
@@ -190,30 +209,40 @@ Un \texttt{block} este o secvență de instrucțiuni.
 
 \subsection{Șablonul \texttt{|is}}
 
-\draft{TODO: Definește mai multe șabloane}
+\draft{TODO: definește mai multe șabloane}
 
 \subsection{Definirea unui nou tip de șablon}
 
-\section{\draft{Structuri de date}}
+\section{Structuri de date}
 
-\draft{TODO: Adaugă suport pentru sintaxă de forma:}
-\begin{Verbatim}
-= .list [| 1 2 3 ]
+\draft{TODO}
 
+\subsection{Liste și vectori}
+
+\begin{code}
+= .list [> 1 2 3 ]
+= .array [| 1 2 3]
+\end{code}
+
+\subsection{Dictionare}
+
+\begin{code}
 = .dict [# 
   .a 1 
   .b 3
   .c 42 
 ]
-\end{Verbatim}
+\end{code}
 
-\subsection{\draft{Adăugarea unui nou handler de structuri de date}}
+\subsection{Definirea unui nou tip de structuri de date}
+
+\draft{TODO}
 
 \section{Alte funcții}
 
 Aceste funcții sunt disponibile în biblioteca standard, dar nu au putut fi incluse în nici una din categoriile de mai sus.
 
-\subsection{Funcția ref}
+\subsection{Funcția \c{ref}}
 
 \draft{TODO}
 
@@ -228,17 +257,17 @@ Această diferență poate părea fundamentală, dar o funcție poate fi conside
 \section{Paralela funcțional <-> OOP}
 
 Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este emulat în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul, mesajul trimis. Spre exemplu, un string apelat cu simbolul \texttt{:upcase} va returna un nou string cu toate caracterele transformate în majuscule:
-\begin{Verbatim}
+\begin{code}
 "bonsai!" .upcase
-\end{Verbatim}
+\end{code}
 Acest cod Bonsai are același efect cu următorul cod C\#:
-\begin{Verbatim}
+\begin{code}
 "bonsai".ToUpper()
-\end{Verbatim}
+\end{code}
 În cazul în care mesajul are mai mulți parametri, aceștia urmează după simbol:
-\begin{Verbatim}
+\begin{code}
 stringBuilder .Append " ultima parte "
-\end{Verbatim}
+\end{code}
 
 Moștenirea poate fi simulată printr-o funcție care este definită doar pentru un set de pattern-uri peste parametri, apelurile cu alți parametri fiind redirectate către o alta funcție (analogul clasei de bază).
 
@@ -250,11 +279,7 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 
 \section{Clonarea instanțelor noi din prototipuri}
 
-\draft{TODO}
-
 \draft{Metoda \texttt{clone}}
-
-\draft{TODO}
 
 \section{Encapsularea}
 
@@ -265,10 +290,14 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 \draft{Limbaj dinamic = polimorfism implicit (?)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{\draft{Integrarea cu platforma .NET}}
+\chapter{Integrarea cu platforma .NET}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Unul din principale avantajele în utilizarea runtime-ului .NET este posibilitatea de a folosi bibliotecile disponibile, atât oficiale cât și particulare. Bonsai dispune de un set de primitive care fac acest lucru posibil.
+
 \section{primitiva \texttt{import}}
+
+Primitiva \texttt{import}
 
 \section{Spații de nume și clase statice}
 
@@ -305,6 +334,8 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{appendices}
+
+\fvset{numbers=left,labelposition=all,frame=lines}
 
 \chapter{Gramatica limbajului Bonsai}
 \label{app:grammar}

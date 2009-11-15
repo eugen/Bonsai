@@ -34,4 +34,18 @@ namespace Bonsai.Runtime {
                 TestedValue.Equals(value));
         }
     }
+
+    public class IsPattern : IPattern {
+        public SymbolId ParameterName { get; private set; }
+        public Type TestedType { get; private set; }
+
+        public IsPattern(SymbolId symbol, object testedType) {
+            this.ParameterName = symbol;
+            this.TestedType = Type.GetType(testedType.ToString());
+        }
+
+        public bool Test(object value) {
+            return value != null && value.GetType() == TestedType;
+        }
+    }
 }

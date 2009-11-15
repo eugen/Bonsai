@@ -12,16 +12,16 @@ tokens {
     SQUARE; // to be used in the future
 }
 
-@namespace { Bonsai.Parsers }
+@namespace { Bonsai.Ast.Generated }
 
 program
     :   statements -> ^(GROUP statements)
     ;
 
 statements
-    :   calls+=call (NEWLINE calls+=call?)*
+    :   calls+=call (SEPARATOR calls+=call?)*
         -> $calls*
-    |   NEWLINE+ (calls+=call (NEWLINE calls+=call?)*)?
+    |   SEPARATOR+ (calls+=call (SEPARATOR calls+=call?)*)?
         -> $calls*
     ;
 
@@ -60,9 +60,9 @@ atom
     |   IDENTIFIER
     ; 
         
-
-NEWLINE
+SEPARATOR
     :   '\r'? '\n'
+    |   ';'
     ;
 
 WS  :   (' '|'\t')* { $channel = HIDDEN; }

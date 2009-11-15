@@ -47,5 +47,11 @@ namespace Bonsai.Runtime {
             Debug.Assert(args.Length == 3);
             return new EqPattern((SymbolId)args[1], args[2]);
         }
+
+        [MapsToSymbol("|is")]
+        public object IsPattern(object[] args) {
+            Debug.Assert(args.Length == 3);
+            return new IsPattern((SymbolId)args[1], args[2]);
+        }
     }
 }

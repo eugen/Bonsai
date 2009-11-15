@@ -8,6 +8,7 @@ namespace Tests {
     [TestClass]
     public class PrototypeTests : BonsaiTestClass {
         [TestMethod] public void TestPrototypes() {
+            Console.WriteLine("ZOMG");
             Assert.AreEqual("John Johnson & Mary Johnson", Execute(@"
                 = .user (object .clone .UserProto)
                 user .method .fullName { (self .firstName) .+ "" "" (self .lastName) }

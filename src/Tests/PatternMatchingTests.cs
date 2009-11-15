@@ -9,7 +9,7 @@ namespace Tests {
     [TestClass]
     public class PatternMatchingTests : BonsaiTestClass {
         [TestMethod]
-        public void BasicEqualityPattern() {
+        public void TestBasicEqualityPattern() {
             var defun = @"
 def| .pf .a (|= .b 42) { 42 }
 def| .pf .a .b { a }
@@ -19,12 +19,25 @@ def| .pf .a .b { a }
         }
 
         [TestMethod]
-        public void BasicEqualityPatternFactorial() {
+        public void TestBasicEqualityPatternFactorial() {
             var defun = @"
 def| .fact (|= .a 0) { 1 }
 def| .fact .a { a .* (fact (a .- 1)) }
 ";
             Assert.AreEqual(5040M, Execute(defun + "fact 7"));
+        }
+
+        [TestMethod]
+        public void TestIsTypePattern() {
+            var defun = @"
+def| .stringornull (|is .s .System.String) { s }
+def| .stringornull ._ { .null }
+";
+            Assert.AreEqual("da", Execute(defun + "stringornull \"da\""));
+            Assert.AreEqual("nu", Execute(defun + "stringornull \"nu\""));
+            var nulll = SymbolTable.StringToId("null");
+            Assert.AreEqual(nulll, Execute(defun + "stringornull .sym"));
+            Assert.AreEqual(nulll, Execute(defun + "stringornull 15"));
         }
     }
 }

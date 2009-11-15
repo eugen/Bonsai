@@ -12,11 +12,11 @@ namespace Tests {
         public void TestImportNamespace() {
             Assert.AreEqual(
                 typeof(System.Environment),
-                Execute("import .sys .System \n sys .Environment"));
+                Execute("import .sys .System ; sys .Environment"));
         }
         [TestMethod]
         public void TestImportClass() {
-            var console = Execute("import .console .System.Console \n ref .console");
+            var console = Execute("import .console .System.Console ; ref .console");
             Assert.IsInstanceOfType(console, typeof(BonsaiClrClassFunction));
             Assert.AreEqual(typeof(System.Console), ((BonsaiClrClassFunction)console).Class);
         }
