@@ -62,7 +62,7 @@ Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă
 
 Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. 
 
-Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .NET, transparența referențială a funcțiilor nu poate fi garantată. Bonsai nu este, așadar, pur funcționl.}, dar se integrează bine cu alte limbaje orientate obiect. OOP-ul este simulat în întregime prin apeluri de funcții.
+Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .NET, transparența referențială a funcțiilor nu poate fi garantată. Bonsai nu este, așadar, un limbaj pur funcțional.}, dar se integrează bine cu alte limbaje orientate obiect. OOP-ul este simulat în întregime prin apeluri de funcții.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Parsarea și generarea arborilor}
@@ -125,11 +125,31 @@ După rulare, variabila \c{statements} va conține o listă de instanțe ale cla
 
 \section{Generarea expresiilor LINQ}
 
-Odată obținut AST-ul, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. Clasa răspunzătoare este \texttt{Bonsai.Runtime.Generator}.
+Odată obținut AST-ul, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. 
 
-\draft{TODO}
+Clasa răspunzătoare este \texttt{Bonsai.Runtime.Generator}. Aceasta conține câte o supraîncărcare a metodei \c{Walk} pentru fiecare tip de nod din arborele de sintaxă abstractă. Toate supraîncărcările au o definiție similară și întorc o instanță a unei clase care moștenește clasa \c{System.Linq.Expressions.Expression}.
 
 \subsection{Tratarea scope-ului} 
+
+În Bonsai, contextul de execuție curent este format din dicționarul variabilelor definite în contextul curent și de contextul părinte. În momentul accesării unei variabile, ea este căutată recursiv mai întâi în dicționarul local, apoi în contextul părinte. 
+
+Pentru că Bonsai este un limbaj dinamic, contextul în care se execută un bloc nu poate fi cunoscut în momentul compilării, motiv pentru care fiecare metoda \c{Walk} primește ca prim parametru o expresie (instață a \c{System.Linq.Expressions.Expression}). Aceasta reprezintă o variabilă care stochează contextul curent. De exemplu:
+\begin{code}
+public static Expression Walk(Expression currentScopeVar, Ast.Reference reference) {
+            return Expression.MakeIndex(
+                currentScopeVar,
+                typeof(DictionaryBonsaiFunction).GetProperty("Item", 
+                    typeof(BonsaiFunction), new Type[] { typeof(SymbolId) }), 
+                new Expression[] { Expression.Constant(SymbolTable.StringToId(reference.Name)) });
+        }
+
+        public static Expression Walk(Expression currentScopeVar, Ast.Sequence sequence) {
+            return Expression.Block(
+                sequence.Statements.Select(c => Walk(currentScopeVar, c)));
+        }
+
+\end{code}
+Acest cod procesează un nod de tipul \c{Sequence} (o secvență de instrucțiuni).
 
 \section{BonsaiBinder}
 
@@ -213,7 +233,7 @@ Un \texttt{block} este o secvență de instrucțiuni.
 
 \section{Structuri de date}
 
-\draft{TODO}
+Bonsai are o sintaxă specială pentru structuri de date.
 
 \subsection{Liste și vectori}
 
