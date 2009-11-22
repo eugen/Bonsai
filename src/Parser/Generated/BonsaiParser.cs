@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g 2009-11-21 21:02:25
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g 2009-11-22 15:30:43
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 168, 219
@@ -665,7 +665,7 @@ public partial class BonsaiParser : Parser
     };
 
     // $ANTLR start "square_expr"
-    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:36:1: square_expr : '[' datatype= atom (exp+= expression )* ']' -> ^( SQUARE $datatype ( $exp)* ) ;
+    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:36:1: square_expr : '[' datatype= atom ( SEPARATOR )* (exp+= expression ( SEPARATOR )* )* ']' -> ^( SQUARE $datatype ( $exp)* ) ;
     public BonsaiParser.square_expr_return square_expr() // throws RecognitionException [1]
     {   
         BonsaiParser.square_expr_return retval = new BonsaiParser.square_expr_return();
@@ -674,22 +674,27 @@ public partial class BonsaiParser : Parser
         CommonTree root_0 = null;
 
         IToken char_literal9 = null;
-        IToken char_literal10 = null;
+        IToken SEPARATOR10 = null;
+        IToken SEPARATOR11 = null;
+        IToken char_literal12 = null;
         IList list_exp = null;
         BonsaiParser.atom_return datatype = default(BonsaiParser.atom_return);
 
         BonsaiParser.expression_return exp = default(BonsaiParser.expression_return);
          exp = null;
         CommonTree char_literal9_tree=null;
-        CommonTree char_literal10_tree=null;
+        CommonTree SEPARATOR10_tree=null;
+        CommonTree SEPARATOR11_tree=null;
+        CommonTree char_literal12_tree=null;
+        RewriteRuleTokenStream stream_SEPARATOR = new RewriteRuleTokenStream(adaptor,"token SEPARATOR");
         RewriteRuleTokenStream stream_17 = new RewriteRuleTokenStream(adaptor,"token 17");
         RewriteRuleTokenStream stream_18 = new RewriteRuleTokenStream(adaptor,"token 18");
         RewriteRuleSubtreeStream stream_expression = new RewriteRuleSubtreeStream(adaptor,"rule expression");
         RewriteRuleSubtreeStream stream_atom = new RewriteRuleSubtreeStream(adaptor,"rule atom");
         try 
     	{
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:5: ( '[' datatype= atom (exp+= expression )* ']' -> ^( SQUARE $datatype ( $exp)* ) )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:9: '[' datatype= atom (exp+= expression )* ']'
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:5: ( '[' datatype= atom ( SEPARATOR )* (exp+= expression ( SEPARATOR )* )* ']' -> ^( SQUARE $datatype ( $exp)* ) )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:9: '[' datatype= atom ( SEPARATOR )* (exp+= expression ( SEPARATOR )* )* ']'
             {
             	char_literal9=(IToken)Match(input,17,FOLLOW_17_in_square_expr266);  
             	stream_17.Add(char_literal9);
@@ -699,13 +704,13 @@ public partial class BonsaiParser : Parser
             	state.followingStackPointer--;
 
             	stream_atom.Add(datatype.Tree);
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:27: (exp+= expression )*
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:27: ( SEPARATOR )*
             	do 
             	{
             	    int alt9 = 2;
             	    int LA9_0 = input.LA(1);
 
-            	    if ( ((LA9_0 >= NUMBER && LA9_0 <= IDENTIFIER) || LA9_0 == 17 || LA9_0 == 19 || LA9_0 == 21) )
+            	    if ( (LA9_0 == SEPARATOR) )
             	    {
             	        alt9 = 1;
             	    }
@@ -714,15 +719,10 @@ public partial class BonsaiParser : Parser
             	    switch (alt9) 
             		{
             			case 1 :
-            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:28: exp+= expression
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:27: SEPARATOR
             			    {
-            			    	PushFollow(FOLLOW_expression_in_square_expr275);
-            			    	exp = expression();
-            			    	state.followingStackPointer--;
-
-            			    	stream_expression.Add(exp.Tree);
-            			    	if (list_exp == null) list_exp = new ArrayList();
-            			    	list_exp.Add(exp.Tree);
+            			    	SEPARATOR10=(IToken)Match(input,SEPARATOR,FOLLOW_SEPARATOR_in_square_expr272);  
+            			    	stream_SEPARATOR.Add(SEPARATOR10);
 
 
             			    }
@@ -736,13 +736,82 @@ public partial class BonsaiParser : Parser
             	loop9:
             		;	// Stops C# compiler whining that label 'loop9' has no statements
 
-            	char_literal10=(IToken)Match(input,18,FOLLOW_18_in_square_expr279);  
-            	stream_18.Add(char_literal10);
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:38: (exp+= expression ( SEPARATOR )* )*
+            	do 
+            	{
+            	    int alt11 = 2;
+            	    int LA11_0 = input.LA(1);
+
+            	    if ( ((LA11_0 >= NUMBER && LA11_0 <= IDENTIFIER) || LA11_0 == 17 || LA11_0 == 19 || LA11_0 == 21) )
+            	    {
+            	        alt11 = 1;
+            	    }
+
+
+            	    switch (alt11) 
+            		{
+            			case 1 :
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:39: exp+= expression ( SEPARATOR )*
+            			    {
+            			    	PushFollow(FOLLOW_expression_in_square_expr278);
+            			    	exp = expression();
+            			    	state.followingStackPointer--;
+
+            			    	stream_expression.Add(exp.Tree);
+            			    	if (list_exp == null) list_exp = new ArrayList();
+            			    	list_exp.Add(exp.Tree);
+
+            			    	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:55: ( SEPARATOR )*
+            			    	do 
+            			    	{
+            			    	    int alt10 = 2;
+            			    	    int LA10_0 = input.LA(1);
+
+            			    	    if ( (LA10_0 == SEPARATOR) )
+            			    	    {
+            			    	        alt10 = 1;
+            			    	    }
+
+
+            			    	    switch (alt10) 
+            			    		{
+            			    			case 1 :
+            			    			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:55: SEPARATOR
+            			    			    {
+            			    			    	SEPARATOR11=(IToken)Match(input,SEPARATOR,FOLLOW_SEPARATOR_in_square_expr280);  
+            			    			    	stream_SEPARATOR.Add(SEPARATOR11);
+
+
+            			    			    }
+            			    			    break;
+
+            			    			default:
+            			    			    goto loop10;
+            			    	    }
+            			    	} while (true);
+
+            			    	loop10:
+            			    		;	// Stops C# compiler whining that label 'loop10' has no statements
+
+
+            			    }
+            			    break;
+
+            			default:
+            			    goto loop11;
+            	    }
+            	} while (true);
+
+            	loop11:
+            		;	// Stops C# compiler whining that label 'loop11' has no statements
+
+            	char_literal12=(IToken)Match(input,18,FOLLOW_18_in_square_expr285);  
+            	stream_18.Add(char_literal12);
 
 
 
             	// AST REWRITE
-            	// elements:          datatype, exp
+            	// elements:          exp, datatype
             	// token labels:      
             	// rule labels:       retval, datatype
             	// token list labels: 
@@ -753,15 +822,15 @@ public partial class BonsaiParser : Parser
             	RewriteRuleSubtreeStream stream_datatype = new RewriteRuleSubtreeStream(adaptor, "rule datatype", datatype!=null ? datatype.Tree : null);
             	RewriteRuleSubtreeStream stream_exp = new RewriteRuleSubtreeStream(adaptor, "token exp", list_exp);
             	root_0 = (CommonTree)adaptor.GetNilNode();
-            	// 39:50: -> ^( SQUARE $datatype ( $exp)* )
+            	// 39:72: -> ^( SQUARE $datatype ( $exp)* )
             	{
-            	    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:53: ^( SQUARE $datatype ( $exp)* )
+            	    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:75: ^( SQUARE $datatype ( $exp)* )
             	    {
             	    CommonTree root_1 = (CommonTree)adaptor.GetNilNode();
             	    root_1 = (CommonTree)adaptor.BecomeRoot((CommonTree)adaptor.Create(SQUARE, "SQUARE"), root_1);
 
             	    adaptor.AddChild(root_1, stream_datatype.NextTree());
-            	    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:72: ( $exp)*
+            	    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:39:94: ( $exp)*
             	    while ( stream_exp.HasNext() )
             	    {
             	        adaptor.AddChild(root_1, stream_exp.NextTree());
@@ -816,13 +885,13 @@ public partial class BonsaiParser : Parser
 
         CommonTree root_0 = null;
 
-        IToken char_literal11 = null;
         IToken char_literal13 = null;
-        BonsaiParser.statements_return statements12 = default(BonsaiParser.statements_return);
+        IToken char_literal15 = null;
+        BonsaiParser.statements_return statements14 = default(BonsaiParser.statements_return);
 
 
-        CommonTree char_literal11_tree=null;
         CommonTree char_literal13_tree=null;
+        CommonTree char_literal15_tree=null;
         RewriteRuleTokenStream stream_20 = new RewriteRuleTokenStream(adaptor,"token 20");
         RewriteRuleTokenStream stream_19 = new RewriteRuleTokenStream(adaptor,"token 19");
         RewriteRuleSubtreeStream stream_statements = new RewriteRuleSubtreeStream(adaptor,"rule statements");
@@ -831,35 +900,35 @@ public partial class BonsaiParser : Parser
             // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:42:5: ( '{' ( statements )? '}' -> ^( BLOCK statements ) )
             // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:42:9: '{' ( statements )? '}'
             {
-            	char_literal11=(IToken)Match(input,19,FOLLOW_19_in_curly_expr310);  
-            	stream_19.Add(char_literal11);
+            	char_literal13=(IToken)Match(input,19,FOLLOW_19_in_curly_expr316);  
+            	stream_19.Add(char_literal13);
 
             	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:42:13: ( statements )?
-            	int alt10 = 2;
-            	int LA10_0 = input.LA(1);
+            	int alt12 = 2;
+            	int LA12_0 = input.LA(1);
 
-            	if ( ((LA10_0 >= SEPARATOR && LA10_0 <= IDENTIFIER) || LA10_0 == 17 || LA10_0 == 19 || LA10_0 == 21) )
+            	if ( ((LA12_0 >= SEPARATOR && LA12_0 <= IDENTIFIER) || LA12_0 == 17 || LA12_0 == 19 || LA12_0 == 21) )
             	{
-            	    alt10 = 1;
+            	    alt12 = 1;
             	}
-            	switch (alt10) 
+            	switch (alt12) 
             	{
             	    case 1 :
             	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:42:13: statements
             	        {
-            	        	PushFollow(FOLLOW_statements_in_curly_expr312);
-            	        	statements12 = statements();
+            	        	PushFollow(FOLLOW_statements_in_curly_expr318);
+            	        	statements14 = statements();
             	        	state.followingStackPointer--;
 
-            	        	stream_statements.Add(statements12.Tree);
+            	        	stream_statements.Add(statements14.Tree);
 
             	        }
             	        break;
 
             	}
 
-            	char_literal13=(IToken)Match(input,20,FOLLOW_20_in_curly_expr315);  
-            	stream_20.Add(char_literal13);
+            	char_literal15=(IToken)Match(input,20,FOLLOW_20_in_curly_expr321);  
+            	stream_20.Add(char_literal15);
 
 
 
@@ -930,13 +999,13 @@ public partial class BonsaiParser : Parser
 
         CommonTree root_0 = null;
 
-        IToken char_literal14 = null;
         IToken char_literal16 = null;
-        BonsaiParser.statements_return statements15 = default(BonsaiParser.statements_return);
+        IToken char_literal18 = null;
+        BonsaiParser.statements_return statements17 = default(BonsaiParser.statements_return);
 
 
-        CommonTree char_literal14_tree=null;
         CommonTree char_literal16_tree=null;
+        CommonTree char_literal18_tree=null;
         RewriteRuleTokenStream stream_21 = new RewriteRuleTokenStream(adaptor,"token 21");
         RewriteRuleTokenStream stream_22 = new RewriteRuleTokenStream(adaptor,"token 22");
         RewriteRuleSubtreeStream stream_statements = new RewriteRuleSubtreeStream(adaptor,"rule statements");
@@ -945,35 +1014,35 @@ public partial class BonsaiParser : Parser
             // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:47:5: ( '(' ( statements )? ')' -> ^( GROUP statements ) )
             // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:47:9: '(' ( statements )? ')'
             {
-            	char_literal14=(IToken)Match(input,21,FOLLOW_21_in_paren_expr343);  
-            	stream_21.Add(char_literal14);
+            	char_literal16=(IToken)Match(input,21,FOLLOW_21_in_paren_expr349);  
+            	stream_21.Add(char_literal16);
 
             	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:47:13: ( statements )?
-            	int alt11 = 2;
-            	int LA11_0 = input.LA(1);
+            	int alt13 = 2;
+            	int LA13_0 = input.LA(1);
 
-            	if ( ((LA11_0 >= SEPARATOR && LA11_0 <= IDENTIFIER) || LA11_0 == 17 || LA11_0 == 19 || LA11_0 == 21) )
+            	if ( ((LA13_0 >= SEPARATOR && LA13_0 <= IDENTIFIER) || LA13_0 == 17 || LA13_0 == 19 || LA13_0 == 21) )
             	{
-            	    alt11 = 1;
+            	    alt13 = 1;
             	}
-            	switch (alt11) 
+            	switch (alt13) 
             	{
             	    case 1 :
             	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:47:13: statements
             	        {
-            	        	PushFollow(FOLLOW_statements_in_paren_expr345);
-            	        	statements15 = statements();
+            	        	PushFollow(FOLLOW_statements_in_paren_expr351);
+            	        	statements17 = statements();
             	        	state.followingStackPointer--;
 
-            	        	stream_statements.Add(statements15.Tree);
+            	        	stream_statements.Add(statements17.Tree);
 
             	        }
             	        break;
 
             	}
 
-            	char_literal16=(IToken)Match(input,22,FOLLOW_22_in_paren_expr348);  
-            	stream_22.Add(char_literal16);
+            	char_literal18=(IToken)Match(input,22,FOLLOW_22_in_paren_expr354);  
+            	stream_22.Add(char_literal18);
 
 
 
@@ -1056,7 +1125,7 @@ public partial class BonsaiParser : Parser
             // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:51:5: (target= expression (args= arguments ) -> ^( CALL $target ( $args)* ) )
             // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:51:9: target= expression (args= arguments )
             {
-            	PushFollow(FOLLOW_expression_in_call377);
+            	PushFollow(FOLLOW_expression_in_call383);
             	target = expression();
             	state.followingStackPointer--;
 
@@ -1064,7 +1133,7 @@ public partial class BonsaiParser : Parser
             	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:51:27: (args= arguments )
             	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:51:28: args= arguments
             	{
-            		PushFollow(FOLLOW_arguments_in_call382);
+            		PushFollow(FOLLOW_arguments_in_call388);
             		args = arguments();
             		state.followingStackPointer--;
 
@@ -1150,7 +1219,7 @@ public partial class BonsaiParser : Parser
 
         CommonTree root_0 = null;
 
-        BonsaiParser.expression_return expression17 = default(BonsaiParser.expression_return);
+        BonsaiParser.expression_return expression19 = default(BonsaiParser.expression_return);
 
 
 
@@ -1164,36 +1233,36 @@ public partial class BonsaiParser : Parser
             	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:56:9: ( expression )*
             	do 
             	{
-            	    int alt12 = 2;
-            	    int LA12_0 = input.LA(1);
+            	    int alt14 = 2;
+            	    int LA14_0 = input.LA(1);
 
-            	    if ( ((LA12_0 >= NUMBER && LA12_0 <= IDENTIFIER) || LA12_0 == 17 || LA12_0 == 19 || LA12_0 == 21) )
+            	    if ( ((LA14_0 >= NUMBER && LA14_0 <= IDENTIFIER) || LA14_0 == 17 || LA14_0 == 19 || LA14_0 == 21) )
             	    {
-            	        alt12 = 1;
+            	        alt14 = 1;
             	    }
 
 
-            	    switch (alt12) 
+            	    switch (alt14) 
             		{
             			case 1 :
             			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:56:9: expression
             			    {
-            			    	PushFollow(FOLLOW_expression_in_arguments429);
-            			    	expression17 = expression();
+            			    	PushFollow(FOLLOW_expression_in_arguments435);
+            			    	expression19 = expression();
             			    	state.followingStackPointer--;
 
-            			    	adaptor.AddChild(root_0, expression17.Tree);
+            			    	adaptor.AddChild(root_0, expression19.Tree);
 
             			    }
             			    break;
 
             			default:
-            			    goto loop12;
+            			    goto loop14;
             	    }
             	} while (true);
 
-            	loop12:
-            		;	// Stops C# compiler whining that label 'loop12' has no statements
+            	loop14:
+            		;	// Stops C# compiler whining that label 'loop14' has no statements
 
 
             }
@@ -1237,9 +1306,9 @@ public partial class BonsaiParser : Parser
 
         CommonTree root_0 = null;
 
-        IToken set18 = null;
+        IToken set20 = null;
 
-        CommonTree set18_tree=null;
+        CommonTree set20_tree=null;
 
         try 
     	{
@@ -1248,11 +1317,11 @@ public partial class BonsaiParser : Parser
             {
             	root_0 = (CommonTree)adaptor.GetNilNode();
 
-            	set18 = (IToken)input.LT(1);
+            	set20 = (IToken)input.LT(1);
             	if ( (input.LA(1) >= NUMBER && input.LA(1) <= IDENTIFIER) ) 
             	{
             	    input.Consume();
-            	    adaptor.AddChild(root_0, (CommonTree)adaptor.Create(set18));
+            	    adaptor.AddChild(root_0, (CommonTree)adaptor.Create(set20));
             	    state.errorRecovery = false;
             	}
             	else 
@@ -1306,18 +1375,20 @@ public partial class BonsaiParser : Parser
     public static readonly BitSet FOLLOW_curly_expr_in_expression232 = new BitSet(new ulong[]{0x0000000000000002UL});
     public static readonly BitSet FOLLOW_atom_in_expression242 = new BitSet(new ulong[]{0x0000000000000002UL});
     public static readonly BitSet FOLLOW_17_in_square_expr266 = new BitSet(new ulong[]{0x00000000002A1E00UL});
-    public static readonly BitSet FOLLOW_atom_in_square_expr270 = new BitSet(new ulong[]{0x00000000002E1E00UL});
-    public static readonly BitSet FOLLOW_expression_in_square_expr275 = new BitSet(new ulong[]{0x00000000002E1E00UL});
-    public static readonly BitSet FOLLOW_18_in_square_expr279 = new BitSet(new ulong[]{0x0000000000000002UL});
-    public static readonly BitSet FOLLOW_19_in_curly_expr310 = new BitSet(new ulong[]{0x00000000003A1F00UL});
-    public static readonly BitSet FOLLOW_statements_in_curly_expr312 = new BitSet(new ulong[]{0x0000000000100000UL});
-    public static readonly BitSet FOLLOW_20_in_curly_expr315 = new BitSet(new ulong[]{0x0000000000000002UL});
-    public static readonly BitSet FOLLOW_21_in_paren_expr343 = new BitSet(new ulong[]{0x00000000006A1F00UL});
-    public static readonly BitSet FOLLOW_statements_in_paren_expr345 = new BitSet(new ulong[]{0x0000000000400000UL});
-    public static readonly BitSet FOLLOW_22_in_paren_expr348 = new BitSet(new ulong[]{0x0000000000000002UL});
-    public static readonly BitSet FOLLOW_expression_in_call377 = new BitSet(new ulong[]{0x00000000002A1E00UL});
-    public static readonly BitSet FOLLOW_arguments_in_call382 = new BitSet(new ulong[]{0x0000000000000002UL});
-    public static readonly BitSet FOLLOW_expression_in_arguments429 = new BitSet(new ulong[]{0x00000000002A1E02UL});
+    public static readonly BitSet FOLLOW_atom_in_square_expr270 = new BitSet(new ulong[]{0x00000000002E1F00UL});
+    public static readonly BitSet FOLLOW_SEPARATOR_in_square_expr272 = new BitSet(new ulong[]{0x00000000002E1F00UL});
+    public static readonly BitSet FOLLOW_expression_in_square_expr278 = new BitSet(new ulong[]{0x00000000002E1F00UL});
+    public static readonly BitSet FOLLOW_SEPARATOR_in_square_expr280 = new BitSet(new ulong[]{0x00000000002E1F00UL});
+    public static readonly BitSet FOLLOW_18_in_square_expr285 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_19_in_curly_expr316 = new BitSet(new ulong[]{0x00000000003A1F00UL});
+    public static readonly BitSet FOLLOW_statements_in_curly_expr318 = new BitSet(new ulong[]{0x0000000000100000UL});
+    public static readonly BitSet FOLLOW_20_in_curly_expr321 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_21_in_paren_expr349 = new BitSet(new ulong[]{0x00000000006A1F00UL});
+    public static readonly BitSet FOLLOW_statements_in_paren_expr351 = new BitSet(new ulong[]{0x0000000000400000UL});
+    public static readonly BitSet FOLLOW_22_in_paren_expr354 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_expression_in_call383 = new BitSet(new ulong[]{0x00000000002A1E00UL});
+    public static readonly BitSet FOLLOW_arguments_in_call388 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_expression_in_arguments435 = new BitSet(new ulong[]{0x00000000002A1E02UL});
     public static readonly BitSet FOLLOW_set_in_atom0 = new BitSet(new ulong[]{0x0000000000000002UL});
 
 }
