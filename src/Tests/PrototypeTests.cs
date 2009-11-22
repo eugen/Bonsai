@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests {
+namespace Bonsai.Tests {
     [TestClass]
     public class PrototypeTests : BonsaiTestClass {
         [TestMethod] public void TestPrototypes() {

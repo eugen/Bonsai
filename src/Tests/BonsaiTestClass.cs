@@ -13,7 +13,7 @@ using Bonsai.Ast;
 using Bonsai.Runtime;
 
 
-namespace Tests {
+namespace Bonsai.Tests {
 
     public class BonsaiTestClass {
         private TestContext testContextInstance;

@@ -1,13 +1,12 @@
-// $ANTLR 3.1.2 C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g 2009-06-25 21:22:39
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g 2009-11-21 19:04:54
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 168, 219
 // Unreachable code detected.
 #pragma warning disable 162
-namespace  Bonsai.Ast.Generated
-{
+
  
-	using Bonsai.Ast;
+    using Bonsai.Ast;
     using System.Collections.Generic;
 
 
@@ -19,7 +18,9 @@ using Stack 		= Antlr.Runtime.Collections.StackList;
 
 
 
-partial class BonsaiTree : TreeParser
+namespace  Bonsai.Ast.Generated 
+{
+public partial class BonsaiTree : TreeParser
 {
     public static readonly string[] tokenNames = new string[] 
 	{
@@ -31,7 +32,7 @@ partial class BonsaiTree : TreeParser
 		"GROUP", 
 		"BLOCK", 
 		"SQUARE", 
-		"NEWLINE", 
+		"SEPARATOR", 
 		"NUMBER", 
 		"STRING", 
 		"SYMBOL", 
@@ -40,7 +41,6 @@ partial class BonsaiTree : TreeParser
 		"NAMECHAR", 
 		"SIMPLE_STRING", 
 		"ESCAPED_STRING", 
-		"MULTILINE_STRING", 
 		"'{'", 
 		"'}'", 
 		"'['", 
@@ -51,20 +51,19 @@ partial class BonsaiTree : TreeParser
 
     public const int SYMBOL = 11;
     public const int SIMPLE_STRING = 15;
-    public const int T__23 = 23;
     public const int T__22 = 22;
     public const int T__21 = 21;
     public const int T__20 = 20;
     public const int NUMBER = 9;
     public const int ESCAPED_STRING = 16;
-    public const int MULTILINE_STRING = 17;
+    public const int SEPARATOR = 8;
     public const int EOF = -1;
     public const int NAMECHAR = 14;
     public const int T__19 = 19;
     public const int GROUP = 5;
     public const int WS = 13;
     public const int T__18 = 18;
-    public const int NEWLINE = 8;
+    public const int T__17 = 17;
     public const int IDENTIFIER = 12;
     public const int BLOCK = 6;
     public const int CALL = 4;
@@ -102,7 +101,7 @@ partial class BonsaiTree : TreeParser
     }
 
     override public string GrammarFileName {
-		get { return "C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g"; }
+		get { return "D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g"; }
     }
 
 
@@ -118,7 +117,7 @@ partial class BonsaiTree : TreeParser
     };
 
     // $ANTLR start "program"
-    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:17:1: program returns [Sequence result] : ^( GROUP (c= call )* ) ;
+    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:17:1: program returns [Sequence result] : ^( GROUP (c= call )* ) ;
     public BonsaiTree.program_return program() // throws RecognitionException [1]
     {   
         BonsaiTree.program_return retval = new BonsaiTree.program_return();
@@ -137,8 +136,8 @@ partial class BonsaiTree : TreeParser
 
         try 
     	{
-            // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:18:5: ( ^( GROUP (c= call )* ) )
-            // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:18:7: ^( GROUP (c= call )* )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:18:5: ( ^( GROUP (c= call )* ) )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:18:7: ^( GROUP (c= call )* )
             {
             	root_0 = (CommonTree)adaptor.GetNilNode();
 
@@ -147,7 +146,7 @@ partial class BonsaiTree : TreeParser
             	CommonTree _save_last_1 = _last;
             	CommonTree _first_1 = null;
             	CommonTree root_1 = (CommonTree)adaptor.GetNilNode();_last = (CommonTree)input.LT(1);
-            	GROUP1=(CommonTree)Match(input,GROUP,FOLLOW_GROUP_in_program64); 
+            	GROUP1=(CommonTree)Match(input,GROUP,FOLLOW_GROUP_in_program76); 
             		GROUP1_tree = (CommonTree)adaptor.DupNode(GROUP1);
 
             		root_1 = (CommonTree)adaptor.BecomeRoot(GROUP1_tree, root_1);
@@ -158,7 +157,7 @@ partial class BonsaiTree : TreeParser
             	if ( input.LA(1) == Token.DOWN )
             	{
             	    Match(input, Token.DOWN, null); 
-            	    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:18:45: (c= call )*
+            	    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:20:13: (c= call )*
             	    do 
             	    {
             	        int alt1 = 2;
@@ -173,10 +172,10 @@ partial class BonsaiTree : TreeParser
             	        switch (alt1) 
             	    	{
             	    		case 1 :
-            	    		    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:18:46: c= call
+            	    		    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:20:14: c= call
             	    		    {
             	    		    	_last = (CommonTree)input.LT(1);
-            	    		    	PushFollow(FOLLOW_call_in_program71);
+            	    		    	PushFollow(FOLLOW_call_in_program107);
             	    		    	c = call();
             	    		    	state.followingStackPointer--;
 
@@ -229,7 +228,7 @@ partial class BonsaiTree : TreeParser
     };
 
     // $ANTLR start "call"
-    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:21:1: call returns [Call result] : ^( CALL target= expression (a= expression )* ) ;
+    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:23:1: call returns [Call result] : ^( CALL target= expression (a= expression )* ) ;
     public BonsaiTree.call_return call() // throws RecognitionException [1]
     {   
         BonsaiTree.call_return retval = new BonsaiTree.call_return();
@@ -250,8 +249,8 @@ partial class BonsaiTree : TreeParser
 
         try 
     	{
-            // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:22:5: ( ^( CALL target= expression (a= expression )* ) )
-            // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:22:7: ^( CALL target= expression (a= expression )* )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:24:5: ( ^( CALL target= expression (a= expression )* ) )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:24:7: ^( CALL target= expression (a= expression )* )
             {
             	root_0 = (CommonTree)adaptor.GetNilNode();
 
@@ -260,7 +259,7 @@ partial class BonsaiTree : TreeParser
             	CommonTree _save_last_1 = _last;
             	CommonTree _first_1 = null;
             	CommonTree root_1 = (CommonTree)adaptor.GetNilNode();_last = (CommonTree)input.LT(1);
-            	CALL2=(CommonTree)Match(input,CALL,FOLLOW_CALL_in_call98); 
+            	CALL2=(CommonTree)Match(input,CALL,FOLLOW_CALL_in_call134); 
             		CALL2_tree = (CommonTree)adaptor.DupNode(CALL2);
 
             		root_1 = (CommonTree)adaptor.BecomeRoot(CALL2_tree, root_1);
@@ -270,19 +269,19 @@ partial class BonsaiTree : TreeParser
 
             	Match(input, Token.DOWN, null); 
             	_last = (CommonTree)input.LT(1);
-            	PushFollow(FOLLOW_expression_in_call116);
+            	PushFollow(FOLLOW_expression_in_call152);
             	target = expression();
             	state.followingStackPointer--;
 
             	adaptor.AddChild(root_1, target.Tree);
             	 retval.result.Target = target.result; 
-            	// C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:24:13: (a= expression )*
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:26:13: (a= expression )*
             	do 
             	{
             	    int alt2 = 2;
             	    int LA2_0 = input.LA(1);
 
-            	    if ( ((LA2_0 >= GROUP && LA2_0 <= BLOCK) || (LA2_0 >= NUMBER && LA2_0 <= IDENTIFIER)) )
+            	    if ( ((LA2_0 >= GROUP && LA2_0 <= SQUARE) || (LA2_0 >= NUMBER && LA2_0 <= IDENTIFIER)) )
             	    {
             	        alt2 = 1;
             	    }
@@ -291,10 +290,10 @@ partial class BonsaiTree : TreeParser
             	    switch (alt2) 
             		{
             			case 1 :
-            			    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:24:14: a= expression
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:26:14: a= expression
             			    {
             			    	_last = (CommonTree)input.LT(1);
-            			    	PushFollow(FOLLOW_expression_in_call135);
+            			    	PushFollow(FOLLOW_expression_in_call171);
             			    	a = expression();
             			    	state.followingStackPointer--;
 
@@ -346,7 +345,7 @@ partial class BonsaiTree : TreeParser
     };
 
     // $ANTLR start "expression"
-    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:27:1: expression returns [Expression result] : ( ^( GROUP (c= call )* ) | ^( BLOCK (c= call )* ) | number= NUMBER | str= STRING | str= IDENTIFIER | str= SYMBOL );
+    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:29:1: expression returns [Expression result] : ( ^( GROUP (c= call )* ) | ^( BLOCK (c= call )* ) | ^( SQUARE datatype= IDENTIFIER (e= expression )* ) | number= NUMBER | str= STRING | str= IDENTIFIER | str= SYMBOL );
     public BonsaiTree.expression_return expression() // throws RecognitionException [1]
     {   
         BonsaiTree.expression_return retval = new BonsaiTree.expression_return();
@@ -357,65 +356,76 @@ partial class BonsaiTree : TreeParser
         CommonTree _first_0 = null;
         CommonTree _last = null;
 
+        CommonTree datatype = null;
         CommonTree number = null;
         CommonTree str = null;
         CommonTree GROUP3 = null;
         CommonTree BLOCK4 = null;
+        CommonTree SQUARE5 = null;
         BonsaiTree.call_return c = default(BonsaiTree.call_return);
 
+        BonsaiTree.expression_return e = default(BonsaiTree.expression_return);
 
+
+        CommonTree datatype_tree=null;
         CommonTree number_tree=null;
         CommonTree str_tree=null;
         CommonTree GROUP3_tree=null;
         CommonTree BLOCK4_tree=null;
+        CommonTree SQUARE5_tree=null;
 
         try 
     	{
-            // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:28:5: ( ^( GROUP (c= call )* ) | ^( BLOCK (c= call )* ) | number= NUMBER | str= STRING | str= IDENTIFIER | str= SYMBOL )
-            int alt5 = 6;
+            // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:30:5: ( ^( GROUP (c= call )* ) | ^( BLOCK (c= call )* ) | ^( SQUARE datatype= IDENTIFIER (e= expression )* ) | number= NUMBER | str= STRING | str= IDENTIFIER | str= SYMBOL )
+            int alt6 = 7;
             switch ( input.LA(1) ) 
             {
             case GROUP:
             	{
-                alt5 = 1;
+                alt6 = 1;
                 }
                 break;
             case BLOCK:
             	{
-                alt5 = 2;
+                alt6 = 2;
+                }
+                break;
+            case SQUARE:
+            	{
+                alt6 = 3;
                 }
                 break;
             case NUMBER:
             	{
-                alt5 = 3;
+                alt6 = 4;
                 }
                 break;
             case STRING:
             	{
-                alt5 = 4;
+                alt6 = 5;
                 }
                 break;
             case IDENTIFIER:
             	{
-                alt5 = 5;
+                alt6 = 6;
                 }
                 break;
             case SYMBOL:
             	{
-                alt5 = 6;
+                alt6 = 7;
                 }
                 break;
             	default:
-            	    NoViableAltException nvae_d5s0 =
-            	        new NoViableAltException("", 5, 0, input);
+            	    NoViableAltException nvae_d6s0 =
+            	        new NoViableAltException("", 6, 0, input);
 
-            	    throw nvae_d5s0;
+            	    throw nvae_d6s0;
             }
 
-            switch (alt5) 
+            switch (alt6) 
             {
                 case 1 :
-                    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:28:7: ^( GROUP (c= call )* )
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:30:7: ^( GROUP (c= call )* )
                     {
                     	root_0 = (CommonTree)adaptor.GetNilNode();
 
@@ -424,7 +434,7 @@ partial class BonsaiTree : TreeParser
                     	CommonTree _save_last_1 = _last;
                     	CommonTree _first_1 = null;
                     	CommonTree root_1 = (CommonTree)adaptor.GetNilNode();_last = (CommonTree)input.LT(1);
-                    	GROUP3=(CommonTree)Match(input,GROUP,FOLLOW_GROUP_in_expression162); 
+                    	GROUP3=(CommonTree)Match(input,GROUP,FOLLOW_GROUP_in_expression198); 
                     		GROUP3_tree = (CommonTree)adaptor.DupNode(GROUP3);
 
                     		root_1 = (CommonTree)adaptor.BecomeRoot(GROUP3_tree, root_1);
@@ -435,7 +445,7 @@ partial class BonsaiTree : TreeParser
                     	if ( input.LA(1) == Token.DOWN )
                     	{
                     	    Match(input, Token.DOWN, null); 
-                    	    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:28:45: (c= call )*
+                    	    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:32:13: (c= call )*
                     	    do 
                     	    {
                     	        int alt3 = 2;
@@ -450,10 +460,10 @@ partial class BonsaiTree : TreeParser
                     	        switch (alt3) 
                     	    	{
                     	    		case 1 :
-                    	    		    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:28:46: c= call
+                    	    		    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:32:14: c= call
                     	    		    {
                     	    		    	_last = (CommonTree)input.LT(1);
-                    	    		    	PushFollow(FOLLOW_call_in_expression169);
+                    	    		    	PushFollow(FOLLOW_call_in_expression229);
                     	    		    	c = call();
                     	    		    	state.followingStackPointer--;
 
@@ -480,7 +490,7 @@ partial class BonsaiTree : TreeParser
                     }
                     break;
                 case 2 :
-                    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:29:7: ^( BLOCK (c= call )* )
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:33:7: ^( BLOCK (c= call )* )
                     {
                     	root_0 = (CommonTree)adaptor.GetNilNode();
 
@@ -489,7 +499,7 @@ partial class BonsaiTree : TreeParser
                     	CommonTree _save_last_1 = _last;
                     	CommonTree _first_1 = null;
                     	CommonTree root_1 = (CommonTree)adaptor.GetNilNode();_last = (CommonTree)input.LT(1);
-                    	BLOCK4=(CommonTree)Match(input,BLOCK,FOLLOW_BLOCK_in_expression183); 
+                    	BLOCK4=(CommonTree)Match(input,BLOCK,FOLLOW_BLOCK_in_expression243); 
                     		BLOCK4_tree = (CommonTree)adaptor.DupNode(BLOCK4);
 
                     		root_1 = (CommonTree)adaptor.BecomeRoot(BLOCK4_tree, root_1);
@@ -500,7 +510,7 @@ partial class BonsaiTree : TreeParser
                     	if ( input.LA(1) == Token.DOWN )
                     	{
                     	    Match(input, Token.DOWN, null); 
-                    	    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:29:42: (c= call )*
+                    	    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:35:13: (c= call )*
                     	    do 
                     	    {
                     	        int alt4 = 2;
@@ -515,10 +525,10 @@ partial class BonsaiTree : TreeParser
                     	        switch (alt4) 
                     	    	{
                     	    		case 1 :
-                    	    		    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:29:43: c= call
+                    	    		    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:35:14: c= call
                     	    		    {
                     	    		    	_last = (CommonTree)input.LT(1);
-                    	    		    	PushFollow(FOLLOW_call_in_expression190);
+                    	    		    	PushFollow(FOLLOW_call_in_expression274);
                     	    		    	c = call();
                     	    		    	state.followingStackPointer--;
 
@@ -545,12 +555,81 @@ partial class BonsaiTree : TreeParser
                     }
                     break;
                 case 3 :
-                    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:30:7: number= NUMBER
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:36:7: ^( SQUARE datatype= IDENTIFIER (e= expression )* )
                     {
                     	root_0 = (CommonTree)adaptor.GetNilNode();
 
                     	_last = (CommonTree)input.LT(1);
-                    	number=(CommonTree)Match(input,NUMBER,FOLLOW_NUMBER_in_expression205); 
+                    	{
+                    	CommonTree _save_last_1 = _last;
+                    	CommonTree _first_1 = null;
+                    	CommonTree root_1 = (CommonTree)adaptor.GetNilNode();_last = (CommonTree)input.LT(1);
+                    	SQUARE5=(CommonTree)Match(input,SQUARE,FOLLOW_SQUARE_in_expression288); 
+                    		SQUARE5_tree = (CommonTree)adaptor.DupNode(SQUARE5);
+
+                    		root_1 = (CommonTree)adaptor.BecomeRoot(SQUARE5_tree, root_1);
+
+
+                    	 retval.result =  new DataDecl(); 
+
+                    	Match(input, Token.DOWN, null); 
+                    	_last = (CommonTree)input.LT(1);
+                    	datatype=(CommonTree)Match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_expression307); 
+                    		datatype_tree = (CommonTree)adaptor.DupNode(datatype);
+
+                    		adaptor.AddChild(root_1, datatype_tree);
+
+                    	 ((DataDecl)retval.result).DataTypeId = datatype.Text; 
+                    	// D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:39:7: (e= expression )*
+                    	do 
+                    	{
+                    	    int alt5 = 2;
+                    	    int LA5_0 = input.LA(1);
+
+                    	    if ( ((LA5_0 >= GROUP && LA5_0 <= SQUARE) || (LA5_0 >= NUMBER && LA5_0 <= IDENTIFIER)) )
+                    	    {
+                    	        alt5 = 1;
+                    	    }
+
+
+                    	    switch (alt5) 
+                    		{
+                    			case 1 :
+                    			    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:39:8: e= expression
+                    			    {
+                    			    	_last = (CommonTree)input.LT(1);
+                    			    	PushFollow(FOLLOW_expression_in_expression320);
+                    			    	e = expression();
+                    			    	state.followingStackPointer--;
+
+                    			    	adaptor.AddChild(root_1, e.Tree);
+                    			    	 ((DataDecl)retval.result).Expressions.Add(e.result); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    goto loop5;
+                    	    }
+                    	} while (true);
+
+                    	loop5:
+                    		;	// Stops C# compiler whining that label 'loop5' has no statements
+
+
+                    	Match(input, Token.UP, null); adaptor.AddChild(root_0, root_1);_last = _save_last_1;
+                    	}
+
+
+                    }
+                    break;
+                case 4 :
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:40:7: number= NUMBER
+                    {
+                    	root_0 = (CommonTree)adaptor.GetNilNode();
+
+                    	_last = (CommonTree)input.LT(1);
+                    	number=(CommonTree)Match(input,NUMBER,FOLLOW_NUMBER_in_expression335); 
                     		number_tree = (CommonTree)adaptor.DupNode(number);
 
                     		adaptor.AddChild(root_0, number_tree);
@@ -559,28 +638,30 @@ partial class BonsaiTree : TreeParser
 
                     }
                     break;
-                case 4 :
-                    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:31:7: str= STRING
+                case 5 :
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:42:7: str= STRING
                     {
                     	root_0 = (CommonTree)adaptor.GetNilNode();
 
                     	_last = (CommonTree)input.LT(1);
-                    	str=(CommonTree)Match(input,STRING,FOLLOW_STRING_in_expression217); 
+                    	str=(CommonTree)Match(input,STRING,FOLLOW_STRING_in_expression355); 
                     		str_tree = (CommonTree)adaptor.DupNode(str);
 
                     		adaptor.AddChild(root_0, str_tree);
 
-                    	 retval.result =  new Bonsai.Ast.String() { Value = str.Text.Substring(1, str.Text.Length - 2) }; 
+
+                    	            retval.result =  new Bonsai.Ast.String()
+                    	            { Value = str.Text.Substring(1, str.Text.Length - 2) }; 
 
                     }
                     break;
-                case 5 :
-                    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:32:7: str= IDENTIFIER
+                case 6 :
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:45:7: str= IDENTIFIER
                     {
                     	root_0 = (CommonTree)adaptor.GetNilNode();
 
                     	_last = (CommonTree)input.LT(1);
-                    	str=(CommonTree)Match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_expression229); 
+                    	str=(CommonTree)Match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_expression367); 
                     		str_tree = (CommonTree)adaptor.DupNode(str);
 
                     		adaptor.AddChild(root_0, str_tree);
@@ -589,13 +670,13 @@ partial class BonsaiTree : TreeParser
 
                     }
                     break;
-                case 6 :
-                    // C:\\Users\\Eugen\\Projects\\bonsai\\clr\\src\\Parser\\BonsaiTree.g:33:7: str= SYMBOL
+                case 7 :
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\BonsaiTree.g:46:7: str= SYMBOL
                     {
                     	root_0 = (CommonTree)adaptor.GetNilNode();
 
                     	_last = (CommonTree)input.LT(1);
-                    	str=(CommonTree)Match(input,SYMBOL,FOLLOW_SYMBOL_in_expression241); 
+                    	str=(CommonTree)Match(input,SYMBOL,FOLLOW_SYMBOL_in_expression379); 
                     		str_tree = (CommonTree)adaptor.DupNode(str);
 
                     		adaptor.AddChild(root_0, str_tree);
@@ -630,19 +711,22 @@ partial class BonsaiTree : TreeParser
 
  
 
-    public static readonly BitSet FOLLOW_GROUP_in_program64 = new BitSet(new ulong[]{0x0000000000000004UL});
-    public static readonly BitSet FOLLOW_call_in_program71 = new BitSet(new ulong[]{0x0000000000000018UL});
-    public static readonly BitSet FOLLOW_CALL_in_call98 = new BitSet(new ulong[]{0x0000000000000004UL});
-    public static readonly BitSet FOLLOW_expression_in_call116 = new BitSet(new ulong[]{0x0000000000001E68UL});
-    public static readonly BitSet FOLLOW_expression_in_call135 = new BitSet(new ulong[]{0x0000000000001E68UL});
-    public static readonly BitSet FOLLOW_GROUP_in_expression162 = new BitSet(new ulong[]{0x0000000000000004UL});
-    public static readonly BitSet FOLLOW_call_in_expression169 = new BitSet(new ulong[]{0x0000000000000018UL});
-    public static readonly BitSet FOLLOW_BLOCK_in_expression183 = new BitSet(new ulong[]{0x0000000000000004UL});
-    public static readonly BitSet FOLLOW_call_in_expression190 = new BitSet(new ulong[]{0x0000000000000018UL});
-    public static readonly BitSet FOLLOW_NUMBER_in_expression205 = new BitSet(new ulong[]{0x0000000000000002UL});
-    public static readonly BitSet FOLLOW_STRING_in_expression217 = new BitSet(new ulong[]{0x0000000000000002UL});
-    public static readonly BitSet FOLLOW_IDENTIFIER_in_expression229 = new BitSet(new ulong[]{0x0000000000000002UL});
-    public static readonly BitSet FOLLOW_SYMBOL_in_expression241 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_GROUP_in_program76 = new BitSet(new ulong[]{0x0000000000000004UL});
+    public static readonly BitSet FOLLOW_call_in_program107 = new BitSet(new ulong[]{0x0000000000000018UL});
+    public static readonly BitSet FOLLOW_CALL_in_call134 = new BitSet(new ulong[]{0x0000000000000004UL});
+    public static readonly BitSet FOLLOW_expression_in_call152 = new BitSet(new ulong[]{0x0000000000001EE8UL});
+    public static readonly BitSet FOLLOW_expression_in_call171 = new BitSet(new ulong[]{0x0000000000001EE8UL});
+    public static readonly BitSet FOLLOW_GROUP_in_expression198 = new BitSet(new ulong[]{0x0000000000000004UL});
+    public static readonly BitSet FOLLOW_call_in_expression229 = new BitSet(new ulong[]{0x0000000000000018UL});
+    public static readonly BitSet FOLLOW_BLOCK_in_expression243 = new BitSet(new ulong[]{0x0000000000000004UL});
+    public static readonly BitSet FOLLOW_call_in_expression274 = new BitSet(new ulong[]{0x0000000000000018UL});
+    public static readonly BitSet FOLLOW_SQUARE_in_expression288 = new BitSet(new ulong[]{0x0000000000000004UL});
+    public static readonly BitSet FOLLOW_IDENTIFIER_in_expression307 = new BitSet(new ulong[]{0x0000000000001EE8UL});
+    public static readonly BitSet FOLLOW_expression_in_expression320 = new BitSet(new ulong[]{0x0000000000001EE8UL});
+    public static readonly BitSet FOLLOW_NUMBER_in_expression335 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_STRING_in_expression355 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_IDENTIFIER_in_expression367 = new BitSet(new ulong[]{0x0000000000000002UL});
+    public static readonly BitSet FOLLOW_SYMBOL_in_expression379 = new BitSet(new ulong[]{0x0000000000000002UL});
 
 }
 }

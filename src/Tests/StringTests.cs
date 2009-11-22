@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests {
+namespace Bonsai.Tests {
     [TestClass]
     public class StringTests : BonsaiTestClass {
         [TestMethod]

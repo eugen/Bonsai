@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bonsai.Runtime;
 
-namespace Tests {
+namespace Bonsai.Tests {
     [TestClass]
     public class ClrIntegrationTests : BonsaiTestClass {
         [TestMethod]

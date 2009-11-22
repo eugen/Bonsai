@@ -7,10 +7,10 @@ options {
     output=AST;
 }
 
-@namespace { Bonsai.Parsers }
+@namespace { Bonsai.Ast.Generated }
 
 @header { 
-    using Bonsai.Parsers.AST;
+    using Bonsai.Ast;
     using System.Collections.Generic;
 }
 
@@ -33,10 +33,14 @@ expression returns [Expression result]
     | ^(BLOCK
             { $result = new Block(); }
             (c=call { ((Block)$result).Statements.Add(c.result); })*)
+    | ^(SQUARE 
+    		{ $result = new DataDecl(); }
+    		datatype=IDENTIFIER { ((DataDecl)$result).DataTypeId = $datatype.Text; }
+    		(e=expression { ((DataDecl)$result).Expressions.Add(e.result); })*)
     | number=NUMBER
         { $result = new Number() { Value = decimal.Parse($number.Text) }; }
     | str=STRING {
-            $result = new Bonsai.Parsers.AST.String()
+            $result = new Bonsai.Ast.String()
             { Value = $str.Text.Substring(1, $str.Text.Length - 2) }; }
     | str=IDENTIFIER { $result = new Reference() { Name = $str.Text }; }
     | str=SYMBOL { $result = new Symbol() { Name = $str.Text.Substring(1) }; }

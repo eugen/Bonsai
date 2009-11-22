@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g 2009-11-15 16:21:58
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g 2009-11-21 21:02:25
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 168, 219
@@ -63,10 +63,10 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = T__17;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:7:7: ( '{' )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:7:9: '{'
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:7:7: ( '[' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:7:9: '['
             {
-            	Match('{'); 
+            	Match('['); 
 
             }
 
@@ -86,10 +86,10 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = T__18;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:8:7: ( '}' )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:8:9: '}'
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:8:7: ( ']' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:8:9: ']'
             {
-            	Match('}'); 
+            	Match(']'); 
 
             }
 
@@ -109,10 +109,10 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = T__19;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:9:7: ( '[' )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:9:9: '['
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:9:7: ( '{' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:9:9: '{'
             {
-            	Match('['); 
+            	Match('{'); 
 
             }
 
@@ -132,10 +132,10 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = T__20;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:10:7: ( ']' )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:10:9: ']'
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:10:7: ( '}' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:10:9: '}'
             {
-            	Match(']'); 
+            	Match('}'); 
 
             }
 
@@ -201,7 +201,7 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = SEPARATOR;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:64:5: ( ( '\\r' )? '\\n' | ';' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:67:5: ( ( '\\r' )? '\\n' | ';' )
             int alt2 = 2;
             int LA2_0 = input.LA(1);
 
@@ -223,9 +223,9 @@ public partial class BonsaiLexer : Lexer {
             switch (alt2) 
             {
                 case 1 :
-                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:64:9: ( '\\r' )? '\\n'
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:67:9: ( '\\r' )? '\\n'
                     {
-                    	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:64:9: ( '\\r' )?
+                    	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:67:9: ( '\\r' )?
                     	int alt1 = 2;
                     	int LA1_0 = input.LA(1);
 
@@ -236,7 +236,7 @@ public partial class BonsaiLexer : Lexer {
                     	switch (alt1) 
                     	{
                     	    case 1 :
-                    	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:64:9: '\\r'
+                    	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:67:9: '\\r'
                     	        {
                     	        	Match('\r'); 
 
@@ -250,7 +250,7 @@ public partial class BonsaiLexer : Lexer {
                     }
                     break;
                 case 2 :
-                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:65:9: ';'
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:68:9: ';'
                     {
                     	Match(';'); 
 
@@ -274,10 +274,10 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = WS;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:68:5: ( ( ' ' | '\\t' )* )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:68:9: ( ' ' | '\\t' )*
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:71:5: ( ( ' ' | '\\t' )* )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:71:9: ( ' ' | '\\t' )*
             {
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:68:9: ( ' ' | '\\t' )*
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:71:9: ( ' ' | '\\t' )*
             	do 
             	{
             	    int alt3 = 2;
@@ -335,8 +335,8 @@ public partial class BonsaiLexer : Lexer {
     {
     		try
     		{
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:72:5: (~ ( ' ' | '\\t' | '{' | '}' | '(' | ')' | '[' | ']' | '\\n' | '\\r' | '\\'' | '\"' ) )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:72:9: ~ ( ' ' | '\\t' | '{' | '}' | '(' | ')' | '[' | ']' | '\\n' | '\\r' | '\\'' | '\"' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:75:5: (~ ( ' ' | '\\t' | '{' | '}' | '(' | ')' | '[' | ']' | '\\n' | '\\r' | '\\'' | '\"' ) )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:75:9: ~ ( ' ' | '\\t' | '{' | '}' | '(' | ')' | '[' | ']' | '\\n' | '\\r' | '\\'' | '\"' )
             {
             	if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '\b') || (input.LA(1) >= '\u000B' && input.LA(1) <= '\f') || (input.LA(1) >= '\u000E' && input.LA(1) <= '\u001F') || input.LA(1) == '!' || (input.LA(1) >= '#' && input.LA(1) <= '&') || (input.LA(1) >= '*' && input.LA(1) <= 'Z') || input.LA(1) == '\\' || (input.LA(1) >= '^' && input.LA(1) <= 'z') || input.LA(1) == '|' || (input.LA(1) >= '~' && input.LA(1) <= '\uFFFF') ) 
             	{
@@ -366,11 +366,11 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = SYMBOL;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:76:5: ( '.' ( NAMECHAR )* )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:76:9: '.' ( NAMECHAR )*
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:79:5: ( '.' ( NAMECHAR )* )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:79:9: '.' ( NAMECHAR )*
             {
             	Match('.'); 
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:76:13: ( NAMECHAR )*
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:79:13: ( NAMECHAR )*
             	do 
             	{
             	    int alt4 = 2;
@@ -385,7 +385,7 @@ public partial class BonsaiLexer : Lexer {
             	    switch (alt4) 
             		{
             			case 1 :
-            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:76:13: NAMECHAR
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:79:13: NAMECHAR
             			    {
             			    	mNAMECHAR(); 
 
@@ -419,10 +419,10 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = NUMBER;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:5: ( ( '-' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:9: ( '-' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )?
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:5: ( ( '-' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )? )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:9: ( '-' )? ( '0' .. '9' )+ ( '.' ( '0' .. '9' )* )?
             {
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:9: ( '-' )?
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:9: ( '-' )?
             	int alt5 = 2;
             	int LA5_0 = input.LA(1);
 
@@ -433,7 +433,7 @@ public partial class BonsaiLexer : Lexer {
             	switch (alt5) 
             	{
             	    case 1 :
-            	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:9: '-'
+            	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:9: '-'
             	        {
             	        	Match('-'); 
 
@@ -442,7 +442,7 @@ public partial class BonsaiLexer : Lexer {
 
             	}
 
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:14: ( '0' .. '9' )+
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:14: ( '0' .. '9' )+
             	int cnt6 = 0;
             	do 
             	{
@@ -458,7 +458,7 @@ public partial class BonsaiLexer : Lexer {
             	    switch (alt6) 
             		{
             			case 1 :
-            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:15: '0' .. '9'
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:15: '0' .. '9'
             			    {
             			    	MatchRange('0','9'); 
 
@@ -477,7 +477,7 @@ public partial class BonsaiLexer : Lexer {
             	loop6:
             		;	// Stops C# compiler whining that label 'loop6' has no statements
 
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:26: ( '.' ( '0' .. '9' )* )?
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:26: ( '.' ( '0' .. '9' )* )?
             	int alt8 = 2;
             	int LA8_0 = input.LA(1);
 
@@ -488,10 +488,10 @@ public partial class BonsaiLexer : Lexer {
             	switch (alt8) 
             	{
             	    case 1 :
-            	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:27: '.' ( '0' .. '9' )*
+            	        // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:27: '.' ( '0' .. '9' )*
             	        {
             	        	Match('.'); 
-            	        	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:31: ( '0' .. '9' )*
+            	        	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:31: ( '0' .. '9' )*
             	        	do 
             	        	{
             	        	    int alt7 = 2;
@@ -506,7 +506,7 @@ public partial class BonsaiLexer : Lexer {
             	        	    switch (alt7) 
             	        		{
             	        			case 1 :
-            	        			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:80:32: '0' .. '9'
+            	        			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:83:32: '0' .. '9'
             	        			    {
             	        			    	MatchRange('0','9'); 
 
@@ -546,10 +546,10 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = IDENTIFIER;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:84:5: ( ( NAMECHAR )* )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:84:9: ( NAMECHAR )*
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:87:5: ( ( NAMECHAR )* )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:87:9: ( NAMECHAR )*
             {
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:84:9: ( NAMECHAR )*
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:87:9: ( NAMECHAR )*
             	do 
             	{
             	    int alt9 = 2;
@@ -564,7 +564,7 @@ public partial class BonsaiLexer : Lexer {
             	    switch (alt9) 
             		{
             			case 1 :
-            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:84:9: NAMECHAR
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:87:9: NAMECHAR
             			    {
             			    	mNAMECHAR(); 
 
@@ -598,7 +598,7 @@ public partial class BonsaiLexer : Lexer {
     		{
             int _type = STRING;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:88:5: ( SIMPLE_STRING | ESCAPED_STRING )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:91:5: ( SIMPLE_STRING | ESCAPED_STRING )
             int alt10 = 2;
             int LA10_0 = input.LA(1);
 
@@ -620,14 +620,14 @@ public partial class BonsaiLexer : Lexer {
             switch (alt10) 
             {
                 case 1 :
-                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:88:9: SIMPLE_STRING
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:91:9: SIMPLE_STRING
                     {
                     	mSIMPLE_STRING(); 
 
                     }
                     break;
                 case 2 :
-                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:89:9: ESCAPED_STRING
+                    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:92:9: ESCAPED_STRING
                     {
                     	mESCAPED_STRING(); 
 
@@ -649,11 +649,11 @@ public partial class BonsaiLexer : Lexer {
     {
     		try
     		{
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:93:5: ( '\\'' (~ '\\'' )* '\\'' )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:93:9: '\\'' (~ '\\'' )* '\\''
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:96:5: ( '\\'' (~ '\\'' )* '\\'' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:96:9: '\\'' (~ '\\'' )* '\\''
             {
             	Match('\''); 
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:93:14: (~ '\\'' )*
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:96:14: (~ '\\'' )*
             	do 
             	{
             	    int alt11 = 2;
@@ -668,7 +668,7 @@ public partial class BonsaiLexer : Lexer {
             	    switch (alt11) 
             		{
             			case 1 :
-            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:93:15: ~ '\\''
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:96:15: ~ '\\''
             			    {
             			    	if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '&') || (input.LA(1) >= '(' && input.LA(1) <= '\uFFFF') ) 
             			    	{
@@ -709,11 +709,11 @@ public partial class BonsaiLexer : Lexer {
     {
     		try
     		{
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:97:5: ( '\"' (~ '\"' )* '\"' )
-            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:97:9: '\"' (~ '\"' )* '\"'
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:100:5: ( '\"' (~ '\"' )* '\"' )
+            // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:100:9: '\"' (~ '\"' )* '\"'
             {
             	Match('\"'); 
-            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:97:13: (~ '\"' )*
+            	// D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:100:13: (~ '\"' )*
             	do 
             	{
             	    int alt12 = 2;
@@ -728,7 +728,7 @@ public partial class BonsaiLexer : Lexer {
             	    switch (alt12) 
             		{
             			case 1 :
-            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:97:14: ~ '\"'
+            			    // D:\\Projects\\Bonsai\\src\\Grammars\\Bonsai.g:100:14: ~ '\"'
             			    {
             			    	if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '!') || (input.LA(1) >= '#' && input.LA(1) <= '\uFFFF') ) 
             			    	{
@@ -889,8 +889,8 @@ public partial class BonsaiLexer : Lexer {
     static readonly string[] DFA13_transitionS = {
             "\x09\x0d\x01\uffff\x01\x07\x02\x0d\x01\x07\x12\x0d\x01\uffff"+
             "\x01\x0d\x01\x0e\x04\x0d\x01\x0e\x01\x05\x01\x06\x03\x0d\x01"+
-            "\x0b\x01\x0a\x01\x0d\x0a\x0c\x01\x0d\x01\x08\x1f\x0d\x01\x03"+
-            "\x01\x0d\x01\x04\x1d\x0d\x01\x01\x01\x0d\x01\x02\uff82\x0d",
+            "\x0b\x01\x0a\x01\x0d\x0a\x0c\x01\x0d\x01\x08\x1f\x0d\x01\x01"+
+            "\x01\x0d\x01\x02\x1d\x0d\x01\x03\x01\x0d\x01\x04\uff82\x0d",
             "",
             "",
             "",
@@ -969,13 +969,13 @@ public partial class BonsaiLexer : Lexer {
                    	int LA13_0 = input.LA(1);
 
                    	s = -1;
-                   	if ( (LA13_0 == '{') ) { s = 1; }
+                   	if ( (LA13_0 == '[') ) { s = 1; }
 
-                   	else if ( (LA13_0 == '}') ) { s = 2; }
+                   	else if ( (LA13_0 == ']') ) { s = 2; }
 
-                   	else if ( (LA13_0 == '[') ) { s = 3; }
+                   	else if ( (LA13_0 == '{') ) { s = 3; }
 
-                   	else if ( (LA13_0 == ']') ) { s = 4; }
+                   	else if ( (LA13_0 == '}') ) { s = 4; }
 
                    	else if ( (LA13_0 == '(') ) { s = 5; }
 

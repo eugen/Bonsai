@@ -44,10 +44,6 @@
     <NoWarn>618, 612, 219</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="antlr.runtime, Version=2.7.7.3, Culture=neutral, PublicKeyToken=d7701e059243744f">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\antlr.runtime.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Antlr3.Runtime, Version=3.1.2.41038, Culture=neutral, PublicKeyToken=3a9cab8f8d22bfb7">
       <SpecificVersion>False</SpecificVersion>
@@ -60,6 +56,7 @@
     <Compile Include="Ast\Atom.cs" />
     <Compile Include="Ast\Block.cs" />
     <Compile Include="Ast\Call.cs" />
+    <Compile Include="Ast\DataDecl.cs" />
     <Compile Include="Ast\Expression.cs" />
     <Compile Include="Ast\Node.cs" />
     <Compile Include="Ast\Number.cs" />

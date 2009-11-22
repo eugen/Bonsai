@@ -32,13 +32,16 @@ expression
     |   atom
     ;
 
+
+square_expr
+		/* tecnically, there should be 'IDENTIFIER' below and not 'atom', but that crashes the C# parser; 
+		   TODO: investigate why that happens */
+    :   '[' datatype=atom (exp+=expression)* ']' -> ^(SQUARE $datatype $exp*)
+    ;
 curly_expr
     :   '{' statements? '}' -> ^(BLOCK statements)
     ;
 
-square_expr
-    :   '[' statements? ']' -> ^(SQUARE statements)
-    ;
 
 paren_expr
     :   '(' statements? ')' -> ^(GROUP statements)

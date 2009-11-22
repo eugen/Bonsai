@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Scripting;
 using Bonsai.Runtime;
 
-namespace Tests {
+namespace Bonsai.Tests {
     [TestClass]
     public class BlockTests : BonsaiTestClass{
         [TestMethod]

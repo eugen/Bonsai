@@ -51,3 +51,21 @@ namespace System.Reflection {
         }
     }
 }
+
+namespace System {
+    public static class StringExtensions {
+        public static SymbolId ToSymbol(this string s) {
+            return SymbolTable.StringToId(s);
+        }
+    }
+}
+
+namespace System.Linq.Expressions
+{
+    public static class ExpressionExtensions
+    {
+        public static Expression ConvertTo<T>(this Expression exp) {
+            return Expression.Convert(exp, typeof(T));
+        }
+    }
+}
