@@ -39,7 +39,7 @@ namespace Bonsai.Runtime {
                     expression,
                     BindingRestrictions.Empty);
             }
-            // "normal" objects evaluate to themselves when called with no arguments
+            // "normal" objects (i.e. non-dynamic instances) evaluate to themselves when called with no arguments
             if (args.Length == 1) {
                 if (value != null && value.GetType() == ReturnType)
                     return target;
@@ -47,10 +47,24 @@ namespace Bonsai.Runtime {
                     return new DynamicMetaObject(Expression.Convert(target.Expression, ReturnType), BindingRestrictions.Empty);
             }
 
-            // try to call a primitive
-            if (value is string) return GeneratePrimitiveCallExpression<string, BonsaiStringFunction>(target, args, ReturnType);
-            if (value is decimal) return GeneratePrimitiveCallExpression<decimal, BonsaiNumberFunction>(target, args, ReturnType);
-            if (value is SymbolId) return GeneratePrimitiveCallExpression<SymbolId, BonsaiStringFunction>(target, args, ReturnType);
+            // try calling a primitive
+            
+            DynamicMetaObject result = null;
+            if (value is string) 
+                result = GeneratePrimitiveCallExpression<string, BonsaiStringFunction>(target, args, ReturnType);
+            else if (value is decimal) 
+                result = GeneratePrimitiveCallExpression<decimal, BonsaiNumberFunction>(target, args, ReturnType);
+            else if (value is SymbolId) 
+                result = GeneratePrimitiveCallExpression<SymbolId, BonsaiStringFunction>(target, args, ReturnType);
+            else if (value.IsA(typeof(IDictionary<,>))) {
+                //throw new NotImplementedException();
+            } else if (value.IsA(typeof(IList<>))) {
+                //throw new NotImplementedException();
+            } else if (value.IsA(typeof(IEnumerable<>))) {
+                //throw new NotImplementedException();
+            }
+            if(result != null)
+                return result;
 
             // if the second argument is a symbol, fallback to invoking a member called like that
             if (args[1].Value is SymbolId) {

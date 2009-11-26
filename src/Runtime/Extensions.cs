@@ -69,3 +69,16 @@ namespace System.Linq.Expressions
         }
     }
 }
+
+namespace System.Reflection {
+    public static class ReflectionExtensions {
+        public static bool IsA(this object o, Type type) {
+            if(o == null)
+                return false;
+            var oType = o.GetType();
+            return
+                oType == type ||
+                (oType.IsGenericType && oType.GetGenericTypeDefinition() == type);
+        }
+    }
+}

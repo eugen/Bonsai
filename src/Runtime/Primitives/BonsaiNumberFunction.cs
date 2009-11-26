@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Diagnostics;
 
 namespace Bonsai.Runtime.Primitives {
-    public class BonsaiNumberFunction : BonsaiPrimitiveFunction {
+    public class BonsaiNumberFunction : BonsaiPrimitiveFunction<BonsaiNumberFunction> {
         [MapsToSymbol("+")]
         public decimal Add(decimal target, DictionaryBonsaiFunction scope, object[] args) {
             decimal result = target;

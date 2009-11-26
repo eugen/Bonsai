@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 
 namespace Bonsai.Runtime.Primitives {
-    public class BonsaiStringFunction : BonsaiPrimitiveFunction {
+    public class BonsaiStringFunction : BonsaiPrimitiveFunction<BonsaiStringFunction> {
         [MapsToSymbol("upcase")]
         public string Upcase(string target, DictionaryBonsaiFunction scope, object[] args) {
             Debug.Assert(args.Length == 0);
