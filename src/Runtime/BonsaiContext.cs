@@ -11,7 +11,6 @@ using Microsoft.Scripting;
 using Bonsai.Ast;
 using System.Text;
 using System.Diagnostics;
-using Bonsai.Runtime.Primitives;
 using System.Linq.Expressions;
 
 namespace Bonsai.Runtime

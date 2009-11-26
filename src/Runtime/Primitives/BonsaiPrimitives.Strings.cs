@@ -6,29 +6,29 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 
 namespace Bonsai.Runtime.Primitives {
-    public class BonsaiStringFunction : BonsaiPrimitiveFunction<BonsaiStringFunction> {
-        [MapsToSymbol("upcase")]
-        public string Upcase(string target, DictionaryBonsaiFunction scope, object[] args) {
+    public static partial class BonsaiPrimitives  {
+        [Primitive(typeof(string), "upcase")]
+        public static string Upcase(string target, DictionaryBonsaiFunction scope, object[] args) {
             Debug.Assert(args.Length == 0);
             return target.ToUpperInvariant();
         }
-        [MapsToSymbol("downcase")]
-        public string Downcase(string target, DictionaryBonsaiFunction scope, object[] args) {
+        [Primitive(typeof(string), "downcase")]
+        public static string Downcase(string target, DictionaryBonsaiFunction scope, object[] args) {
             Debug.Assert(args.Length == 0);
             return target.ToLowerInvariant();
         }
-        [MapsToSymbol("capitalize")]
-        public string Capitalize(string target, DictionaryBonsaiFunction scope, object[] args) {
+        [Primitive(typeof(string), "capitalize")]
+        public static string Capitalize(string target, DictionaryBonsaiFunction scope, object[] args) {
             Debug.Assert(args.Length == 0);
             return Regex.Replace(target, @"\b\w", new MatchEvaluator(m => m.Value.ToUpperInvariant()));
         }
-        [MapsToSymbol("contains")]
-        public bool Contains(string target, DictionaryBonsaiFunction scope, object[] args) {
+        [Primitive(typeof(string), "contains")]
+        public static bool Contains(string target, DictionaryBonsaiFunction scope, object[] args) {
             Debug.Assert(args.Length == 1 && args[0] is IConvertible);
             return target.Contains(((IConvertible)args[0]).ToString());
         }
-        [MapsToSymbol("+")]
-        public string Concatenate(string target, DictionaryBonsaiFunction scope, object[] args) {
+        [Primitive(typeof(string), "+")]
+        public static string Concatenate(string target, DictionaryBonsaiFunction scope, object[] args) {
             StringBuilder sb = new StringBuilder(target, target.Length + 10);
             foreach (var arg in args)
                 if (arg != null)

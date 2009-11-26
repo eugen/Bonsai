@@ -19,6 +19,21 @@ namespace Bonsai.Tests {
             Assert.AreEqual(42M, ScriptEngine.Execute("0.000042 .* 1000000"));
 
             Assert.AreEqual(42M, ScriptEngine.Execute("42000000 ./ 1000000"));
+            Assert.AreEqual(0M, Execute(@"
+                = .a 0
+                = .a (a .+ 1)
+                = .a (a .- 6)
+                = .a (a .+ 2)
+                = .a (a .- 5)
+                = .a (a .+ 3)
+                = .a (a .- 4)
+                = .a (a .+ 4)
+                = .a (a .- 3)
+                = .a (a .+ 5)
+                = .a (a .- 2)
+                = .a (a .+ 6)
+                = .a (a .- 1)
+                a"));
         }
 
         [TestMethod]

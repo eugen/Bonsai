@@ -16,11 +16,17 @@ namespace Bonsai.Runtime {
             : base(callInfo) {
         }
 
-        public override DynamicMetaObject FallbackInvoke(DynamicMetaObject target, DynamicMetaObject[] args, DynamicMetaObject errorSuggestion) {
+        public override DynamicMetaObject FallbackInvoke(
+            DynamicMetaObject target,
+            DynamicMetaObject[] args,
+            DynamicMetaObject errorSuggestion) 
+        {
             var value = target.Value;
+
             if (value == null) {
                 throw new NotImplementedException("target.Value is null.");
             }
+
             if (target.LimitType.IsSubclassOf(typeof(Delegate))) {
                 var parms = target.LimitType.GetMethod("Invoke").GetParameters();
                 Expression[] callArgs = new Expression[args.Length];
@@ -39,6 +45,7 @@ namespace Bonsai.Runtime {
                     expression,
                     BindingRestrictions.Empty);
             }
+
             // "normal" objects (i.e. non-dynamic instances) evaluate to themselves when called with no arguments
             if (args.Length == 1) {
                 if (value != null && value.GetType() == ReturnType)
@@ -47,23 +54,9 @@ namespace Bonsai.Runtime {
                     return new DynamicMetaObject(Expression.Convert(target.Expression, ReturnType), BindingRestrictions.Empty);
             }
 
-            // try calling a primitive
-            
+            // try calling a primitive            
             DynamicMetaObject result = null;
-            if (value is string) 
-                result = GeneratePrimitiveCallExpression<string, BonsaiStringFunction>(target, args, ReturnType);
-            else if (value is decimal) 
-                result = GeneratePrimitiveCallExpression<decimal, BonsaiNumberFunction>(target, args, ReturnType);
-            else if (value is SymbolId) 
-                result = GeneratePrimitiveCallExpression<SymbolId, BonsaiStringFunction>(target, args, ReturnType);
-            else if (value.IsA(typeof(IDictionary<,>))) {
-                //throw new NotImplementedException();
-            } else if (value.IsA(typeof(IList<>))) {
-                //throw new NotImplementedException();
-            } else if (value.IsA(typeof(IEnumerable<>))) {
-                //throw new NotImplementedException();
-            }
-            if(result != null)
+            if (BonsaiPrimitives.TryBind(target, args, this.ReturnType, out result))
                 return result;
 
             // if the second argument is a symbol, fallback to invoking a member called like that
@@ -115,21 +108,8 @@ namespace Bonsai.Runtime {
                         BindingRestrictions.Empty);
                 }
             }
-
+            
             throw new Exception("Binding failed");
-        }
-
-        private static DynamicMetaObject GeneratePrimitiveCallExpression<TValue, THandler>(DynamicMetaObject target, DynamicMetaObject[] args, Type returnType) {
-            return new DynamicMetaObject(
-                Expression.Convert(
-                    Expression.Call(
-                        Expression.New(typeof(THandler).GetConstructor(new Type[0])),
-                        typeof(BonsaiFunction).GetMethod("Call"),
-                        Expression.NewArrayInit(
-                            typeof(object),
-                            (new Expression[] { Expression.Convert(target.Expression, typeof(object)) }).Union(args.Select(a => Expression.Convert(a.Expression, typeof(object)))))),
-                    returnType),
-                BindingRestrictions.GetTypeRestriction(target.Expression, typeof(TValue)));
         }
     }
 }

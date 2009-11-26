@@ -71,10 +71,11 @@
     <Compile Include="PatternMatchingBonsaiFunction.cs" />
     <Compile Include="PreludeFunction.Patterns.cs" />
     <Compile Include="PreludeFunction.cs" />
-    <Compile Include="Primitives\BonsaiNumberFunction.cs" />
-    <Compile Include="Primitives\BonsaiPrimitiveFunction.cs" />
-    <Compile Include="Primitives\BonsaiStringFunction.cs" />
-    <Compile Include="Primitives\BonsaiSymbolFunction.cs" />
+    <Compile Include="Primitives\BonsaiPrimitives.cs" />
+    <Compile Include="Primitives\BonsaiPrimitives.Numbers.cs" />
+    <Compile Include="Primitives\BonsaiPrimitives.Strings.cs" />
+    <Compile Include="Primitives\BonsaiPrimitives.Symbols.cs" />
+    <Compile Include="Primitives\PrimitiveAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.csproj">

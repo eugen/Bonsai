@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace Bonsai.Runtime.Primitives {
-    public class BonsaiSymbolFunction : BonsaiPrimitiveFunction<BonsaiSymbolFunction> {
+    public static partial class BonsaiPrimitives {
         
     }
 }
