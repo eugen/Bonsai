@@ -119,9 +119,15 @@ După rulare, variabila \c{statements} va conține o listă de instanțe ale cla
 
 \subsection{CallSites, Binders și LanguageContext}
 
+\draft{TODO:}
+
 \subsection{Arbori de expresii}
 
+\draft{TODO:}
+
 \subsection{IDynamicMetaObjectProvider și DynamicMetaObject}
+
+\draft{TODO:}
 
 \section{Generarea expresiilor LINQ}
 
@@ -131,25 +137,28 @@ Clasa răspunzătoare este \texttt{Bonsai.Runtime.Generator}. Aceasta conține c
 
 \subsection{Tratarea scope-ului} 
 
-În Bonsai, contextul de execuție curent este format din dicționarul variabilelor definite în contextul curent și de contextul părinte. În momentul accesării unei variabile, ea este căutată recursiv mai întâi în dicționarul local, apoi în contextul părinte. 
+În Bonsai, contextul de execuție curent este format din dicționarul variabilelor definite în contextul curent și de contextul părinte. În momentul accesării unei variabile, ea este căutată mai întâi în dicționarul local, apoi în contextul părinte, recursiv.
 
-Pentru că Bonsai este un limbaj dinamic, contextul în care se execută un bloc nu poate fi cunoscut în momentul compilării, motiv pentru care fiecare metoda \c{Walk} primește ca prim parametru o expresie (instață a \c{System.Linq.Expressions.Expression}). Aceasta reprezintă o variabilă care stochează contextul curent. De exemplu:
+Pentru că Bonsai este un limbaj dinamic, contextul în care se execută un bloc nu poate fi cunoscut în momentul compilării. Soluția constă în stocarea contexului într-o variabilă normală cu tipul \c{DictionaryBonsaiFunction}. Pentru ca expresiile LINQ generate să poată folosi contextul, toate supraîncărcările metodei \c{Generator.Walk} primesc ca prim parametru o expresie LINQ care reprezintă această variabilă.
+
+Pentru clarificare, mai jos este listată supraîncărcarea metodei \c{Walk} ce corespunde unui nod AST de tipul \c{Reference}. Nodurile \c{Reference} semnifică accesarea unei variabile din context după numele acesteia. 
 \begin{code}
-public static Expression Walk(Expression currentScopeVar, Ast.Reference reference) {
-            return Expression.MakeIndex(
-                currentScopeVar,
-                typeof(DictionaryBonsaiFunction).GetProperty("Item", 
-                    typeof(BonsaiFunction), new Type[] { typeof(SymbolId) }), 
-                new Expression[] { Expression.Constant(SymbolTable.StringToId(reference.Name)) });
-        }
-
-        public static Expression Walk(Expression currentScopeVar, Ast.Sequence sequence) {
-            return Expression.Block(
-                sequence.Statements.Select(c => Walk(currentScopeVar, c)));
-        }
-
+public static Expression Walk(
+    Expression currentScopeVar,
+    Ast.Reference reference)
+{
+    return Expression.MakeIndex(
+        currentScopeVar,
+        typeof(DictionaryBonsaiFunction).GetProperty("Item", 
+            typeof(BonsaiFunction), new Type[] { typeof(SymbolId) }), 
+        new Expression[] { Expression.Constant(
+            SymbolTable.StringToId(reference.Name)) });
+}
 \end{code}
-Acest cod procesează un nod de tipul \c{Sequence} (o secvență de instrucțiuni).
+Primul parametru al metodei, \c{currentScopeVar}, este expresia menționată anterior, asociată variabilei în care e stocat contextul, iar expresia returnată reprezintă accesul printr-un indexer la aceasta. Codul C\# echivalent ar fi următorul:
+\begin{code}
+currentScope[someVariable]
+\end{code}
 
 \section{BonsaiBinder}
 
