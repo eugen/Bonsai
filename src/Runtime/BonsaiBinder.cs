@@ -23,10 +23,12 @@ namespace Bonsai.Runtime {
         {
             var value = target.Value;
 
+            // TODO: handle null value
             if (value == null) {
                 throw new NotImplementedException("target.Value is null.");
             }
 
+            // if target is a delegate, just call it
             if (target.LimitType.IsSubclassOf(typeof(Delegate))) {
                 var parms = target.LimitType.GetMethod("Invoke").GetParameters();
                 Expression[] callArgs = new Expression[args.Length];
@@ -59,7 +61,8 @@ namespace Bonsai.Runtime {
             if (BonsaiPrimitives.TryBind(target, args, this.ReturnType, out result))
                 return result;
 
-            // if the second argument is a symbol, fallback to invoking a member called like that
+            // if the second argument is a symbol, fallback to invoking a static
+            // member named line the symbol
             if (args[1].Value is SymbolId) {
                 string name = ((SymbolId)args[1].Value).ToString();
                 // setters end with =, so remove that when searching for members
@@ -108,7 +111,9 @@ namespace Bonsai.Runtime {
                         BindingRestrictions.Empty);
                 }
             }
-            
+
+            // everything failed; bail
+            // TODO: more helpful error message
             throw new Exception("Binding failed");
         }
     }
