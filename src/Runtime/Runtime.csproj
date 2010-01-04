@@ -72,6 +72,7 @@
     <Compile Include="PreludeFunction.Patterns.cs" />
     <Compile Include="PreludeFunction.cs" />
     <Compile Include="Primitives\BonsaiPrimitives.cs" />
+    <Compile Include="Primitives\BonsaiPrimitives.IList.cs" />
     <Compile Include="Primitives\BonsaiPrimitives.Numbers.cs" />
     <Compile Include="Primitives\BonsaiPrimitives.Strings.cs" />
     <Compile Include="Primitives\BonsaiPrimitives.Symbols.cs" />

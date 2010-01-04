@@ -21,15 +21,18 @@ namespace Bonsai.Tests {
             Assert.AreEqual(42M, o);
         }
 
-        //[TestMethod, Ignore]
-        //public void TestScoping() {
-        //    Assert.AreEqual(
-        //        SymbolTable.StringToId("InnerValue"), 
-        //        Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke"));
-        //    Assert.AreEqual(
-        //        SymbolTable.StringToId("OuterValue"), 
-        //        Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke \n a"));
-        //}
+        [TestMethod]
+        public void TestAssignmentInInnerScope() {
+            Assert.AreEqual(
+                SymbolTable.StringToId("InnerValue"),
+                Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke"));
+            Assert.AreEqual(
+                SymbolTable.StringToId("InnerValue"),
+                Execute("= .a .OuterValue \n = .b { = .a .InnerValue \n a } \n b .Invoke \n a"));
+            Assert.AreEqual(
+                SymbolTable.StringToId("OuterValue"),
+                Execute("= .a .OuterValue \n = .b { =: .a .InnerValue \n a } \n b .Invoke \n a"));
+        }
 
         [TestMethod]
         public void TestAccessOuterVariable() {

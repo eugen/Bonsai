@@ -67,11 +67,20 @@ namespace Bonsai.Runtime {
         }
 
         [MapsToSymbol("=")]
-        public object Assign(object[] args) {
+        public object AssignOrUpdate(object[] args) {
             Debug.Assert(args.Length == 3);
             Debug.Assert(args[0] is DictionaryBonsaiFunction);
             var scope = (DictionaryBonsaiFunction)args[0];
             scope.UpdateOrAdd((SymbolId)args[1], args[2]);
+            return args[2];
+        }
+        
+        [MapsToSymbol("=:")]
+        public object Assign(object[] args) {
+            Debug.Assert(args.Length == 3);
+            Debug.Assert(args[0] is DictionaryBonsaiFunction);
+            var scope = (DictionaryBonsaiFunction)args[0];
+            scope[(SymbolId)args[1]] = args[2];
             return args[2];
         }
 

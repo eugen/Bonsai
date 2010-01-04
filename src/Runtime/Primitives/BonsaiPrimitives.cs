@@ -20,19 +20,25 @@ namespace Bonsai.Runtime.Primitives {
                 return false;
             var value = target.Value;
 
-            // try to search for a "method call" type of handler
             if (arguments.Length >= 2 && 
                 arguments[1].HasValue &&
                 arguments[1].Value is SymbolId) 
             {
                 var methodName = (SymbolId)arguments[1].Value;
+
                 var method = typeof(BonsaiPrimitives).GetMethodsWith<PrimitiveAttribute>(
                     (mi, pi) => 
                         pi.Method == methodName && (
-                            pi.Type.IsAssignableFrom(target.LimitType) || (
+                        pi.Type == null || (
+                            target.LimitType.IsAssignableFrom(pi.Type) || (
                                 pi.Type.IsGenericTypeDefinition &&
                                 target.LimitType.IsGenericType && 
-                                target.LimitType.GetGenericTypeDefinition() == pi.Type))).FirstOrDefault();
+                                pi.Type.MakeGenericType(target.LimitType.GetGenericArguments()).IsAssignableFrom(target.LimitType))))).FirstOrDefault();
+                
+                // assume that if the method is generic than the matched type is also generic and it gets the same parameters
+                if (method.IsGenericMethodDefinition)
+                    method = method.MakeGenericMethod(target.LimitType.GetGenericArguments());
+
                 if(method != null) {
                     result = new DynamicMetaObject(
                         Expression.Convert(
@@ -51,9 +57,6 @@ namespace Bonsai.Runtime.Primitives {
                     return true;
                 }
             }
-
-            // try to search for a "catch-all" binder
-            // TODO 
 
             return false;
         }

@@ -1,7 +1,0 @@
-Add support for calling existing .NET classes
-- better matching between the types of the arguments and a method's parameters
-- should indexers have special syntax? 
-- generics
-
-Null Value?
-

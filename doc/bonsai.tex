@@ -70,11 +70,11 @@ Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .
 
 \section{Scurtă descriere a ANTLR}
 
-ANTLR 3.1\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (bazată pe algoritmul \c{LL(k)}), numărul de gramatici ce pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript.
+ANTLR 3.1\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (bazat pe algoritmul \c{LL(k)}), numărul de gramatici ce pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript.
 
 În plus, ANTLR 3.1 oferă suport pentru efectuarea de transformări arbitrare asupra arborilor: pornind de la arborele de parsare, mai multe gramatici de arbori pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}.
 
-Bonsai ANTLR 3.1 pentru parsarea codului sursă și pentru generarea AST-ului din arborele de parsare. 
+Bonsai utilizează ANTLR 3.1 pentru parsarea codului sursă și pentru generarea AST-ului din arborele de parsare.
 
 \section{Parsarea codului sursă}
 
@@ -119,37 +119,48 @@ După rulare, variabila \c{statements} va conține o listă de instanțe ale cla
 
 \subsection{CallSites, Binders și LanguageContext}
 
+\draft{TODO:}
+
 \subsection{Arbori de expresii}
 
+\draft{TODO:}
+
 \subsection{IDynamicMetaObjectProvider și DynamicMetaObject}
+
+\draft{TODO:}
 
 \section{Generarea expresiilor LINQ}
 
 Odată obținut AST-ul, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. 
 
-Clasa răspunzătoare este \texttt{Bonsai.Runtime.Generator}. Aceasta conține câte o supraîncărcare a metodei \c{Walk} pentru fiecare tip de nod din arborele de sintaxă abstractă. Toate supraîncărcările au o definiție similară și întorc o instanță a unei clase care moștenește clasa \c{System.Linq.Expressions.Expression}.
+Clasa răspunzătoare este \c{Bonsai.Runtime.Generator}. Aceasta conține câte o supraîncărcare a metodei \c{Walk} pentru fiecare tip de nod din arborele de sintaxă abstractă. Toate supraîncărcările au o definiție similară și întorc o instanță a unei clase care moștenește clasa \c{System.Linq.Expressions.Expression}.
 
 \subsection{Tratarea scope-ului} 
 
-În Bonsai, contextul de execuție curent este format din dicționarul variabilelor definite în contextul curent și de contextul părinte. În momentul accesării unei variabile, ea este căutată recursiv mai întâi în dicționarul local, apoi în contextul părinte. 
+În Bonsai, contextul de execuție curent este format din dicționarul variabilelor definite în contextul curent și o referință la contextul părinte. În momentul accesării unei variabile, ea este căutată mai întâi în dicționarul local, apoi în contextul părinte, recursiv.
 
-Pentru că Bonsai este un limbaj dinamic, contextul în care se execută un bloc nu poate fi cunoscut în momentul compilării, motiv pentru care fiecare metoda \c{Walk} primește ca prim parametru o expresie (instață a \c{System.Linq.Expressions.Expression}). Aceasta reprezintă o variabilă care stochează contextul curent. De exemplu:
+Datorita semanticii blocurilor din Bonsai, ca în multe alte limbaje dinamice, contextul în care se execută un bloc nu poate fi cunoscut în momentul compilării. Soluția constă în stocarea contexului într-o variabilă normală cu tipul \c{DictionaryBonsaiFunction}. 
+
+Pentru ca expresiile LINQ generate să poată folosi contextul, toate supraîncărcările metodei \c{Generator.Walk} primesc ca prim parametru o expresie LINQ care reprezintă această variabilă.
+
+De exemplu, mai jos este listată supraîncărcarea metodei \c{Walk} ce corespunde unui nod AST de tipul \c{Reference}. Nodurile \c{Reference} semnifică accesarea unei variabile din context după numele acesteia. 
 \begin{code}
-public static Expression Walk(Expression currentScopeVar, Ast.Reference reference) {
-            return Expression.MakeIndex(
-                currentScopeVar,
-                typeof(DictionaryBonsaiFunction).GetProperty("Item", 
-                    typeof(BonsaiFunction), new Type[] { typeof(SymbolId) }), 
-                new Expression[] { Expression.Constant(SymbolTable.StringToId(reference.Name)) });
-        }
-
-        public static Expression Walk(Expression currentScopeVar, Ast.Sequence sequence) {
-            return Expression.Block(
-                sequence.Statements.Select(c => Walk(currentScopeVar, c)));
-        }
-
+public static Expression Walk(
+    Expression currentScopeVar,
+    Ast.Reference reference)
+{
+    return Expression.MakeIndex(
+        currentScopeVar,
+        typeof(DictionaryBonsaiFunction).GetProperty("Item", 
+            typeof(BonsaiFunction), new Type[] { typeof(SymbolId) }), 
+        new Expression[] { Expression.Constant(
+            SymbolTable.StringToId(reference.Name)) });
+}
 \end{code}
-Acest cod procesează un nod de tipul \c{Sequence} (o secvență de instrucțiuni).
+Primul parametru al metodei, \c{currentScopeVar}, este expresia menționată anterior, asociată variabilei în care e stocat contextul, iar expresia returnată reprezintă accesul printr-un indexer la aceasta. Codul C\# echivalent ar fi următorul:
+\begin{code}
+currentScope[someVariable]
+\end{code}
 
 \section{BonsaiBinder}
 
