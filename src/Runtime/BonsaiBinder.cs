@@ -27,6 +27,7 @@ namespace Bonsai.Runtime {
                 throw new NotImplementedException("target.Value is null.");
             }
 
+            // if target is a delegate, call it immediately
             if (target.LimitType.IsSubclassOf(typeof(Delegate))) {
                 var parms = target.LimitType.GetMethod("Invoke").GetParameters();
                 Expression[] callArgs = new Expression[args.Length];
@@ -108,8 +109,9 @@ namespace Bonsai.Runtime {
                         BindingRestrictions.Empty);
                 }
             }
-            
-            throw new Exception("Binding failed");
+
+            // when all else fails, try invoking a CatchAllPrimitive
+            return BonsaiPrimitives.BindCatchAllPrimitive(target, args, this.ReturnType);
         }
     }
 }
