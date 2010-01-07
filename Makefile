@@ -8,7 +8,7 @@ clean:
 ### TESTS
 test : bin/Bonsai.Tests.dll
 	-rm bin/testresults.xml
-	@MSTest.exe -noisolation -nologo -resultsfile:bin/testresults.xml -testcontainer:bin/Bonsai.Tests.dll -detail:errormessage -detail:errorstacktrace -detail:stdout
+	@MSTest.exe -noisolation -nologo -resultsfile:bin/testresults.xml -testcontainer:"bin/Bonsai.Tests.dll" -detail:errormessage -detail:errorstacktrace -detail:stdout
 
 retest : bin/testresults.xml
 	echo zomg

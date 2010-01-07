@@ -78,7 +78,7 @@
     <Compile Include="Primitives\BonsaiPrimitives.Symbols.cs" />
     <Compile Include="Primitives\PrimitiveAttribute.cs" />
     <Compile Include="Primitives\CatchAllPrimitiveAttribute.cs" />
-    <Compile Include="Primitives\BonsaiPrimitives. IDictionary.cs" />
+    <Compile Include="Primitives\BonsaiPrimitives.IDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.csproj">

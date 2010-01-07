@@ -18,5 +18,9 @@ namespace Bonsai.Runtime.Primitives {
             this.Type = type;
             this.Method = SymbolTable.StringToId(method);
         }
+
+        public PrimitiveAttribute(Type[] types) {
+            
+        }
     }
 }

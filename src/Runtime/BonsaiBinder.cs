@@ -23,6 +23,7 @@ namespace Bonsai.Runtime {
         {
             var value = target.Value;
 
+            // TODO: handle null value
             if (value == null) {
                 throw new NotImplementedException("target.Value is null.");
             }
@@ -60,7 +61,8 @@ namespace Bonsai.Runtime {
             if (BonsaiPrimitives.TryBind(target, args, this.ReturnType, out result))
                 return result;
 
-            // if the second argument is a symbol, fallback to invoking a member called like that
+            // if the second argument is a symbol, fallback to invoking a static
+            // member named line the symbol
             if (args[1].Value is SymbolId) {
                 string name = ((SymbolId)args[1].Value).ToString();
                 // setters end with =, so remove that when searching for members

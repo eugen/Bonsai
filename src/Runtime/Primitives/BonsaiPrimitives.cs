@@ -9,7 +9,12 @@ using System.Linq.Expressions;
 
 namespace Bonsai.Runtime.Primitives {
     public static partial class BonsaiPrimitives {
-        public static bool TryBind(DynamicMetaObject target, DynamicMetaObject[] arguments, Type returnType, out DynamicMetaObject result) {
+        public static bool TryBind(
+            DynamicMetaObject target,
+            DynamicMetaObject[] arguments,
+            Type returnType,
+            out DynamicMetaObject result)
+        {
             result = null;
             if (target.Value == null)
                 return false;
