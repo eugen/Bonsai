@@ -68,11 +68,15 @@ Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .
 \chapter{Parsarea și generarea arborilor}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Primul modul din componența Bonsai se numește \c{Bonsai.Parser} și se ocupă de parsarea codului sursă și generarea arborilor de sintaxă abstractă.
+
 \section{Scurtă descriere a ANTLR}
 
-ANTLR 3.1\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (bazat pe algoritmul \c{LL(k)}), numărul de gramatici ce pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript.
+ANTLR 3\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (care bazat pe algoritmul \c{LL(k)}), numărul de gramatici ce pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript. 
 
-În plus, ANTLR 3.1 oferă suport pentru efectuarea de transformări arbitrare asupra arborilor: pornind de la arborele de parsare, mai multe gramatici de arbori pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}.
+În plus, spre deosebire de majoritatea generatoarelor de parser, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite{antlr_book_treeconstruction}.
+
+Începând cu versiunea 3.1, ANTLR oferă și posibilitatea de a efectua transformări arbitrare și succesive asupra arborilor: spre exemplu, pornind de la arborele de parsare, mai multe gramatici de arbori (tree grammars) pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}\cite{antlr_book_treegrammars}.
 
 Bonsai utilizează ANTLR 3.1 pentru parsarea codului sursă și pentru generarea AST-ului din arborele de parsare.
 
@@ -80,7 +84,7 @@ Bonsai utilizează ANTLR 3.1 pentru parsarea codului sursă și pentru generarea
 
 Simplitatea limbajului se reflectă în dimensiunile gramaticii: aceasta are doar 18 reguli de parsare (inclusiv lexerul) și nici un cuvânt nu este rezervat\footnote{Gramatica de parsare este listată în întregime în Anexa \ref{app:grammar}}. În urma aplicării unei reguli rezultă un arbore de parsare, generat conform instrucțiunilor din gramatică. Acesta conține încă un număr ridicat de artefacte și nu poate fi considerat un arbore de sintaxă abstractă.
 
-Din gramatică au fost generate clasele \c{BonsaiParser} și \c{BonsaiLexer}. Următorul fragment oferă un exemplu de utilizare:
+Din gramatică au fost generate cu ANTLR clasele \c{BonsaiParser} și \c{BonsaiLexer}. Următorul fragment oferă un exemplu de utilizare:
 
 \begin{code}
 var text = "... Bonsai code ...";
@@ -97,7 +101,7 @@ Metoda \c{program} semnifică aplicarea regulei cu același nume. După rulare, 
 
 Pe lângă gramatica de parsare, Bonsai utilizează și o gramatica de arbori, de doar 3 reguli\footnote{Gramatica de arbori este listată în întregime în Anexa \ref{app:tree_grammar}}, care transformă arborele de parsare într-un arbore de sintaxă abstractă. Clasa generată din aceastra gramatică este \c{BonsaiTree}.
 
-Fragmentul următor este continuarea codului din secțiunea precedentă și arată aplicarea gramaticii de arbori pe rezultatele parsării:
+Fragmentul următor este continuarea codului din secțiunea precedentă și demonstrează aplicarea gramaticii de arbori pe rezultatele parsării:
 
 \begin{code}
 var tree = (CommonTree)returnValue.Tree;
@@ -110,36 +114,91 @@ List<Call> statements = treeWalker.program().result.Statements;
 După rulare, variabila \c{statements} va conține o listă de instanțe ale clasei \c{Call}. Este important de observat că rezultatul aplicării gramaticii de arbori reprezintă chiar instanțe de clase din namespace-ul \c{Bonsai.Ast}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introducere în DLR}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\draft{TODO: introductory text}
+
+\section{CallSites}
+
+Un \c{CallSite} reprezinta un context în care sunt rezolvate call-uri dinamice. Acesta poate fi asociat cu o singură linie de cod care conține un apel către o instanță a tipului \c{dynamic} din C\# 4.0\cite{csharp_4_specs} sau cu un întreg program scris într-un limbaj dynamic. 
+
+Scopul principal al \c{CallSite}-urilor este de a mări performanța legaturilor dinamice prin păstrarea rezultatelor anterioare într-un cache. Când este nevoie de rezolvarea unui call, \c{CallSite}-ul caută mai întâi în cache un rezultat potrivit (prin testarea \c{BindingRestrictions}-urilor) și, dacă acesta este găsit, îl returnează imediat. Dacă nu (în cazul unui cache-miss), cererea este înaintată către un \c{Binder}.
+
+\section{DynamicMetaObject, Binders și BindingRestrictions}
+
+Un rezultat al rezolvării unui apel dinamic este reprezentat de o instanță a clasei \c{DynamicMetaObject}\cite{dynamic_meta_object}. Aceasta conține expresia LINQ\cite{linq_expressions} a apelului, tipul de date așteptat, valoarea la rulare a apelului (unde este cazul) și un set de \c{BindingRestrictions} care exprimă condițiile în care rezultatul este valid.
+
+Un \c{Binder} este o clasă responsabilă cu rezolvarea unuia sau mai multe tipuri de expresii dinamice, cum ar fi apeluri de funcții, apeluri de membri, operatori infix, etc și returnarea unei instanțe de \c{DynamicMetaObject} ca rezultat. Bindereler sunt specifice unui anumit limbaj, rolul lor fiind de a ajuta la implementarea semanticii acestuia.
+
+Pentru a rezolva apelurilor dinamice, un \c{Binder} trebuie să genereze o expresie LINQ asociată rezultatului și să returneze un \c{DynamicMetaObject} format din această expresie împreună cu un set de \c{BindingRestrictions}.
+
+\section{Arbori de expresii}
+
+Expresiile LINQ au fost introduse prima dată în versiunea 3.5 a .NET Framework\cite{expression_trees_35} și permit reprezentarea type-safe a anumitor "expresii" de cod managed, cum ar fi apelul unei metode sau o operație binară precum \c{a + 3}, într-un mod independent de limbaj. Expresiile sunt înstanțe de clase care moștenesc \c{System.Linq.Expressions.Expression}.
+
+Fragmentul următor de cod oferă un scurt exemplu de utilizare, mai precis generarea și compilarea la runtime a unei expresii lambda care primește un parametru \c{a} de tip \c{int} și întoarce valoarea sa incrementată cu \c{1} (\c{a + 1}).
+\begin{code}
+// parametrul expresiei lambda declarate mai jos
+var param = Expression.Parameter(typeof(int), "a");
+var expr =
+  Expression.Lambda<Func<int, int>>(
+    // body-ul
+    Expression.Add(
+      param, //referintă la parametrul "a"
+      Expression.Constant(1)),
+    //lista de parametri
+    new Expression[] { param });
+// expresia LINQ se compilează într-un Func<int, int>
+Func<int, int> func = expr.Compile();
+Debug.Assert(10 == func(9));
+\end{code}
+
+Atât C\# 3.0 cât și VisualBasic 9.0 (versiunile din .NET 3.5) suportă definirea expresiilor LINQ într-un mod mult mai simplu. Toate expresiile asignate unei variabile de tipul \c{Expression<TDelegate>} sunt procesate de compilator și înlocuite cu instanțe de expresii lambda ce pot fi compilate sau analizate la runtime:
+\begin{code}
+Expression<Func<int, int>> expr2 = a => a + 1;
+Func<int, int> func2 = expr2.Compile();
+Debug.Assert(10 == func2(9));
+\end{code}
+În exemplul de mai sus, funcția \c{x => x + 1} este procesată de compilatorul C\# 3.0 iar variabilei \c{expr2} îi este asignată o expresie echivalentă celei din primul exemplu.
+
+Expresiile LINQ pot fi de asemenea descompuse, analizate sau combinate cu alte expresii. Linq2Sql se folosește de această funcționalitate pentru a genera cod SQL plecând de la expresii C\# sau VB9.
+
+\section{IDynamicMetaObjectProvider}
+
+Pe lângă Bindere, DLR-ul oferă și posibilitatea ca un obiect să rezolve singur apelurile dinamice asupra lui, precum invocarea ca funcție sau apelul unui membru. Pentru aceasta, el trebuie să implementeze interfața \\ \c{IDynamicMetaObjectProvider}\cite{i_dynamic_meta_object_provider}. Binder-ele pot scurtcircuita acest mecanism și returna propriul rezultat, dar recomandat este ca rezolvarea unui apel către un obiect ce implementează \c{IDynamicMetaObjectProvider} să fie prelucrată de acesta, și nu de Binder.
+
+Acest mecanism este deosebit de important pentru interoperabilitatea între limbaje dinamice diferite. De exemplu, un Binder din IronPython ar trebui să lase un obiect IronRuby să rezolve apelurile cu semantica proprie, de Ruby, și să nu încerce aplicarea semanticii Python. Astfel, toate obiectele cu semantică Ruby trebuie vor implementa interfața \c{IDynamicMetaObjectProvider}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Runtime-ul Bonsai}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Introducere în DLR}
-
-\draft{TODO:}
-
-\subsection{CallSites, Binders și LanguageContext}
-
-\draft{TODO:}
-
-\subsection{Arbori de expresii}
-
-\draft{TODO:}
-
-\subsection{IDynamicMetaObjectProvider și DynamicMetaObject}
-
-\draft{TODO:}
+Al doilea modul Bonsai, pe lângă \c{Bonsai.Parser}, este \c{Bonsai.Runtime}. Acesta include componente responsabile cu executia codului, implementarea semanticii Bonsai, integrarea cu CLR-ul și implementarea componentelor necesare din DLR.
 
 \section{Generarea expresiilor LINQ}
 
-Odată obținut AST-ul, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. 
+Odată obținut AST-ul după parsare, următorul pas este transformarea acestuia în expresii LINQ\cite{linq_expressions}. 
 
-Clasa răspunzătoare este \c{Bonsai.Runtime.Generator}. Aceasta conține câte o supraîncărcare a metodei \c{Walk} pentru fiecare tip de nod din arborele de sintaxă abstractă. Toate supraîncărcările au o definiție similară și întorc o instanță a unei clase care moștenește clasa \c{System.Linq.Expressions.Expression}.
+Clasa răspunzătoare este \c{Bonsai.Runtime.Generator}. Aceasta conține câte o supraîncărcare a metodei \c{Walk} pentru fiecare tip de nod din arborele de sintaxă abstractă. Toate supraîncărcările au o definiție similară și întorc o expresie LINQ:
+\begin{code}
+public static class BonsaiExpressionGenerator {
+  Expression Walk(Expression currentScopeVar, Call call);       
+  Expression Walk(Expression currentScopeVar, Number number);
+  Expression Walk(Expression currentScopeVar, String str);
+  Expression Walk(Expression currentScopeVar, Symbol symbol);
+  Expression Walk(Expression currentScopeVar, Block block);
+  Expression Walk(Expression currentScopeVar, Reference reference);
+  Expression Walk(Expression currentScopeVar, Sequence sequence);
+  Expression Walk(Expression currentScopeVar, DataDecl decl);
+}
+\end{code}
 
 \subsection{Tratarea scope-ului} 
 
 În Bonsai, contextul de execuție curent este format din dicționarul variabilelor definite în contextul curent și o referință la contextul părinte. În momentul accesării unei variabile, ea este căutată mai întâi în dicționarul local, apoi în contextul părinte, recursiv.
 
-Datorita semanticii blocurilor din Bonsai, ca în multe alte limbaje dinamice, contextul în care se execută un bloc nu poate fi cunoscut în momentul compilării. Soluția constă în stocarea contexului într-o variabilă normală cu tipul \c{DictionaryBonsaiFunction}. 
+Datorita semanticii blocurilor din Bonsai, ca în multe alte limbaje dinamice, contextul în care se execută un bloc nu poate fi cunoscut în momentul compilării. Soluția constă în tratarea acestuia ca pe o variabilă normală cu tipul \c{DictionaryBonsaiFunction}. 
 
 Pentru ca expresiile LINQ generate să poată folosi contextul, toate supraîncărcările metodei \c{Generator.Walk} primesc ca prim parametru o expresie LINQ care reprezintă această variabilă.
 
@@ -162,16 +221,49 @@ Primul parametru al metodei, \c{currentScopeVar}, este expresia menționată ant
 currentScope[someVariable]
 \end{code}
 
-\section{BonsaiBinder}
+\section{Clasa BonsaiBinder}
 
-\draft{TODO: explică cum se rezolvă la runtime apelurile de funcții.}
+Deoarece totul în Bonsai este privit ca un apel de funcție, clasa \c{BonsaiBinder} implementează clasa abstractă \c{InvokeBinder}. Aceasta este o unealtă ajutătoare din DLR, potrivită cazurilor în care un implementator nu este interesat decât de apelurile dinamice ce reprezintă invocări de funcții. 
+
+Singura metodă din \c{InvokeBinder} ce trebuie supraîncărcată este \c{FallbackInvoke}:
+\begin{code}
+public override DynamicMetaObject FallbackInvoke(
+  DynamicMetaObject target,
+  DynamicMetaObject[] args);
+\end{code}
+Primul parametru reprezintă obiectul apelat, iar al doilea un vector cu argumentele apelului.
+
+Dacă \c{target} implementează interfața \c{IDynamicMetaObjectProvider}, \c{InvokeBinder} redirectează rezolvarea apelului către \c{target}. \c{FallbackInvoke} este apelat numai în cazul în care \c{target} nu poate rezolva apelul.
+
+\c{BonsaiBinder.FallbackInvoke} testează dacă apelul întră într-una din următoarele categorii:
+\begin{enumerate}
+\item Apelarea unui \c{Delegate}
+\item Referențierea unui obiect CLR
+\item Apelarea unei primitive Bonsai
+\item Invocarea unui membru al unui obiect CLR
+\end{enumerate}
+
+În caz contrar se consideră că binding-ul a eșuat și este aruncată o excepție.
+
+\subsection{Apelarea unui Delegate}
+
+Dacă tipul \c{target}-ului este o subclasă a \c{System.Delegate}, \c{BonsaiBinder} consideră acest apel dinamic ca fiind un apel static al unui delegate, iar Expresia generată va fi de tipul \c{InvocationExpression}.
+
+\subsection{Referențierea obiectelor CLR}
+
+Dacă \c{target} este un obiect CLR obișnuit non-dinamic și lista de argumente este vidă, binder-ul tratează apelul ca pe o "referențiere" și returnează expresia inițială (\c{target.Expression}). Altfel spus, un obiect obișnuit se evaluează la el însuși.
+
+\subsection{Apelarea primitivelor și invocarea membrilor obiectelor CLR}
+
+Atât în cazul primitivelor cât si al membrilor obiectelor CLR, apelul va fi rezolvat printr-un call al unei metode dintr-un tip CLR. În cazul primitivelor, o metodă din clasa în care acestea sunt definite, în cel al membrilor obiectelor CLR, din clasa obiectului \c{target}. Mai multe detalii vor fi prezentate în secțiunile ce urmează.
 
 \section{Tratarea tipurilor de date primitive}
 
-\draft{TODO: cum sunt tipurile 'string', 'decimal', etc.  
-manipulate în Bonsai.}
+Primitivele în Bonsai pot fi considerate extensii ale anumitor tipuri, similar cu extension methods din C\# 3.0. De exemplu, primitiva \c{capitalize} este o extensie a tipului \c{string}, iar \c{shuffle} este o extensie a tipului \c{IList<T>}.
 
-\section{Rezolvarea metodelor .NET}
+\draft{TODO: explain how primitives are defined and how they are resolved}
+
+\section{Invocarea membrilor obiectelor CLR}
 
 \draft{TODO: cum se determină metoda .NET corectă după tipurile argumentelor și numărul acestora.}
 

@@ -61,8 +61,8 @@ namespace Bonsai.Runtime {
             if (BonsaiPrimitives.TryBind(target, args, this.ReturnType, out result))
                 return result;
 
-            // if the second argument is a symbol, fallback to invoking a static
-            // member named line the symbol
+            // if the second argument is a symbol, fallback to invoking a
+            // static (as-in "non-dynamic") member named like the symbol
             if (args[1].Value is SymbolId) {
                 string name = ((SymbolId)args[1].Value).ToString();
                 // setters end with =, so remove that when searching for members
