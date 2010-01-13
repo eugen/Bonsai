@@ -72,7 +72,7 @@ Primul modul din componența Bonsai se numește \c{Bonsai.Parser} și se ocupă 
 
 \section{Scurtă descriere a ANTLR}
 
-ANTLR 3\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (care bazat pe algoritmul \c{LL(k)}), numărul de gramatici ce pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript. 
+ANTLR 3\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (care bazat pe algoritmul \c{LL(k)}), numărul de gramatici care pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript. 
 
 În plus, spre deosebire de majoritatea generatoarelor de parser, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite{antlr_book_treeconstruction}.
 
@@ -154,7 +154,7 @@ Func<int, int> func = expr.Compile();
 Debug.Assert(10 == func(9));
 \end{code}
 
-Atât C\# 3.0 cât și VisualBasic 9.0 (versiunile din .NET 3.5) suportă definirea expresiilor LINQ într-un mod mult mai simplu. Toate expresiile asignate unei variabile de tipul \c{Expression<TDelegate>} sunt procesate de compilator și înlocuite cu instanțe de expresii lambda ce pot fi compilate sau analizate la runtime:
+Atât C\# 3.0 cât și VisualBasic 9.0 (versiunile din .NET 3.5) suportă definirea expresiilor LINQ într-un mod mult mai simplu. Toate expresiile asignate unei variabile de tipul \c{Expression<TDelegate>} sunt procesate de compilator și înlocuite cu instanțe de expresii lambda care pot fi compilate sau analizate la runtime:
 \begin{code}
 Expression<Func<int, int>> expr2 = a => a + 1;
 Func<int, int> func2 = expr2.Compile();
@@ -164,9 +164,9 @@ Debug.Assert(10 == func2(9));
 
 Expresiile LINQ pot fi de asemenea descompuse, analizate sau combinate cu alte expresii. Linq2Sql se folosește de această funcționalitate pentru a genera cod SQL plecând de la expresii C\# sau VB9.
 
-\section{IDynamicMetaObjectProvider}
+\section{IDynamicMetaObjectProvider}\label{sec:IDynamicMetaObjectProvider}
 
-Pe lângă Bindere, DLR-ul oferă și posibilitatea ca un obiect să rezolve singur apelurile dinamice asupra lui, precum invocarea ca funcție sau apelul unui membru. Pentru aceasta, el trebuie să implementeze interfața \\ \c{IDynamicMetaObjectProvider}\cite{i_dynamic_meta_object_provider}. Binder-ele pot scurtcircuita acest mecanism și returna propriul rezultat, dar recomandat este ca rezolvarea unui apel către un obiect ce implementează \c{IDynamicMetaObjectProvider} să fie prelucrată de acesta, și nu de Binder.
+Pe lângă Bindere, DLR-ul oferă și posibilitatea ca un obiect să rezolve singur apelurile dinamice asupra lui, precum invocarea ca funcție sau apelul unui membru. Pentru aceasta, el trebuie să implementeze interfața \\ \c{IDynamicMetaObjectProvider}\cite{i_dynamic_meta_object_provider}. Binder-ele pot scurtcircuita acest mecanism și returna propriul rezultat, dar recomandat este ca rezolvarea unui apel către un obiect care implementează \c{IDynamicMetaObjectProvider} să fie prelucrată de acesta, și nu de Binder.
 
 Acest mecanism este deosebit de important pentru interoperabilitatea între limbaje dinamice diferite. De exemplu, un Binder din IronPython ar trebui să lase un obiect IronRuby să rezolve apelurile cu semantica proprie, de Ruby, și să nu încerce aplicarea semanticii Python. Astfel, toate obiectele cu semantică Ruby trebuie vor implementa interfața \c{IDynamicMetaObjectProvider}.
 
@@ -202,7 +202,7 @@ Datorita semanticii blocurilor din Bonsai, ca în multe alte limbaje dinamice, c
 
 Pentru ca expresiile LINQ generate să poată folosi contextul, toate supraîncărcările metodei \c{Generator.Walk} primesc ca prim parametru o expresie LINQ care reprezintă această variabilă.
 
-De exemplu, mai jos este listată supraîncărcarea metodei \c{Walk} ce corespunde unui nod AST de tipul \c{Reference}. Nodurile \c{Reference} semnifică accesarea unei variabile din context după numele acesteia. 
+De exemplu, mai jos este listată supraîncărcarea metodei \c{Walk} care corespunde unui nod AST de tipul \c{Reference}. Nodurile \c{Reference} semnifică accesarea unei variabile din context după numele acesteia. 
 \begin{code}
 public static Expression Walk(
     Expression currentScopeVar,
@@ -223,9 +223,9 @@ currentScope[someVariable]
 
 \section{Clasa BonsaiBinder}
 
-Deoarece totul în Bonsai este privit ca un apel de funcție, clasa \c{BonsaiBinder} implementează clasa abstractă \c{InvokeBinder}. Aceasta este o unealtă ajutătoare din DLR, potrivită cazurilor în care un implementator nu este interesat decât de apelurile dinamice ce reprezintă invocări de funcții. 
+Deoarece totul în Bonsai este privit ca un apel de funcție, clasa \c{BonsaiBinder} implementează clasa abstractă \c{InvokeBinder}. Aceasta este o unealtă ajutătoare din DLR, potrivită cazurilor în care un implementator nu este interesat decât de apelurile dinamice care reprezintă invocări de funcții. 
 
-Singura metodă din \c{InvokeBinder} ce trebuie supraîncărcată este \c{FallbackInvoke}:
+Singura metodă din \c{InvokeBinder} care trebuie supraîncărcată este \c{FallbackInvoke}:
 \begin{code}
 public override DynamicMetaObject FallbackInvoke(
   DynamicMetaObject target,
@@ -259,37 +259,148 @@ Atât în cazul primitivelor cât si al membrilor obiectelor CLR, apelul va fi r
 
 \section{Tratarea tipurilor de date primitive}
 
-Primitivele în Bonsai pot fi considerate extensii ale anumitor tipuri, similar cu extension methods din C\# 3.0. De exemplu, primitiva \c{capitalize} este o extensie a tipului \c{string}, iar \c{shuffle} este o extensie a tipului \c{IList<T>}.
+Primitivele în Bonsai pot fi considerate extensii ale anumitor tipuri, similar cu extension methods din C\# 3.0. De exemplu, primitiva \c{capitalize} poate fi privită ca o extensie a tipului \c{System.String}, iar \c{shuffle} o extensie a tipului \c{System.Collections.Generic.IList<T>}.
 
-\draft{TODO: explain how primitives are defined and how they are resolved}
+\subsection{Definirea primitivelor}
+
+Toate primitivele sunt metode în clasa \c{BonsaiPrimitives} și sunt decorate cu atributul \c{PrimitiveAttribute}. Acest atribut specifică atât tipul pe care îl extinde primitiva cât și numele extensiei.
+
+\begin{code}
+\hspace[Primitive(typeof(string), "capitalize")]
+public static string Capitalize(
+  string target,
+  DictionaryBonsaiFunction scope,
+  object[] args)
+{
+  Debug.Assert(args.Length == 0);
+  return Regex.Replace(
+    target, @"\b\w",
+    new MatchEvaluator(m => m.Value.ToUpperInvariant()));
+}
+\end{code}
+În fragmentul de cod de mai sus este definită o primitivă pentru clasa \c{System.String} numită \c{capitalize} care transformă prima literă a fiecărui cuvânt în majusculă.
+
+Primitivele pot fi definite și pentru tipuri generice: o primitivă definită pentru tipul generic \c{typeof(List<>)} se va aplica tuturor instanțierilor acestui tip. Primitiva \c{shuffle} este un exemplu:
+\begin{code}
+\hspace[Primitive(typeof(IList<>), "shuffle")]
+public static IList<T> IListShuffle<T>(
+  IList<T> target,
+  DictionaryBonsaiFunction scope,
+  object[] args)
+{
+  // create copy
+  var copy = new List<T>(target);
+  var rng = new Random();
+  var n = target.Count;
+  // Knuth's shuffle
+  for(int i = n - 1; i > 0; i--) {
+    int j = rng.Next(0, n);
+    var tmp = copy[j];
+    copy[j] = copy[i];
+    copy[i] = tmp;
+  }
+  return copy;
+}
+\end{code}
+
+Din exemplele de mai sus se poate observa că metodele primitive trebuie să aibă trei parametri:
+\begin{description}
+\item[target]\hfill\\ obiectul apelat
+\item[scope]\hfill\\ contextul apelului
+\item[args]\hfill\\ lista de argumente
+\end{description}
+
+Parametrul \c{scope} nu este utilizat în mod uzual, dar opțiunea de a accesa și analiza contextul la runtime deschide numeroase posibilități, cum ar fi dezvoltarea unui debugger.
+
+\subsection{Rezolvarea primitivelor}
+
+O primitivă este căutată după tipul obiectului apelat, \c{target}, și după nume. Tipul lui \c{target} trebuie să fie compatibil cu tipul specificat în atributul \c{PrimitiveAttribute}. Primul argument din lista de argumente trebuie să fie de tipul \c{SymbolId}\footnote{Mai multe despre simboluri în secțiunea \ref{sec:Symbols}} și să corespundă cu numele specificat în acelasi atribut.
+
+\subsection{Utilizarea primitivelor}
+
+Primitivele sunt utilizate pentru extinderea claselor deja existente din .NET Framework care nu pot fi înlocuite cu tipuri specifice Bonsai, sau care sunt necesare pentru interoperabilitatea cu bibliotecile existente. Cel mai bun exemplu îl consituie numerele: operațiile matematice uzuale sunt implementate ca primitive ale tipului \c{System.Decimal}.
+
+Capitolul \ref{ch:StandardLibrary} include lista completă de primitive din Bonsai.
 
 \section{Invocarea membrilor obiectelor CLR}
 
-\draft{TODO: cum se determină metoda .NET corectă după tipurile argumentelor și numărul acestora.}
+Pentru ca un apel dinamic să poate fi tratat de către binder ca un call static către o metodă sau proprietate CLR, următoarele condiții trebuie să fie îndeplinite:
+
+\begin{enumerate}
+\item Lista de argumente să fie non-vidă, iar primul argument să fie de tipul \c{SymbolId}.
+\item Tipul obiectului \c{target} să conțină o metodă sau proprietate publică numită similar symbolului din primul argument.
+\item Tipul argumentelor din apel (mai puțin primul, simbolul) trebuie să fie compatibile cu parametrii metodei sau proprietății.
+\end{enumerate}
+
+În cazul proprietăților, binder-ul consideră că dacă lista de argumente conține doar simbolul atunci este vorba de accesarea \c{getter}-ului, iar în caz contrar al \c{setter}-ului. 
+
+Notă: binder-ul caută metode și proprietăți atât statice cât și non-statice, ale instanței. 
 
 \section{Clasa BonsaiFunction}
 
-\draft{TODO: Descrie ce anume face clasa BonsaiFunction și clasele derivate din aceasta}
+Pe lângă cazurile tratate direct de către \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele specifice Bonsai.
+
+Pentru că binderul \c{BonsaiBinder} moștenește clasa \c{InvokeBinder}, toate apelurile în care \c{target}-ul are tipul \c{BonsaiFunction} vor fi redirectate implicit către \c{target}.
+
+Clasa \c{BonsaiFunction} conține o singură metodă virtuală:
+\begin{code}
+  public abstract object Call(object[] arguments);
+\end{code}
+
+Cea mai mare parte din semantica Bonsai este implementată de clase care moștenesc \c{BonsaiFunction}. Lista completă este inclusă în capitolul \ref{ch:StandardLibrary}.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Biblioteca de funcții standard}
+\chapter{Biblioteca de funcții standard}\label{ch:StandardLibrary}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze întreaga biblioteca disponibilă în implementarile „originale” (MRI\cite{ruby_mri} si CPython\cite{cpython}), Bonsai încearcă să folosească cât mai mult clasele din .NET Framework și să mențină biblioteca proprie de funcții cât mai mică.
+\draft{Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze întreaga biblioteca disponibilă în implementarile „originale” (MRI\cite{ruby_mri} si CPython\cite{cpython}), Bonsai încearcă să folosească cât mai mult clasele din .NET Framework și să mențină biblioteca proprie de funcții cât mai mică.}
+
+\section{Symboluri}\label{sec:Symbols}
+
+Un simbol din Bonsai este foarte asemănător simbolurilor din Ruby\cite{ruby_symbols} și Lisp\cite{clhs_symbols}. Un simbol se comportă de cele mai multe ori ca un string. Diferența majoră constă în faptul că pentru orice string există o singură instanță a unui simbol cu acel string, ceea ce face compararea a două simboluri foarte rapidă. De asemenea, utilizarea unui simbol indică de cele mai multe ori folosirea metaprogrămarii.
+
+Tipul la runtime al simbolurilor este \c{Microsoft.Scripting.Dynamic.SymbolId}.
 
 \section{Numere}
 
-În Bonsai există un singur tip de numere: raționale, reprezentate in virgulă fixă. Acesta mapează peste tipul \texttt{System.Decimal} din .NET Framework. Erorile cauzate de reprezentarea in virgulă mobilă (ex. \texttt{1.1 + 1.1 + 1.1 == 3.300000000007}) sunt astfel eliminate.
+Numerele, ca toate instanțele din Bonsai, pot fi apelate ca funcții. Operațiile matematice uzuale precum adunarea și scăderea sunt efectuate prin apelarea primului operand cu 2 argumente: un simbol care reprezintă operatorul, urmat de cel de-al doilea operand:
+\begin{code}
+1 .+ 3 -> 4
+1 .^ 10 -> 1024
+\end{code}
 
-\begin{tabular} { | r | l | }
-  \hline
-  symboluri & descriere \\
-  \hline
-  .\texttt{+, .-, .*, ./} & adunare, scădere, înmulțire, împărțire \\
-  .\texttt{\textasciicircum} & ridicare la putere \\
-  \draft{TODO} & \draft{Adaugă mai multe operații} \\
-  \hline
-\end{tabular}
+Operațiile și funcțiile matematice sunt implementate ca primitive peste tipul \c{System.Decimal}. Lista completă de este următoarea:
+
+\begin{itemize}
+\item \c{.+} — adunare
+\item \c{.-} — scădere
+\item \c{.*} — înmulțire
+\item \c{./} — împărțire
+\item \c{.\textasciicircum} — ridicare la putere
+\draft{
+\item \c{.\%} — modulo
+\item \c{.round} — rotunjire la cel mai apropiat întreg
+\item \c{.floor} — rotunjire la întregul imediat inferior
+\item \c{.ceiling} — rotunjire la întregul imediat superior
+}
+\end{description}
+
+Toate constantele numerice din codul sursă Bonsai sunt parsate într-un singur tip de numere: raționale, reprezentate in virgulă fixă. Acesta mapează peste tipul \c{System.Decimal} din .NET Framework. Motivația o reprezintă elimitarea erorilor cauzate de reprezentarea in virgulă mobilă:
+\begin{code}
+// C#
+float a = 1000f;
+float b = 0.0001f;
+Console.WriteLine("{0:0000.0000}", a + b);
+-> 1000.0000
+\end{code}
+\begin{code}
+\# Bonsai
+= .a 1000
+= .b 0.0001
+print (a .+ b)
+-> 1000.0001
+\end{code}
 
 \section{Șiruri de caractere}
 
@@ -307,10 +418,6 @@ Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite s
   .\texttt{} &  \\
   \hline
 \end{tabular}
-
-\section{Symboluri}
-
-Tipul \texttt{symbol} din Bonsai este foarte asemănător simbolurilor din Ruby\cite{ruby_symbols} și Lisp\cite{clhs_symbols}. Un simbol se comportă de cele mai multe ori ca un string. Diferența majoră constă în faptul că pentru orice string există o singură instanță a unui simbol cu acel string, ceea ce face compararea a două simboluri foarte rapidă. De asemenea, utilizarea unui simbol indică de cele mai multe ori folosirea metaprogrămarii.
 
 \section{Blocuri}
 
