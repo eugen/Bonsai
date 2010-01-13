@@ -12,6 +12,23 @@ namespace Bonsai.Runtime.Primitives {
             Debug.Assert(args.Length == 1 && args[0] is T);
             return target.Contains((T)args[0]);
         }
+
+        [Primitive(typeof(IList<>), "shuffle")]
+        public static IList<T> IListShuffle<T>(IList<T> target, DictionaryBonsaiFunction scope, object[] args) {
+            // create copy
+            var copy = new List<T>(target);
+            var rng = new Random();
+            var n = target.Count;
+            // Knuth's shuffle
+            for(int i = n - 1; i > 0; i--) {
+                int j = rng.Next(0, n);
+                var tmp = copy[j];
+                copy[j] = copy[i];
+                copy[i] = tmp;
+            }
+            return copy;
+        }
+
         [CatchAllPrimitive(typeof(IList<>))]
         public static object IListGetItem<T>(IList<T> target, DictionaryBonsaiFunction scope, object[] args) {
             if (args.Length == 1 && args[0] is decimal)
