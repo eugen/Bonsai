@@ -194,7 +194,7 @@ public static class BonsaiExpressionGenerator {
 }
 \end{code}
 
-\subsection{Tratarea scope-ului} 
+\subsection{Tratarea scope-ului}\label{sec:ScopeManagement}
 
 În Bonsai, contextul de execuție curent este format din dicționarul variabilelor definite în contextul curent și o referință la contextul părinte. În momentul accesării unei variabile, ea este căutată mai întâi în dicționarul local, apoi în contextul părinte, recursiv.
 
@@ -320,7 +320,7 @@ O primitivă este căutată după tipul obiectului apelat, \c{target}, și după
 
 Primitivele sunt utilizate pentru extinderea claselor deja existente din .NET Framework care nu pot fi înlocuite cu tipuri specifice Bonsai, sau care sunt necesare pentru interoperabilitatea cu bibliotecile existente. Cel mai bun exemplu îl consituie numerele: operațiile matematice uzuale sunt implementate ca primitive ale tipului \c{System.Decimal}.
 
-Capitolul \ref{ch:StandardLibrary} include lista completă de primitive din Bonsai.
+Capitolul \ref{ch:Primitives} include lista completă de primitive din Bonsai.
 
 \section{Invocarea membrilor obiectelor CLR}
 
@@ -347,11 +347,176 @@ Clasa \c{BonsaiFunction} conține o singură metodă virtuală:
   public abstract object Call(object[] arguments);
 \end{code}
 
-Cea mai mare parte din semantica Bonsai este implementată de clase care moștenesc \c{BonsaiFunction}. Lista completă este inclusă în capitolul \ref{ch:StandardLibrary}.
-
+Cea mai mare parte din semantica Bonsai este implementată de clase care moștenesc \c{BonsaiFunction}. Lista completă este inclusă în capitolul \ref{ch:BonsaiFunction}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Biblioteca de funcții standard}\label{ch:StandardLibrary}
+\chapter{Funcții standard}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+În secțiunea \ref{sec:ScopeManagement} a fost menționat că lista variabilelor definite (contextul curent) este stocată într-o instanță a clasei \c{DictionaryBonsaiFunction} și că aceasta conține întotdeauna o referință către contextul părinte. 
+Acest lucru este în continuare adevărat, cu o singură excepție: contextul din rădăcină, care nu are părinte, este o instanță a clasei \c{PreludeFunction}.
+
+Clasa \c{PreludeFunction} moștenește clasa \c{DictionaryBonsaiFunction}. Funcționalitatea adusă în plus e că, în constructor, contextul este prepopulat cu funcțiile standard din Bonsai.
+
+Acest capitol enumerează aceste funcții standard și încearcă să ofere exemple de utilizare pentru fiecare dintre ele.
+
+\section{Asignarea variabilelor}
+
+Bonsai are două functii pentru asignarea și declararea variabilelor, \c{=} și \c{=:}. Ambele primesc ca parametri un simbol cu numele variabilei și un obiect cu valoarea acesteia:
+\begin{code}
+=: .a 5
+= .b "abc"
+\end{code}
+
+În cazul în care variabila nu este definită în nici un context din lanțul de contexte, ambele funcții se comportă la fel: o nouă variabilă este inserată în contextul curent cu valoarea specificată. 
+
+Dacă variabila este deja definită în contextul curent, ambele funcții vor avea, din nou, același efect și vor suprascrie valoarea veche cu cea nouă.
+
+Diferența apare dacă variabila nu este definită în contextul curent, dar este în schimb definită în altă parte în lanțul de contexte. În acest caz, funcția \c{=} va actualiza cea mai apropiată variabila deja existentă cu noua valoare, pe când funcția \c{=:} va crea o nouă variabilă în contextul curent. 
+
+Fragmentul următor ilustrează această diferență:
+\begin{code}
+= .a .OuterValue
+{ = .a .InnerValue } .Invoke
+a
+  -> .InnerValue
+= .b .OuterValue
+{ =: .b .InnerValue } .Invoke
+b
+  -> .OuterValue
+\end{code}
+Apelul primului bloc modifică variabila \c{a} definită în contextul exterior, pe când cel de-al doilea definește o nouă variabilă \c{b}, diferită de cea exterioară.
+
+\section{Definirea funcțiilor cu \c{defun}}
+
+Funcția \c{defun} este folosită pentru definirea de noi funcții. Parametrii acesteia sunt un simbol ce reprezintă numele funcției, urmat de N simboluri care conțin numele parametrilor, iar la final un block care constituie corpul noii funcții:
+\begin{code}
+\# definirea functiei f
+defun .f .a .b {
+  a .+ b 
+}
+\# apelarea ei
+f 2 3
+  -> 5
+\end{code}
+\c{.f} este numele noii funcții iar \c{.a} și \c{.b} numele parametrilor. Blocul \c{\{a .+ b\}} referențiază cei doi parametri, apelând metoda \c{.+} a lui \c{a} cu \c{b} ca argument.
+
+Funcția \c{defun} poate fi apelată de mai multe ori pentru același nume de funcție. Fiecare apel va suprascrie valoarea anterioară a funcției în contextul curent.
+
+\section{Pattern-matching cu \c{def|}}
+
+Bonsai suportă și o variantă limitată de pattern-matching. Funcția \c{def|} este similară funcției \c{defun}, cu două diferențe:
+prima este că o parte din argumente, în afară de simboluri reprezentând numele parametrilor, pot fi șabloane. Cea de-a doua este că apelările ulterioare cu același nume de funcție nu vor suprascrie funcția în context, ci vor adăuga șabloanele noi la funcția deja existentă.
+
+Un șablon este o instanță a care implementează interfața \c{IPattern}:
+\begin{code}
+public interface IPattern {
+  SymbolId ParameterName { get; }
+  bool Test(object value);
+}
+\end{code}
+Aceasta conține un symbol care definește numele parametrului din contextul funcției și o metodă \c{Test}, care testează la runtime dacă apelul se potrivește sau nu cu șablonul.
+
+Pentru specificarea șabloanelor există o serie de funcții standard:
+\begin{description}
+\item[\c{|=}]\hfill\\ Testare de egalitate cu o altă valoare. Tipul șablonului este \c{EqPattern}.
+\item[\c{|is}]\hfill\\ Testare a tipului parametrului. Tipul șablonului este \c{IsPattern}.
+\end{description}
+\draft{TODO: definește mai multe șabloane, ex.  |<, |>, |!=, etc.}
+
+Alegerea unei variante dintre cele specificate se face la runtime. Variantele sunt verificate, în ordinea definirii, prin testarea șabloanelor peste lista de argumente. Dacă nici una dintre variante nu se potrivește atunci este aruncată o excepție.
+
+Un exemplu clasic de utilizare al pattern-matching-ului este funcția factorial:
+\begin{code}
+def| .factorial (|= .zero 0) { 1 }
+def| .factorial .a { a .* (factorial (a .- 1)) }
+\end{code}
+Fragmentul de cod definește două variante ale funcției \c{factorial}:
+\begin{enumerate}
+\item un apel cu un singur parametru (asociat în interiorul funcției variabilei \c{zero}); șablonul testează ca acesta să fie egal cu \c{0}.
+\item un apel cu un singur parametru (asociat în interiorul funcției variabilei \c{a}); nu există nici un șablon, deci această variantă se va potrivi oricărui apel cu un singur parametru.
+\end{enumerate}
+
+\draft{TODO: definește mai multe șabloane}
+
+\draft{TODO: arată cum se definește un nou șablon}
+
+\section{Funcția \c{ref}}
+
+Funcția \c{ref} este folosită pentru referirea la o funcție fără evaluarea acesteia. \c{ref} este utilă în cazuri în care se dorește manipularea funcțiilor, cum ar fi retunarea unei funcții sau trimiterea unei funcții ca argument. 
+
+Un exemplu de cod în care \c{ref} e necesar este următorul:
+\begin{code}
+defun .make_adder .start {
+  defun .add .increment {
+    = .start (start .+ increment)
+    start
+  }
+  ref .add
+}
+= .adder (make_adder 0)
+adder 1 -> 1
+adder 3 -> 4
+adder 0 -> 4
+adder 6 -> 10
+\end{code}
+
+\section{Instrucțiuni condiționale}
+
+Funcția \c{if} primește 3 parametri: o valoare de test, un block sau o valoare pentru cazul True și un block sau o valoare pentru cazul False. 
+
+Singura valoare pentru care rezultatul testului va fi False este valoare nulă (\c{null} din C\#). Orice altă valoare, inclusiv \c{Boolean.False} din CLR va fi recunoscută ca True.
+
+După testare, dacă argumentul corespunzător rezultatului testului este o valoare atunci aceasta este returnată. Dacă este un block, atunci este evaluat și rezultatul evaluării blocului este returnat.
+
+Fragmentul următor de cod oferă exemple de utilizare:
+\begin{code}
+= .a null
+if a "a nu e null" "a e null"
+  -> "a e null"
+if a "a nu e null" { = a 1 }
+  -> "a" va fi setat la valoarea 1
+if a { print "a nu e null" } { "a e null" }
+  -> "a nu e null"
+\end{code}
+
+\draft{TODO: definește funcțiile when și unless}
+
+\section{Alte funcții}
+
+\begin{description}
+\item[\c{import}]\hfill\\ Funcția \c{import} este folosită la utilizarea bibliotecilor de clase .NET existente. Capitolul \ref{ch:IntegratingWithDotNet} explică această funcție în detaliu.
+\item[\c{print}]\hfill\\ Funcția \c{print} afișează toate argumentele în consolă. 
+\item[\c{null}]\hfill\\ Funcția \c{null} întoarce valoarea nulă. Null este utilizat ca unică valoare falsă în instrucțiunile condiționale.
+\end{description}
+
+\chapter{Structuri de date}
+
+Bonsai are o sintaxă specială pentru declararea structurilor de date din codul sursă.
+
+\subsection{Liste și vectori}
+
+\begin{code}
+= .list [> 1 2 3 ]
+= .array [| 1 2 3]
+\end{code}
+
+\subsection{Dictionare}
+
+\begin{code}
+= .dict [# 
+  .a 1 
+  .b 3
+  .c 42 
+]
+\end{code}
+
+\subsection{Definirea unui nou tip de structuri de date}
+
+\draft{TODO}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Obiecte Bonsai}\label{ch:BonsaiFunction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \draft{Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze întreaga biblioteca disponibilă în implementarile „originale” (MRI\cite{ruby_mri} si CPython\cite{cpython}), Bonsai încearcă să folosească cât mai mult clasele din .NET Framework și să mențină biblioteca proprie de funcții cât mai mică.}
@@ -361,6 +526,22 @@ Cea mai mare parte din semantica Bonsai este implementată de clase care moșten
 Un simbol din Bonsai este foarte asemănător simbolurilor din Ruby\cite{ruby_symbols} și Lisp\cite{clhs_symbols}. Un simbol se comportă de cele mai multe ori ca un string. Diferența majoră constă în faptul că pentru orice string există o singură instanță a unui simbol cu acel string, ceea ce face compararea a două simboluri foarte rapidă. De asemenea, utilizarea unui simbol indică de cele mai multe ori folosirea metaprogrămarii.
 
 Tipul la runtime al simbolurilor este \c{Microsoft.Scripting.Dynamic.SymbolId}.
+
+\section{Blocuri}
+
+Un block în Bonsai reprezintă o secvență de instrucțiuni delimitată între acolade. Un block, ca orice alt obiect, poate fi stocat într-o variabilă, trimis ca argument către alte funcții sau apelat:
+\begin{code}
+= .a { 42 }
+print (a .Invoke)
+  -> 42
+\end{code}
+Metoda din fragmentul de mai sus, \c{Invoke}, este singura suportată de block-uri și nu are nici un parametru. 
+
+Tipul la runtime al unui bloc este \c{BlockBonsaiFunction}, clasă derivată din \c{BonsaiFunction}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Primitive}\label{ch:Primitives}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Numere}
 
@@ -384,7 +565,7 @@ Operațiile și funcțiile matematice sunt implementate ca primitive peste tipul
 \item \c{.floor} — rotunjire la întregul imediat inferior
 \item \c{.ceiling} — rotunjire la întregul imediat superior
 }
-\end{description}
+\end{itemize}
 
 Toate constantele numerice din codul sursă Bonsai sunt parsate într-un singur tip de numere: raționale, reprezentate in virgulă fixă. Acesta mapează peste tipul \c{System.Decimal} din .NET Framework. Motivația o reprezintă elimitarea erorilor cauzate de reprezentarea in virgulă mobilă:
 \begin{code}
@@ -392,14 +573,14 @@ Toate constantele numerice din codul sursă Bonsai sunt parsate într-un singur 
 float a = 1000f;
 float b = 0.0001f;
 Console.WriteLine("{0:0000.0000}", a + b);
--> 1000.0000
+  -> 1000.0000
 \end{code}
 \begin{code}
 \# Bonsai
 = .a 1000
 = .b 0.0001
 print (a .+ b)
--> 1000.0001
+  -> 1000.0001
 \end{code}
 
 \section{Șiruri de caractere}
@@ -418,61 +599,6 @@ print (a .+ b)
   .\texttt{} &  \\
   \hline
 \end{tabular}
-
-\section{Blocuri}
-
-Un \texttt{block} este o secvență de instrucțiuni.
-
-\draft{TODO}
-
-\section{Funcții}
-
-\draft{TODO}
-
-\section{Pattern-Matching}
-
-\subsection{Funcția \texttt{def|}}
-
-\subsection{Șablonul \texttt{|=}}
-
-\subsection{Șablonul \texttt{|is}}
-
-\draft{TODO: definește mai multe șabloane}
-
-\subsection{Definirea unui nou tip de șablon}
-
-\section{Structuri de date}
-
-Bonsai are o sintaxă specială pentru structuri de date.
-
-\subsection{Liste și vectori}
-
-\begin{code}
-= .list [> 1 2 3 ]
-= .array [| 1 2 3]
-\end{code}
-
-\subsection{Dictionare}
-
-\begin{code}
-= .dict [# 
-  .a 1 
-  .b 3
-  .c 42 
-]
-\end{code}
-
-\subsection{Definirea unui nou tip de structuri de date}
-
-\draft{TODO}
-
-\section{Alte funcții}
-
-Aceste funcții sunt disponibile în biblioteca standard, dar nu au putut fi incluse în nici una din categoriile de mai sus.
-
-\subsection{Funcția \c{ref}}
-
-\draft{TODO}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Bonsai și Programarea Orientată Obiect}
@@ -518,14 +644,14 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 \draft{Limbaj dinamic = polimorfism implicit (?)}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Integrarea cu platforma .NET}
+\chapter{Integrarea cu platforma .NET}\label{ch:IntegratingWithDotNet}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Unul din principale avantajele în utilizarea runtime-ului .NET este posibilitatea de a folosi bibliotecile disponibile, atât oficiale cât și particulare. Bonsai dispune de un set de primitive care fac acest lucru posibil.
 
-\section{primitiva \texttt{import}}
+\draft{TODO}
 
-Primitiva \texttt{import}
+\section{Funcția \c{import}}
 
 \section{Spații de nume și clase statice}
 
@@ -580,3 +706,4 @@ Primitiva \texttt{import}
 \bibliography{bonsai}{}
 
 \end{document}
+
