@@ -67,6 +67,10 @@ namespace System.Linq.Expressions
         public static Expression ConvertTo<T>(this Expression exp) {
             return Expression.Convert(exp, typeof(T));
         }
+
+        public static Expression ConvertTo(this Expression exp, Type t) {
+            return Expression.Convert(exp, t);
+        }
     }
 }
 

@@ -1,0 +1,12 @@
+﻿loadAssembly "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+import .Color .System.Drawing.Color
+
+defun .rgbHandler .r .g .b {
+	Color .FromArgb r g b
+}
+
+dataHandlers .Add .rgb rgbHandler
+
+= .white [rgb 255 255 255 ]
+print white
+print (white .GetType)

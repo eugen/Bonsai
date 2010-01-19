@@ -78,16 +78,21 @@ namespace Bonsai.Runtime {
 
             Expression handler = 
                 Expression.MakeIndex(
-                    handlerDict.ConvertTo<Dictionary<SymbolId, Func<IEnumerable<object>, object>>>(),
-                    typeof(Dictionary<SymbolId, Func<IEnumerable<object>, object>>).GetProperty("Item"),
+                    handlerDict.ConvertTo<Dictionary<SymbolId, BonsaiFunction>>(),
+                    typeof(Dictionary<SymbolId, BonsaiFunction>).GetProperty("Item"),
                     new Expression[] { Expression.Constant(decl.DataTypeId.ToSymbol()).ConvertTo<SymbolId>() });
-              
-            return Expression.Invoke(
-                handler,
-                new Expression[] { 
-                    Expression.NewArrayInit(typeof(object), 
-                    decl.Expressions.Select(
-                        ex => Expression.Convert(Walk(currentScopeVar, ex), typeof(object)))) });
+
+            var args = new List<Expression>(decl.Expressions.Count + 1);
+            args.Add(handler);
+            args.Add(currentScopeVar);
+            args.AddRange(
+                decl.Expressions.Select(
+                    ex => Walk(currentScopeVar, ex).ConvertTo<object>()));
+
+            return Expression.Dynamic(
+                new BonsaiBinder(new CallInfo(1)),
+                typeof(object), 
+                args.ToArray());
         }
         
         public static Expression Walk(Expression currentScopeVar, Ast.Node node) {

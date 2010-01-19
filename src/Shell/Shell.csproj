@@ -63,6 +63,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Antlr3.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Dynamic" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +81,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Test.bon">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.csproj">

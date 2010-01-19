@@ -61,7 +61,7 @@ namespace Bonsai.Runtime {
                     if (!pi.ParameterType.IsAssignableFrom(arg.GetType())) {
                         accepted = false;
                         break;
-                    }   
+                    }
                 }
                 if (accepted) { // we found a good candidate
                     if (mi is ConstructorInfo)
@@ -70,6 +70,20 @@ namespace Bonsai.Runtime {
                         return mi.Invoke(null, arguments);
                 }
             }
+
+            // if we've reached this point but we still have a partially matching method, 
+            // just try to forcefully case the args to what the method expects
+            if (candidates.Count > 0) {
+                var mi = candidates[0];
+                var miParams = mi.GetParameters();
+                var newArgs = (object[])arguments.Clone();
+                for (int i = 0; i < arguments.Length; i++) {
+                    newArgs[i] = Convert.ChangeType(arguments[i], miParams[i].ParameterType);
+                }
+                return mi.Invoke(null, newArgs);
+
+            }
+
             throw new MissingMemberException(String.Format("Could not find a compatible member named '{0}' in class '{1}'", memberName, this.Class));
         }
     }

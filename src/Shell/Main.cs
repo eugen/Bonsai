@@ -8,6 +8,7 @@ using Bonsai.Ast;
 using Bonsai.Runtime;
 using System.Reflection;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Bonsai.Shell
 {
@@ -32,14 +33,13 @@ namespace Bonsai.Shell
             ScriptRuntime runtime = new ScriptRuntime(runtimeSetup);
             ScriptScope global = runtime.CreateScope();
             ScriptEngine engine = runtime.GetEngineByTypeName(typeof(BonsaiContext).AssemblyQualifiedName);
-            Console.WriteLine(engine.Execute(@"
-import .arrl .System.Collections.ArrayList
-= .a (arrl .new)
-a .Add 4
-a .Add 6
-print (a .Item 0)
-print (a .Count)
-                "));
+            
+            var result = engine.Execute(File.ReadAllText("Test.bon"));
+            string line;
+            while((line = Console.ReadLine()).Length > 0) {
+                result = engine.Execute(line);
+                Console.WriteLine(result);
+            }
       	}
 	}
 }

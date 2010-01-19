@@ -85,8 +85,18 @@ namespace Bonsai.Runtime {
                         argExpr = Expression.Convert(argExpr, parms[i-2].ParameterType);
                         callArgs[i-2] = argExpr;
                     }
+                        
+                    Expression callExpr = Expression.Call(
+                        target.Expression.ConvertTo(target.LimitType), 
+                        (MethodInfo)method, 
+                        callArgs);
+                    if (method.ReturnType == typeof(void)) {
+                        callExpr = Expression.Block(
+                            callExpr,
+                            Expression.Constant(null));
+                    }
                     return new DynamicMetaObject(
-                        Expression.Call(Expression.Convert(target.Expression, target.LimitType), (MethodInfo)method, callArgs), 
+                        callExpr.ConvertTo(this.ReturnType), 
                         BindingRestrictions.Empty);
                 }
                 // getter

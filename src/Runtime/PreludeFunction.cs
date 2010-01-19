@@ -84,6 +84,15 @@ namespace Bonsai.Runtime {
             return args[2];
         }
 
+        [MapsToSymbol("==")]
+        public object _Equals(object[] args) {
+            Debug.Assert(args.Length == 3);
+            Debug.Assert(args[0] is DictionaryBonsaiFunction);
+            var a1 = args[1];
+            var a2 = args[2];
+            return (a1 == null && a2 == null) || (a1.Equals(a2));
+        }
+
         // Fetches an object from the scope without evaluating it. Used to return functions.
         [MapsToSymbol("ref")]
         public object Reference(object[] args) {
@@ -102,7 +111,12 @@ namespace Bonsai.Runtime {
             var scope = (DictionaryBonsaiFunction)args[0];
             var alias = (SymbolId)args[1];
             var importedTypeStr = ((SymbolId)args[2]).ToString();
-            var importedType = Type.GetType(importedTypeStr, false);
+            Type importedType = null;
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+                importedType = assembly.GetType(importedTypeStr, false);
+                if (importedType != null)
+                    break;
+            }
             if (importedType != null) {
                 scope[alias] = new BonsaiClrClassFunction(importedType);
                 return importedType;
@@ -111,6 +125,14 @@ namespace Bonsai.Runtime {
                 scope[alias] = nameSpace;
                 return nameSpace;
             }
+        }
+
+        [MapsToSymbol("loadAssembly")]
+        public object LoadAssembly(object[] args) {
+            Debug.Assert(args.Length == 2);
+            Debug.Assert(args[1] is string);
+
+            return Assembly.Load((string)args[1]);
         }
 
         [MapsToSymbol("if")]

@@ -338,7 +338,7 @@ Notă: binder-ul caută metode și proprietăți atât statice cât și non-stat
 
 \section{Clasa BonsaiFunction}
 
-Pe lângă cazurile tratate direct de către \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele specifice Bonsai.
+Pe lângă cazurile tratate direct de către \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele specifice Bonsai sau, mai bine zis, pentru funcțiile native Bonsai.
 
 Pentru că binderul \c{BonsaiBinder} moștenește clasa \c{InvokeBinder}, toate apelurile în care \c{target}-ul are tipul \c{BonsaiFunction} vor fi redirectate implicit către \c{target}.
 
@@ -492,34 +492,112 @@ if a { print "a nu e null" } { "a e null" }
 
 \chapter{Structuri de date}
 
-Bonsai are o sintaxă specială pentru declararea structurilor de date din codul sursă.
+Bonsai deține o sintaxă specială pentru declararea structurilor de date în codul sursă, definită de următoarele reguli în gramatici:
+\begin{code}
+\# regula din gramatică
+square_expr 
+  : '[' datatype=atom SEPARATOR* (exp+=expression SEPARATOR*)* ']'
+    -> ^(SQUARE $datatype $exp*)
+    ;
+# regula din gramatica de arbori:
+expression returns [Expression result]
+  ...
+  | ^(SQUARE 
+      { $result = new DataDecl(); }
+      datatype=IDENTIFIER {
+        ((DataDecl)$result).DataTypeId = $datatype.Text; }
+      (e=expression {
+        ((DataDecl)$result).Expressions.Add(e.result); })*)
+  ...
+\end{code}
+După cum se poate observa, o structură de date este o listă de expresii cuprinsă între paranteze pătrate, tipul acesteia fiind descris de identificatorul \c{datatype}.
 
-\subsection{Liste și vectori}
+\section{Instanțierea structurilor}
+
+Lista tipurilor de structuri nu este statică (hardcoded). Structurile de date suportate sunt conținute în variabila \c{dataHandlers} din contextul rădăcină. Tipul acesteia este \c{Dictionary<SymbolId, BonsaiFunction>>}. Pentru fiecare înregistrare din dicționar, cheia este un simbol echivalent cu identificatorul \c{datatype}, iar valoarea o funcție Bonsai (instanță a \c{BonsaiFunction}) care primește lista de expresii dintre parantezele pătrate și returnează o instanță a structurii.
+
+Clasa \c{PreludeFunction} (contextul rădăcină) inițializează variabila \c{dataHandlers} odată cu restul funcțiilor standard.
+
+\section{Liste}
+
+Listele sunt una dintre cele două structuri de date care pot fi declarate în codul Bonsai pentru care există suport în biblioteca standard. Identificatorul asociat este \c{|}. Acestea pot fi declarate în felul următor:
+\begin{code}
+= .numberList [| 1 2 3 ]
+= .stringList [| "a" "b" "c" ]
+= .mixedList [| 1 "a" .s ]
+\end{code}
+
+Toate variabilele de mai sus vor avea tipul \c{List<object>}. Din acest motiv, chiar dacă în declarație toate elementele au același tip, în listă pot fi adăugate instanțe de orice tip:
 
 \begin{code}
-= .list [> 1 2 3 ]
-= .array [| 1 2 3]
+= .list [| 1 2 3 ]
+list .Add "string"
+list .Add .simbol
 \end{code}
 
 \subsection{Dictionare}
 
+Dicționarele reprezintă cea de-a doua structură de date imlementată în standard. Identificatorul asociat este \c{\#}. Lista elementelor cuprinse între paranteze pătrate conține pe pozițiile impare cheile, iar pe cele pare valorile. Dacă numărul de elemente este impar, atunci o excepție va fi aruncată.
+
+Fragmentul următor oferă un exemplu de utilizare a dicționarelor:
 \begin{code}
-= .dict [# 
-  .a 1 
-  .b 3
-  .c 42 
+\# dictionar cu cheile 3 symboluri și valorile 3 numere
+= .dict [# .a 1 .b 3 .c 42 ]
+
+# dictioar cu cheile numere și valorile stringuri
+= .dict2 [#
+  1 "luni" 
+  2 "marti" 
+  3 "miercuri"
+  4 "joi"
+  5 "vineri"
+  6 "sambata"
+  7 "duminica"
+]
+\end{code}
+
+Structurile de date pot fi de asemenea combinate cu orice adâncime, precum în următorul exemplul de cod care definește un dicționar de liste:
+\begin{code}
+= .listDict [#
+  .prime [| 2 3 5 7 11 13 17 ]
+  .odd [| 1 3 5 7 9 11 13 15 17 19 ]
+  .even [| 2 4 6 8 10 12 14 16 18 ]
 ]
 \end{code}
 
 \subsection{Definirea unui nou tip de structuri de date}
 
-\draft{TODO}
+Pentru adăugarea unei sintaxe noi pentru o altă structură de date trebuie ales un identificator asociat nefolosit și definită o funcție care convertește lista de expresii dintre parantezele pătrate într-o instanță a structurii.
+
+Să presupunem că se dorește facilitarea lucrului cu culorile și definirea unei sintaxe speciale pentru acestea folosind identificatorul ales este \c{rgb}. Codul pentru adăugarea handler-ului de culori este următorul:
+\begin{code}
+loadAssembly "System.Drawing, Version=2.0.0.0, Culture=neutral,
+    PublicKeyToken=b03f5f7f11d50a3a"
+import .Color .System.Drawing.Color
+
+defun .rgbDataHandler .r .g .b {
+	Color .FromArgb r g b
+}
+
+dataHandlers .Add .rgb rgbDataHandler
+\end{code}
+Primele două linii încarcă assembly-ul \c{System.Drawing.dll} și importă clasa \c{Color} în contextul Bonsai. Urmeaza apoi definirea funcției \c{rgbDataHandler} care primește 3 parametri numiți \c{r}, \c{g} și \c{b} și returnează o instanță a clasei \c{Color}. Ultima linie conține adăugarea la dicționarul \c{dataHandlers} a acestei funcții cu identificatorul \c{rgb}. 
+
+Odată înregistrată, noua sintaxă poate fi utilizată astfel:
+\begin{code}
+= .white [rgb 255 255 255 ]
+print white
+  -> Color [A=255, R=255, G=255, B=255]
+print (white .GetType)
+  -> System.Drawing.Color
+\end{code}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Obiecte Bonsai}\label{ch:BonsaiFunction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\draft{Spre deosebire de proiecte precum IronPython si IronRuby, care au fost nevoite sa implementeze întreaga biblioteca disponibilă în implementarile „originale” (MRI\cite{ruby_mri} si CPython\cite{cpython}), Bonsai încearcă să folosească cât mai mult clasele din .NET Framework și să mențină biblioteca proprie de funcții cât mai mică.}
+
 
 \section{Symboluri}\label{sec:Symbols}
 
@@ -606,7 +684,7 @@ print (a .+ b)
 
 Spre deosebire de limbajele Io\cite{io} și SmallTalk\cite{smalltalk}, unde orice este un obiect, în Bonsai orice este o funcție. Mai mult, dacă în SmallTalk și Io orice expresie reprezintă trimiterea unui mesaj către un obiect, iar rezultatul tot un obiect, în Bonsai orice expresie este un apel de funcție, iar rezultatul tot o funcție.
 
-Această diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. În secțiunile următoare vom vedea cum toate cele trei principii fundamentale OOP – moștenirea, encapsularea și polimorfismul – sunt „simulate” în Bonsai cu ajutorul funcțiilor.
+Această diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. În secțiunile următoare vom vedea cum toate cele trei principii fundamentale OOP – moștenirea, încapsularea și polimorfismul – sunt „simulate” în Bonsai cu ajutorul funcțiilor.
 
 \section{Paralela funcțional <-> OOP}
 
@@ -635,7 +713,7 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 
 \draft{Metoda \texttt{clone}}
 
-\section{Encapsularea}
+\section{Încapsularea}
 
 \draft{TODO: convenția \texttt{\_}, similar Python}
 

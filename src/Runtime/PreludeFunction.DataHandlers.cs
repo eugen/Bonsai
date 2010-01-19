@@ -9,17 +9,18 @@ namespace Bonsai.Runtime
 	public partial class PreludeFunction
 	{
         private void InitDataHandlers() {
-            var handlers = new Dictionary<SymbolId, Func<IEnumerable<object>, object>>();
+            var handlers = new Dictionary<SymbolId, BonsaiFunction>();
 
             handlers.Add(
                 "|".ToSymbol(),
-                args => new List<object>(args));
+                new DelegateBonsaiFunction(args => new List<object>(args.Subarray(1))));
 
             handlers.Add(
                 "#".ToSymbol(), 
-                args => {
+                new DelegateBonsaiFunction(args => {
                     var dict = new Dictionary<object, object>();
                     var enumerator = args.GetEnumerator();
+                    enumerator.MoveNext();
                     while (enumerator.MoveNext()) {
                         var key = enumerator.Current;
                         if (!enumerator.MoveNext())
@@ -28,7 +29,7 @@ namespace Bonsai.Runtime
                         dict[key] = value;
                     }
                     return dict;
-                });
+                }));
 
             this["dataHandlers"] = handlers;
         }
