@@ -106,11 +106,11 @@ namespace Bonsai.Runtime {
         public object Import(object[] args) {
             Debug.Assert(args.Length == 3);
             Debug.Assert(args[1] is SymbolId);
-            Debug.Assert(args[2] is SymbolId);
+            Debug.Assert(args[2] is SymbolId || args[2] is string);
 
             var scope = (DictionaryBonsaiFunction)args[0];
             var alias = (SymbolId)args[1];
-            var importedTypeStr = ((SymbolId)args[2]).ToString();
+            var importedTypeStr = args[2].ToString();
             Type importedType = null;
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
                 importedType = assembly.GetType(importedTypeStr, false);
@@ -133,6 +133,14 @@ namespace Bonsai.Runtime {
             Debug.Assert(args[1] is string);
 
             return Assembly.Load((string)args[1]);
+        }
+
+        [MapsToSymbol("loadAssemblyFile")]
+        public object LoadAssemblyFile(object[] args) {
+            Debug.Assert(args.Length == 2);
+            Debug.Assert(args[1] is string);
+
+            return Assembly.LoadFile((string)args[1]);
         }
 
         [MapsToSymbol("if")]

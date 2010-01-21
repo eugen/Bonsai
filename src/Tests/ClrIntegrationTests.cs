@@ -9,10 +9,16 @@ namespace Bonsai.Tests {
     [TestClass]
     public class ClrIntegrationTests : BonsaiTestClass {
         [TestMethod]
-        public void TestImportNamespace() {
+        public void TestImportNamespaceAsSymbol() {
             Assert.AreEqual(
-                typeof(System.Environment),
-                Execute("import .sys .System ; sys .Environment"));
+                Environment.CurrentDirectory,
+                Execute("import .sys .System ; (sys .Environment) .CurrentDirectory"));
+        }
+        [TestMethod]
+        public void TestImportNamespaceAsString() {
+            Assert.AreEqual(
+                Environment.CurrentDirectory,
+                Execute("import .sys \"System\" ; (sys .Environment) .CurrentDirectory"));
         }
         [TestMethod]
         public void TestImportClass() {
@@ -53,6 +59,13 @@ namespace Bonsai.Tests {
             Assert.AreEqual(
                 typeof(System.Collections.ArrayList),
                 Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .GetType"));
+        }
+
+        [TestMethod]
+        public void TestCallIndexer() {
+            Assert.AreEqual(
+                42,
+                Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .Add 42 \n l .Item 0"));
         }
     }
 }

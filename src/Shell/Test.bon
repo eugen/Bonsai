@@ -7,6 +7,31 @@ defun .rgbHandler .r .g .b {
 
 dataHandlers .Add .rgb rgbHandler
 
-= .white [rgb 255 255 255 ]
-print white
-print (white .GetType)
+= .basicColors [#
+  .white [rgb 255 255 255 ]
+  .black [rgb 0 0 0 ]
+  .red [rgb 255 0 0 ]
+  .green [rgb 0 255 0 ]
+  .blue [rgb 0 0 255 ]
+]
+
+
+
+
+= .user (object .clone .UserProto)
+user .method .fullName { (self .firstName) .+ " " (self .lastName) }
+= .john (user .clone .JohnObject)
+john .= .firstName "John"
+john .= .lastName "Johnson"
+= .mary (john .clone .MaryObject)
+mary .= .firstName "Mary"
+print ((john .fullName) .+ " & " (mary .fullName))
+user .method .fullName { "COOKIE MONSTER" }
+print (john .fullName)
+
+import .list .System.Collections.ArrayList 
+= .l (list .new)
+l .Add "zomg"
+print (l .Count)
+print (l .get_Item 0)
+print (l .GetType)

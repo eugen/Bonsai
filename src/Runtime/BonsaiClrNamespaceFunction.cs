@@ -15,7 +15,7 @@ namespace Bonsai.Runtime {
 
         public override object Call(object[] arguments) {
             Debug.Assert(arguments.Length == 2);
-            return Type.GetType(Namespace + "." + ((SymbolId)arguments[1]));
+            return new BonsaiClrClassFunction(Type.GetType(Namespace + "." + ((SymbolId)arguments[1])));
         }
     }
 }
