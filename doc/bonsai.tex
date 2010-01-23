@@ -77,9 +77,9 @@ Primul modul din componența Bonsai se numește \c{Bonsai.Parser} și se ocupă 
 
 ANTLR 3\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (care bazat pe algoritmul \c{LL(k)}), numărul de gramatici care pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript. 
 
-În plus, spre deosebire de majoritatea generatoarelor de parser, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite{definitive_antlr_reference}.
+În plus, spre deosebire de majoritatea generatoarelor de parser, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite[cap. 7]{definitive_antlr_reference}.
 
-Începând cu versiunea 3.1, ANTLR oferă și posibilitatea de a efectua transformări arbitrare și succesive asupra arborilor: spre exemplu, pornind de la arborele de parsare, mai multe gramatici de arbori (tree grammars) pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}\cite{definitive_antlr_reference}.
+Începând cu versiunea 3.1, ANTLR oferă și posibilitatea de a efectua transformări arbitrare și succesive asupra arborilor: spre exemplu, pornind de la arborele de parsare, mai multe gramatici de arbori (tree grammars) pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}\cite[cap. 8]{definitive_antlr_reference}.
 
 Bonsai utilizează ANTLR 3.1 pentru parsarea codului sursă și pentru generarea AST-ului din arborele de parsare.
 
