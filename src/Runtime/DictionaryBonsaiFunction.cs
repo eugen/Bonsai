@@ -7,7 +7,7 @@ using System.Dynamic;
 
 namespace Bonsai.Runtime {
     public class DictionaryBonsaiFunction : BonsaiFunction {
-        public BonsaiFunction Parent { get; private set; }
+        public BonsaiFunction Parent { get; protected set; }
         public SortedList<SymbolId, object> Dict { get; set; } 
 
         public DictionaryBonsaiFunction(BonsaiFunction parent = null) {

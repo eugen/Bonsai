@@ -24,7 +24,7 @@ namespace Bonsai.Runtime {
                 }
             }
             this.Dict.Add(SymbolTable.StringToId("null"), null);
-            this.Dict.Add(SymbolTable.StringToId("object"), new BonsaiPrototypeFunction("MasterProto".ToSymbol()));
+            this.Dict.Add(SymbolTable.StringToId("object"), new BonsaiPrototypeFunction("MasterPrototype".ToSymbol(), null));
 
             InitDataHandlers();
         }

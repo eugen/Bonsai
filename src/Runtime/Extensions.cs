@@ -21,13 +21,6 @@ namespace Bonsai.Runtime {
             return dest;
         } 
     }
-
-    public static class StringExtensions
-    {
-        public static SymbolId ToSymbol(this string self) {
-            return SymbolTable.StringToId(self);
-        }
-    }
 }
 
 namespace System.Reflection {

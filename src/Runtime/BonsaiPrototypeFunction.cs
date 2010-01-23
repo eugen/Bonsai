@@ -57,7 +57,7 @@ namespace Bonsai.Runtime {
             return new BonsaiPrototypeFunction(name, self);
         }
 
-        [MapsToSymbol("=")]
+        [MapsToSymbol("field")]
         public static object Set(object[] args) {
             Debug.Assert(args.Length == 3);
             var scope = (DictionaryBonsaiFunction)args[0];
@@ -74,7 +74,6 @@ namespace Bonsai.Runtime {
 
         [MapsToSymbol("method")]
         public static object Method(object[] args) {
-            Debug.Assert(args.Length == 3);
             Debug.Assert(args.Length >= 3, "A call to «method» should have at least two parameters: the name of the method and its block");
             Debug.Assert(args[0] is DictionaryBonsaiFunction);
             for (int i = 1; i < args.Length - 1; i++)

@@ -1,37 +1,29 @@
-﻿loadAssembly "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-import .Color .System.Drawing.Color
+﻿= .PI 3.14159
+= .CircleProto (object .clone)
+= .SquareProto (object .clone)
 
-defun .rgbHandler .r .g .b {
-	Color .FromArgb r g b
+CircleProto .method .area {
+  PI .* ((self .radius) .^ 2)
 }
 
-dataHandlers .Add .rgb rgbHandler
-
-= .basicColors [#
-  .white [rgb 255 255 255 ]
-  .black [rgb 0 0 0 ]
-  .red [rgb 255 0 0 ]
-  .green [rgb 0 255 0 ]
-  .blue [rgb 0 0 255 ]
-]
+SquareProto .method .area { 
+  (self .side) .^ 2 
+}
 
 
+defun .printArea .shape { 
+  print (shape .area)
+}
 
 
-= .user (object .clone .UserProto)
-user .method .fullName { (self .firstName) .+ " " (self .lastName) }
-= .john (user .clone .JohnObject)
-john .= .firstName "John"
-john .= .lastName "Johnson"
-= .mary (john .clone .MaryObject)
-mary .= .firstName "Mary"
-print ((john .fullName) .+ " & " (mary .fullName))
-user .method .fullName { "COOKIE MONSTER" }
-print (john .fullName)
+= .circle1 (CircleProto .clone)
+circle1 .field .radius 5
 
-import .list .System.Collections.ArrayList 
-= .l (list .new)
-l .Add "zomg"
-print (l .Count)
-print (l .get_Item 0)
-print (l .GetType)
+= .square1 (SquareProto .clone)
+square1 .field .side 10
+
+print (circle1 .area)
+print (square1 .area)
+
+printArea circle1
+printArea square1

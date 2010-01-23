@@ -262,7 +262,7 @@ Atât în cazul primitivelor cât si al membrilor obiectelor CLR, apelul va fi r
 
 \section{Tratarea tipurilor de date primitive}
 
-Primitivele în Bonsai pot fi considerate extensii ale anumitor tipuri, similar cu extension methods din C\# 3.0. De exemplu, primitiva \c{capitalize} poate fi privită ca o extensie a tipului \c{System.String}, iar \c{shuffle} o extensie a tipului \c{System.Collections.Generic.IList<T>}.
+Primitivele în Bonsai sunt extensii ale anumitor tipuri, similar cu extension methods din C\# 3.0. De exemplu, primitiva \c{capitalize} poate fi privită ca o extensie a tipului \c{System.String}, iar \c{shuffle} o extensie a tipului \c{System.Collections.Generic.IList<T>}.
 
 \subsection{Definirea primitivelor}
 
@@ -283,7 +283,7 @@ public static string Capitalize(
 \end{code}
 În fragmentul de cod de mai sus este definită o primitivă pentru clasa \c{System.String} numită \c{capitalize} care transformă prima literă a fiecărui cuvânt în majusculă.
 
-Primitivele pot fi definite și pentru tipuri generice: o primitivă definită pentru tipul generic \c{typeof(List<>)} se va aplica tuturor instanțierilor acestui tip. Primitiva \c{shuffle} este un exemplu:
+Primitivele pot fi definite și pentru tipuri CLR generice: o primitivă definită pentru tipul generic \c{typeof(List<>)} se va aplica tuturor instanțierilor acestui tip. Primitiva \c{shuffle} este un exemplu:
 \begin{code}
 \hspace[Primitive(typeof(IList<>), "shuffle")]
 public static IList<T> IListShuffle<T>(
@@ -306,7 +306,7 @@ public static IList<T> IListShuffle<T>(
 }
 \end{code}
 
-Din exemplele de mai sus se poate observa că metodele primitive trebuie să aibă trei parametri:
+Din exemplele de mai sus se poate observa că metodele ce implementează primitive trebuie să aibă trei parametri:
 \begin{description}
 \item[target]\hfill\\ obiectul apelat
 \item[scope]\hfill\\ contextul apelului
@@ -711,12 +711,9 @@ print (a .+ b)
 \chapter{Bonsai și Programarea Orientată Obiect}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\draft{Spre deosebire de limbajele Io\cite{io} și SmallTalk\cite{smalltalk}, unde orice este un obiect, în Bonsai orice este o funcție. Mai mult, dacă în SmallTalk și Io orice expresie reprezintă trimiterea unui mesaj către un obiect, iar rezultatul tot un obiect, în Bonsai orice expresie este un apel de funcție, iar rezultatul tot o funcție.}
+Spre deosebire de limbajele orientate obiect, unde orice instanță este un obiect, în Bonsai orice instanță este o funcție. Această diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. În secțiunile următoare se va arăta cum multe dintre principiile programării orientate obiect pot fi „simulate” cu ajutorul apelurilor de funcții și al convențiilor de nume.
 
-\draft{Această diferență poate părea fundamentală, dar o funcție poate fi considerată generalizarea unui obiect. În secțiunile următoare vom vedea cum multe dintre principiile programării orientate obiect pot fi „simulate” cu ajutorul funcțiilor și al convențiilor de nume.
-}
-
-\section{Paralela funcțional <-> OOP}
+\section{Trimiterea mesajelor}
 
 Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este emulat în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul, mesajul trimis. Spre exemplu, un string apelat cu simbolul \texttt{:upcase} va returna un nou string cu toate caracterele transformate în majuscule:
 \begin{code}
@@ -736,23 +733,92 @@ Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în pr
 
 \section{Programarea bazată pe prototipuri}
 
-Bonsai implementează un model foarte simplu de programare bazată pe prototipuri\cite{prototype_based_programming} inspirat din JavaScript, spre deosebire de programarea bazată pe clase, utilizată in majoritatea limbajelor. Într-un model OOP bazat pe prototipuri, obiectele noi sunt create prin clonarea unor obiecte existente și moștenirea comportamentului acestora. Conceptul de „clasă” nu există, deși unele obiecte pot fi definite pentru a funcționa într-un mod similar.
+Bonsai implementează un model foarte simplu de programare bazată pe prototipuri\cite{prototype_based_programming} inspirat din JavaScript, spre deosebire de programarea bazată pe clase, utilizată in majoritatea limbajelor. Într-un model OOP bazat pe prototipuri, fiecare obiect are propria listă de metode și mesaje la care pot răspunde. Obiectele noi sunt create prin clonarea unui obiect existent (numit prototip) și moștenirea comportamentului (a metodelor) acestuia. Conceptul de „clasă” nu există, deși unele obiecte pot fi definite pentru a funcționa într-un mod similar. 
 
 \section{Crearea prototipurilor în Bonsai}
 
-Prototipul din care moștenesc toate obiectele din bonsai este conținut în contextul rădăcină în variabila \c{object}. Acesta are standard definește variabila \c{object}, de tipul \c{BonsaiPrototypeFunction}, care reprezinta 
+Prototipul din care moștenesc toate obiectele specifice bonsai este o instanță a clasei \c{BonsaiPrototypeFunction}, stocată în variabila \c{object} din contextul rădăcină. Aceasta conține metodele comune tuturor obiectelor: \c{clone}, \c{=} și \c{method}.
+
+\subsection{Metoda \c{clone}}
+
+Metoda \c{clone} crează o clonă a obiectului apelat prin copierea tuturor metodelor și a câmpurilor într-un nou obiect. 
+\begin{code}
+= .ShapeProto (object .clone)
+= .RectangleProto (ShapeProto .clone)
+\end{code}
+
+\subsection{Metodele \c{method} și \c{field}}
+
+Obiectului clonat i se pot adăuga metode noi prin apelarea \c{method}. Aceasta primește ca prim argument numele metodei ce urmeaza a fi definită, urmat de numele parametrilor metodei și, la final, blocul asociat metodei. În interiorul acestul bloc obiectul curent este conținut în variabila \c{self}.
+
+Metoda \c{field} este folosită pentru setarea valoarii unui câmp și primește ca parametri numele câmpului și valoarea acestuia.
+
+Fragmentul următor de cod adaugă prototipului \c{RectangleProto} metoda \c{area}, care returnează înmulțirea câmpurilor \c{width} și \c{height} a obiectului apelat:
+\begin{code}
+\# defineste metoda area 
+RectangleProto .method .area { 
+  (self .height) .* (self .width)
+}
+# creaza o clona a RectangleProto
+= .rect (RectangleProto .clone)
+# defineste campurile width si height
+rect .field .width 4
+rect .field .height 5
+# acceseaza campul width
+rect .width
+  -> 5
+# apeleaza metoda area
+rect .area
+  -> 20
+\end{code}
+
+Notă: după clonare, obiectul nou creat nu păstreaza legătura cu prototipul. Astfel, adăugarea metodelor sau câmpurilor într-un prototip nu se va reflecta și în obiectele clonate din acesta.
 
 \section{Principiile OOP în programarea bazată pe prototipuri}
 
 \subsection{Moșteneria}
 
+Moștenirea într-un sistem OOP bazat pe prototipuri este reprezentată de clonarea obiectelor: clonele moștenesc metodele și câmpurile definite în prototip. De exemplu, în fragmentul de mai sus, obiectul \c{rect} moștenește metoda \c{area} de la prototipul \c{RectangleProto}.
+
 \subsection{Încapsularea}
 
-\draft{TODO: convenția \texttt{\_}, similar Python}
+Bonsai nu oferă suport explicit pentru definirea metodelor non-publice. Este utilizată în schimb convenția ca orice metodă al cărui nume începe cu caracterul \c{\_} (liniuță-jos) să fie considerată \c{private} și să nu fie niciodată apelată din exteriorul obiectului.
 
-\subsection{Polimormism?}
+Notă: aceeași convenție este folosită și de limbajul Python\cite{python_classes}.
 
-\draft{Limbaj dinamic = polimorfism implicit (?)}
+\subsection{Polimormismul}
+
+Polimorfismul se poate obține în Bonsai prin definirea unor metode cu acelasi nume și aceeași listă de parametri în mai multe obiecte (sau prototipuri). Între acestea nu este necesar să existe o legătură, așa cum de exemplu în Java toate instanțele trebuie să moștenească aceeași clasă sau interfață de bază.
+
+Următorul fragment de cod oferă un exemplu de apelare a metodei \c{area}, definită separat pentru cercuri și pătrate:
+\begin{code}
+= .PI 3.14159
+= .CircleProto (object .clone)
+= .SquareProto (object .clone)
+# defineste metoda "area" pentru cercuri
+CircleProto .method .area {
+  PI .* ((self .radius) .^ 2)
+}
+# defineste metoda "area" pentru patrate
+SquareProto .method .area { 
+  (self .side) .^ 2 
+}
+# defineste o functie care afiseaza aria pentru orice forma
+defun .printArea .shape { 
+  print (shape .area)
+}
+# creaza un cerc de raza 5
+= .circle1 (CircleProto .clone)
+circle1 .field .radius 5
+# creaza un patrat cu latura 10
+= .square1 (SquareProto .clone)
+square1 .field .side 10
+# apeleaza functia "printArea" pentru cerc si patrat
+printArea circle1
+  -> 78.53975
+printArea square1
+  -> 100
+\end{code}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Integrarea cu platforma .NET}\label{ch:IntegratingWithDotNet}
@@ -848,11 +914,9 @@ table .Add 1 "monday"
 table .Add 2 "tuesday"
 \end{code}
 
-% TODO: Does this section make sense? \section{Pasarea funcțiilor Bonsai către metode .NET}
-
-\section{Integrarea cu alte limbaje dinamice}
-
-\draft{TODO}
+% TODO: Do the following sections make sense here?
+% \section{Pasarea funcțiilor Bonsai către metode .NET}
+% \section{Integrarea cu alte limbaje dinamice}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Posibile îmbunătățiri}
@@ -860,19 +924,39 @@ table .Add 2 "tuesday"
 
 \section{Module}
 
+În stadiul actual, Bonsai nu oferă nici o posibilitate de structure a codului în mai multe module, assembly-uri sau spații de nume, funcționalitate absolut necesară oricărui limbaj de uz general.
+
+Cea mai potrivită metodă pentru împărțirea codului dintre cele menționate mai sus pare a fi cea a modulelor — similar celor din limbajul Python. 
+
 \section{Metaprogramare}
 
-\draft{inspectarea codului sursă al funcțiilor la rulare; modificarea și recompilarea acestuia}
+\subsection{Modificarea codului sursă la rulare} 
 
-\draft{similar, modificarea și recompilarea AST-ului la rulare}
+Familia de limbaje Lisp suportă definirea de macrouri, funcții speciale care rulează la compilare și care pot modifica codul existent sau chiar genera un alt cod arbitrar, motiv pentru care sunt una dintre cele mai apreciate variante de metaprogramare. O variantă similară, care beneficiază de aceeași flexibilitate, o reprezintă funcțiile care își pot modifica comportamentul la rulare. 
 
-\draft{posibilitatea evaluării non-stricte a argumentelor (à la Haskell); avantaje/dezavantaje}
+Datorită utilizării Dynamic Language Runtime-ului, codul sursă Bonsai este oricum parsat și compilat la rulare, ceea ce face posibilă implementarea mecanismului menționat mai sus printr-un set de modificări aduse parserului și generatorului de expresii LINQ — clasa \c{Generator}. Astfel, orice obiect sau funcție specifică din Bonsai ar putea avea codul sursă accesibil la rulare. 
 
-\section{Debugger}
+Un set de funcții standard ar putea fi definite pentru obținerea, modificarea și recompilarea codului:
 
-\draft{posibilități de realizare a unui debugger; integrarea cu VisualStudio?}
+\begin{description}
+\item[\c{getSourceCode .object}] Întoarce codul sursă pentru un obiect Bonsai.
+\item[\c{getCurrentContext}] Întoarce contextul curent. Folosit pentru recompilarea unui fragment de code.
+\item[\c{compileCode .codeFragment .scope}] Compilează un fragment de cod în contextul specificat de argumentul \c{scope}. 
+\end{description}
 
-\section{Îmbunătățirea performanței}
+Folosind aceste funcții standard, o funcție Bonsai și-ar putea accesa propriul cod sursă și aplica modificări asupra lui, pentru ca apoi să se înlocuiască singură cu o versiune modificată a sa prin compilarea codului.
+
+\subsection{Modificarea AST-ului la rulare}
+
+Pe lângă codul sursă, există posibilitatea de a oferi un set de funcții pentru obținerea și recompilarea arborilor de sintaxă abstractă. Comparat cu lucrul direct cu codul sursă, manipularea arborilor de sintaxă poate fi considerată "în spiritul Lisp", similară manipulării s-expresiilor.
+
+% TODO: completely remove this section ?
+% \subsection{Debugger}
+% posibilități de realizare a unui debugger; integrarea cu VisualStudio?
+
+\subsection{Îmbunătățirea performanței}
+
+\draft{TODO}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
