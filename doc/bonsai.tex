@@ -34,9 +34,9 @@
 \renewcommand{\c}{\texttt}
 
 % define a new environment for code; shading is nice;
-\newenvironment{code}[1][]%
-{%
-\definecolor{shadecolor}{gray}{0.91}{#1}%
+\newenvironment{code}
+{
+\definecolor{shadecolor}{gray}{0.91}
 \topsep=0ex\relax
 \shaded
 \verbatim
@@ -77,9 +77,9 @@ Primul modul din componența Bonsai se numește \c{Bonsai.Parser} și se ocupă 
 
 ANTLR 3\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (care bazat pe algoritmul \c{LL(k)}), numărul de gramatici care pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript. 
 
-În plus, spre deosebire de majoritatea generatoarelor de parser, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite{antlr_book_treeconstruction}.
+În plus, spre deosebire de majoritatea generatoarelor de parser, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite{definitive_antlr_reference}.
 
-Începând cu versiunea 3.1, ANTLR oferă și posibilitatea de a efectua transformări arbitrare și succesive asupra arborilor: spre exemplu, pornind de la arborele de parsare, mai multe gramatici de arbori (tree grammars) pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}\cite{antlr_book_treegrammars}.
+Începând cu versiunea 3.1, ANTLR oferă și posibilitatea de a efectua transformări arbitrare și succesive asupra arborilor: spre exemplu, pornind de la arborele de parsare, mai multe gramatici de arbori (tree grammars) pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}\cite{definitive_antlr_reference}.
 
 Bonsai utilizează ANTLR 3.1 pentru parsarea codului sursă și pentru generarea AST-ului din arborele de parsare.
 
@@ -254,22 +254,39 @@ Dacă tipul \c{target}-ului este o subclasă a \c{System.Delegate}, \c{BonsaiBin
 
 \subsection{Referențierea obiectelor CLR}
 
-Dacă \c{target} este un obiect CLR obișnuit non-dinamic și lista de argumente este vidă, binder-ul tratează apelul ca pe o „referențiere” și returnează expresia inițială (\c{target.Expression}). Altfel spus, un obiect obișnuit se evaluează la el însuși.
+Dacă \c{target} este un obiect CLR obișnuit non-dinamic și lista de argumente este vidă, binder-ul tratează apelul ca pe o „referențiere” și returnează expresia inițială (\c{target.Expression}). În alte cuvinte, un obiect obișnuit se evaluează la el însuși.
 
 \subsection{Apelarea primitivelor și invocarea membrilor obiectelor CLR}
 
-Atât în cazul primitivelor cât si al membrilor obiectelor CLR, apelul va fi rezolvat printr-un call al unei metode dintr-un tip CLR. În cazul primitivelor, o metodă din clasa în care acestea sunt definite, în cel al membrilor obiectelor CLR, din clasa obiectului \c{target}. Mai multe detalii vor fi prezentate în secțiunile ce urmează.
+Atât în cazul primitivelor cât si al membrilor obiectelor CLR, apelul va fi rezolvat printr-un call al unei metode dintr-un tip CLR. În cazul primitivelor, o metodă din clasa în care acestea sunt definite (\c{Bonsai.Runtime.Primitives}), în cel al membrilor obiectelor CLR, din clasa obiectului \c{target}. Mai multe detalii vor fi prezentate în secțiunile ce urmează.
+
+\section{Invocarea membrilor obiectelor CLR}\label{sec:invoking_clr_members}
+
+Pentru ca un apel dinamic să poate fi tratat de către binder ca un call static către o metodă sau proprietate CLR, următoarele condiții trebuie să fie îndeplinite:
+
+\begin{enumerate}
+\item Lista de argumente să fie non-vidă, iar primul argument să fie de tipul \c{SymbolId}.
+\item Tipul obiectului \c{target} să conțină o metodă sau proprietate publică numită similar simbolului din primul argument.
+\item Tipul argumentelor din apel (mai puțin primul, simbolul) trebuie să fie compatibile cu parametrii metodei sau proprietății.
+\end{enumerate}
+
+În cazul proprietăților, binder-ul consideră că dacă lista de argumente conține doar simbolul atunci este vorba de accesarea \c{getter}-ului, iar în caz contrar al \c{setter}-ului. 
+
+Notă: binder-ul caută metode și proprietăți atât statice cât și non-statice, ale instanței. 
 
 \section{Tratarea tipurilor de date primitive}
 
-Primitivele în Bonsai sunt extensii ale anumitor tipuri, similar cu extension methods din C\# 3.0. De exemplu, primitiva \c{capitalize} poate fi privită ca o extensie a tipului \c{System.String}, iar \c{shuffle} o extensie a tipului \c{System.Collections.Generic.IList<T>}.
+Primitivele sunt funcții care extind tipuri CLR. Odata încărcate și asociate cu un tip, primitivele devin „metode virtuale” ale tipului respectiv și pot fi apelate cu aceeași sintaxă ca toate celelalte metode\footnote{Primitivele din Bonsai sunt similare metodelor extensie din C\# 3.0.}.
+
+Motivația introducerii primitivelor reprezintă posibilitatea de a extinde tipuri CLR care nu pot fi înlocuite cu tipuri specifice Bonsai (ex. \c{String}) sau care sunt necesare pentru interoperabilitate cu bibliotecile existente (ex. \c{IList<T>}). Poate cel mai bun exemplu îl constituie numerele: toate operațiile matematice în Bonsai sunt implementate ca primitive ale tipului \c{System.Decimal}.
+
+Capitolul \ref{ch:Primitives} include lista completă a primitivelor definite în Bonsai.
 
 \subsection{Definirea primitivelor}
 
-Toate primitivele sunt metode în clasa \c{BonsaiPrimitives} și sunt decorate cu atributul \c{PrimitiveAttribute}. Acest atribut specifică atât tipul pe care îl extinde primitiva cât și numele extensiei.
-
+Toate primitivele sunt metode ale clasei \c{BonsaiPrimitives} decorate cu atributul \c{PrimitiveAttribute}. Acest atribut specifică tipul CLR pe care îl extinde primitiva și numele acesteia. Fragmentul următor definește o primitivă pentru clasa \c{System.String}, numită \c{capitalize}, care transformă prima literă a fiecărui cuvânt în majusculă:
 \begin{code}
-\hspace[Primitive(typeof(string), "capitalize")]
+[Primitive(typeof(string), "capitalize")]
 public static string Capitalize(
   string target,
   DictionaryBonsaiFunction scope,
@@ -281,11 +298,10 @@ public static string Capitalize(
     new MatchEvaluator(m => m.Value.ToUpperInvariant()));
 }
 \end{code}
-În fragmentul de cod de mai sus este definită o primitivă pentru clasa \c{System.String} numită \c{capitalize} care transformă prima literă a fiecărui cuvânt în majusculă.
 
-Primitivele pot fi definite și pentru tipuri CLR generice: o primitivă definită pentru tipul generic \c{typeof(List<>)} se va aplica tuturor instanțierilor acestui tip. Primitiva \c{shuffle} este un exemplu:
+Primitivele pot fi definite și pentru tipuri CLR generice: o primitivă definită pentru tipul generic \c{System.Collections.Generic.List<T>} se va aplica tuturor instanțelor acestui tip. Primitiva \c{shuffle} este un exemplu:
 \begin{code}
-\hspace[Primitive(typeof(IList<>), "shuffle")]
+[Primitive(typeof(IList<>), "shuffle")]
 public static IList<T> IListShuffle<T>(
   IList<T> target,
   DictionaryBonsaiFunction scope,
@@ -306,7 +322,7 @@ public static IList<T> IListShuffle<T>(
 }
 \end{code}
 
-Din exemplele de mai sus se poate observa că metodele ce implementează primitive trebuie să aibă trei parametri:
+Metodele ce implementează primitive trebuie să aibă trei parametri (după cum se poate observa și din exemplele de mai sus):
 \begin{description}
 \item[target]\hfill\\ obiectul apelat
 \item[scope]\hfill\\ contextul apelului
@@ -315,33 +331,23 @@ Din exemplele de mai sus se poate observa că metodele ce implementează primiti
 
 Parametrul \c{scope} nu este utilizat în mod uzual, dar opțiunea de a accesa și analiza contextul la runtime deschide numeroase posibilități, cum ar fi dezvoltarea unui debugger.
 
-\subsection{Rezolvarea primitivelor}
+\subsection{Apelul primitivelor}
 
-O primitivă este căutată după tipul obiectului apelat, \c{target}, și după nume. Tipul lui \c{target} trebuie să fie compatibil cu tipul specificat în atributul \c{PrimitiveAttribute}. Primul argument din lista de argumente trebuie să fie de tipul \c{SymbolId}\footnote{Mai multe despre simboluri în secțiunea \ref{sec:Symbols}} și să corespundă cu numele specificat în acelasi atribut.
+O primitivă se apelează ca orice altă metodă:
+\begin{code}
+# apel către o metodă CLR
+"abc def ghi" .ToUpper
+  -> "ABC DEF GHI"
+# apel către o primitivă Bonsai
+"abc def ghi" .capitalize
+  -> "Abc Def Ghi"
+\end{code}
 
-\subsection{Utilizarea primitivelor}
-
-Primitivele sunt utilizate pentru extinderea claselor deja existente din .NET Framework care nu pot fi înlocuite cu tipuri specifice Bonsai, sau care sunt necesare pentru interoperabilitatea cu bibliotecile existente. Cel mai bun exemplu îl consituie numerele: operațiile matematice uzuale sunt implementate ca primitive ale tipului \c{System.Decimal}.
-
-Capitolul \ref{ch:Primitives} include lista completă de primitive din Bonsai.
-
-\section{Invocarea membrilor obiectelor CLR}\label{sec:invoking_clr_members}
-
-Pentru ca un apel dinamic să poate fi tratat de către binder ca un call static către o metodă sau proprietate CLR, următoarele condiții trebuie să fie îndeplinite:
-
-\begin{enumerate}
-\item Lista de argumente să fie non-vidă, iar primul argument să fie de tipul \c{SymbolId}.
-\item Tipul obiectului \c{target} să conțină o metodă sau proprietate publică numită similar symbolului din primul argument.
-\item Tipul argumentelor din apel (mai puțin primul, simbolul) trebuie să fie compatibile cu parametrii metodei sau proprietății.
-\end{enumerate}
-
-În cazul proprietăților, binder-ul consideră că dacă lista de argumente conține doar simbolul atunci este vorba de accesarea \c{getter}-ului, iar în caz contrar al \c{setter}-ului. 
-
-Notă: binder-ul caută metode și proprietăți atât statice cât și non-statice, ale instanței. 
+Binderul verifică dacă apelul curent este un apel al unei primitive dupa valoarea primului argument, un simbol care trebuie să conțină numele primitivei, cât și după tipul obiectului apelat (din parametrul \c{target}), al cărui tip trebuie să fie compatibil cu cel specificat în atributul \c{PrimitiveAttribute}.
 
 \section{Clasa BonsaiFunction}
 
-Pe lângă cazurile tratate direct de către \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele specifice Bonsai sau, mai bine zis, pentru funcțiile native Bonsai.
+Pe lângă cazurile tratate direct de către \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața\\ \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele Bonsai sau, mai bine zis, pentru funcțiile din Bonsai.
 
 Pentru că binderul \c{BonsaiBinder} moștenește clasa \c{InvokeBinder}, toate apelurile în care \c{target}-ul are tipul \c{BonsaiFunction} vor fi redirectate implicit către \c{target}.
 
@@ -351,6 +357,29 @@ Clasa \c{BonsaiFunction} conține o singură metodă virtuală:
 \end{code}
 
 Cea mai mare parte din semantica Bonsai este implementată de clase care moștenesc \c{BonsaiFunction}. Lista completă este inclusă în capitolul \ref{ch:BonsaiFunction}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Obiecte Bonsai}\label{ch:BonsaiFunction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Symboluri}
+
+\draft{TODO: move or remove; this section does not belong here}
+
+
+\draft{Un simbol din Bonsai este foarte asemănător simbolurilor din Ruby\cite{ruby_symbols} și Lisp\cite{clhs_symbols}. Un simbol se comportă de cele mai multe ori ca un string. Diferența majoră constă în faptul că pentru orice string există o singură instanță a unui simbol cu acel string, ceea ce face compararea a două simboluri foarte rapidă. De asemenea, utilizarea unui simbol indică de cele mai multe ori folosirea metaprogrămarii. Tipul la runtime al simbolurilor este \c{Microsoft.Scripting.Dynamic.SymbolId}.}
+
+\section{Blocuri}
+
+Un block în Bonsai reprezintă o secvență de instrucțiuni delimitată între acolade. Un block, ca orice alt obiect, poate fi stocat într-o variabilă, trimis ca argument către alte funcții sau apelat:
+\begin{code}
+= .a { 42 }
+print (a .Invoke)
+  -> 42
+\end{code}
+Metoda din fragmentul de mai sus, \c{Invoke}, este singura suportată de block-uri și nu are nici un parametru. 
+
+Tipul la runtime al unui bloc este \c{BlockBonsaiFunction}, clasă derivată din \c{BonsaiFunction}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Funcții standard}
@@ -493,7 +522,9 @@ if a { print "a nu e null" } { "a e null" }
 \item[\c{null}]\hfill\\ Funcția \c{null} întoarce valoarea nulă. Null este utilizat ca unică valoare falsă în instrucțiunile condiționale.
 \end{description}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Structuri de date}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Bonsai deține o sintaxă specială pentru declararea structurilor de date în codul sursă, definită de următoarele reguli în gramatici:
 \begin{code}
@@ -541,7 +572,7 @@ list .Add .simbol
   -> [| 1 2 3 "string" .simbol ]
 \end{code}
 
-\section{Dictionare}
+\section{Dicționare}
 
 Dicționarele reprezintă cea de-a doua structură de date imlementată în biblioteca standard. Identificatorul asociat este \c{\#}. Lista elementelor cuprinse între paranteze pătrate conține pe pozițiile impare cheile, iar pe cele pare valorile. Dacă numărul de elemente este impar, atunci o excepție va fi aruncată.
 
@@ -622,29 +653,6 @@ print (basicColors .black)
 print (basicColors .green)
   -> Color [A=255, R=0, G=255, B=0]
 \end{code}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Obiecte Bonsai}\label{ch:BonsaiFunction}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Symboluri}\label{sec:Symbols}
-
-\draft{TODO: move or remove; this section does not belong here}
-
-
-\draft{Un simbol din Bonsai este foarte asemănător simbolurilor din Ruby\cite{ruby_symbols} și Lisp\cite{clhs_symbols}. Un simbol se comportă de cele mai multe ori ca un string. Diferența majoră constă în faptul că pentru orice string există o singură instanță a unui simbol cu acel string, ceea ce face compararea a două simboluri foarte rapidă. De asemenea, utilizarea unui simbol indică de cele mai multe ori folosirea metaprogrămarii. Tipul la runtime al simbolurilor este \c{Microsoft.Scripting.Dynamic.SymbolId}.}
-
-\section{Blocuri}
-
-Un block în Bonsai reprezintă o secvență de instrucțiuni delimitată între acolade. Un block, ca orice alt obiect, poate fi stocat într-o variabilă, trimis ca argument către alte funcții sau apelat:
-\begin{code}
-= .a { 42 }
-print (a .Invoke)
-  -> 42
-\end{code}
-Metoda din fragmentul de mai sus, \c{Invoke}, este singura suportată de block-uri și nu are nici un parametru. 
-
-Tipul la runtime al unui bloc este \c{BlockBonsaiFunction}, clasă derivată din \c{BonsaiFunction}. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Primitive}\label{ch:Primitives}
@@ -975,7 +983,7 @@ Pe lângă codul sursă, există posibilitatea de a oferi un set de funcții pen
 \end{appendices}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibliographystyle{unsrt}
+\bibliographystyle{bonsai}
 \bibliography{bonsai}{}
 
 \end{document}

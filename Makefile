@@ -18,6 +18,7 @@ TEX=xelatex -quiet
 doc : bin/bonsai.pdf
 
 bin/bonsai.bbl : doc/bonsai.bib
+	cp doc/bonsai.bst bin/bonsai.bst
 	cd bin && $(TEX) ../doc/bonsai.tex 
 	cp doc/bonsai.bib bin/bonsai.bib
 	cd bin && bibtex bonsai
