@@ -1,0 +1,238 @@
+\documentclass{beamer}
+\usepackage[romanian]{babel}
+\usetheme{Copenhagen}
+%% \usecolortheme{beaver}
+\usepackage{beamerthemesplit}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{fontspec}
+\usepackage{verbatim}
+
+\setmonofont{Inconsolata}
+\setsansfont{Calibri}
+
+\setbeamertemplate{navigation symbols}{}
+
+\renewcommand{\c}[1]{\textcolor{blue}{\texttt{#1}}}
+
+\title[Bonsai - un limbaj funcțional peste DLR]{Bonsai}
+\subtitle{Un limbaj funcțional peste DLR}
+\author{Eugen Anghel}
+\institute{Coordonator științific\\Profesor Doctor Gheorghe Grigoraș}
+\date{\today}
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Introducere}
+  Bonsai este un limbaj:
+  \begin{itemize}
+  \item 
+    Funcțional
+    \begin{itemize}
+    \item orice expresie este un apel de funcție
+    \item orice instanță poate fi apelată
+    \end{itemize}
+  \item 
+    OOP
+    \begin{itemize}
+    \item programare orientată-obiect bazată pe prototipuri
+    \end{itemize}
+  \item
+    Posibilitatea de a utiliza biblioteci .NET
+  \item
+    Simplu
+    \begin{itemize}
+    \item fără cuvinte cheie
+    \item fără (prea multe) construcții speciale
+    \item gramatică minimală
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tehnologii utilizate}
+  \begin{itemize}
+    \item 
+      Antlr 3.1
+      \begin{itemize}
+      \item Parsarea codului
+      \item Generarea AST-ului din arborele de parsare
+      \end{itemize}
+    \item
+      .NET Framework 4.0 Beta 2
+      \begin{itemize}
+        \item C\# 4.0
+        \item Dynamic Language Runtime
+      \end{itemize}
+    \item
+      Visual Studio 2010 Beta 2
+      \begin{itemize}
+        \item Definirea și rularea testelor automate
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Sintaxa}
+  Număr redus de elemente de sintaxă:
+  \begin{itemize}
+  \item identificatori: \c{name}, \c{name\_2}, \c{+}
+  \item simboluri: \c{.name}, \c{.name\_2}, \c{.+}
+  \item numere: \c{7}, \c{0.009}, \c{-1000.0001}
+  \item string-uri: \c{'sir 1'}, \c{"sir 2"}
+  \item paranteze: \c{((a .+ b) ./ (c .+ d))}
+  \item structuri de date: \c{[| 1 2 3 ]}
+  \item blocuri: \c{\{ user .call \}}, \c{\{ print "done" \}}
+  \end{itemize}
+  \vskip8pt
+  Orice expresie este un apel de funcție, inclusiv operațiile matematice, definirea funcțiilor și instrucțiunile condiționale
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Sintaxa - 2}
+  Orice expresie este un apel de funcție, inclusiv operațiile matematice, definirea funcțiilor și instrucțiunile condiționale:
+  \begin{itemize}
+    \item
+      apel al funcției \c{3}:
+      \color{blue}
+      \begin{verbatim}
+  3 .+ 2      \end{verbatim}
+      \color{black}
+    \item
+      apel al funcției \c{defun}:
+      \color{blue}
+      \begin{verbatim}
+  defun .f .a .b { 
+    a .+ b
+  }  \end{verbatim}
+      \color{black}
+    \item
+      apel al funcției \c{if}:
+      \color{blue}
+      \begin{verbatim}
+  if (== a 0) { 
+    print "done"
+  } {
+    print "a > 0"
+  }      \end{verbatim}
+      \color{black}
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Sintaxa - 3}
+  Apelurile sunt separate de unul din caracterele \c{'\textbackslash n'} sau \c{';'}.
+  \begin{itemize}
+    \item 
+      codul \\
+      \c{\ \ print a; print b}
+    \item 
+      este echivalent cu \\
+      \c{\ \ print a}\\
+      \c{\ \ print b}
+  \end{itemize}
+  Pentru a apela o funcție cu argumente pe rânduri diferite se pot utiliza parantezele. 
+\begin{itemize}
+\item codul \c{f (a .+ b) (c .+ d)}
+\item este echivalent cu\\
+\c{\ \ f (}\\
+\c{\ \ \ \ a .+ b ) (}\\
+\c{\ \ \ \ c .+ d )}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Definirea funcțiilor}
+  Funcția \c{defun}
+  \begin{itemize}
+    \item are antetul \c{defun .nume (.nume\_parametru)* \{block\}}
+    \item crează o funcție și o salvează în contextul curent, în variabila cu numele \c{nume}
+    \item \c{(.nume\_parametru)*} este o înșiruire de simboluri care conține numele parametrilor funcției
+    \item exemple de utilizare:
+      \begin{itemize}
+      \item
+        \color{blue}
+        \begin{verbatim}
+  defun .sqr .n { n .* n }\end{verbatim}
+      \item
+        \begin{verbatim}
+  defun .hypotenuse .c1 .c2 { 
+    Math .sqrt (sqr c1) (sqr c2) }\end{verbatim}
+        \color{black}
+      \end{itemize}
+    \item dacă variabila există deja atunci aceasta este suprascrisă
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Pattern matching}
+  Funcția \c{def|}
+  \begin{itemize}
+    \item crează o funcție cu pattern-matching și o salveaza în variabila \c{name}
+    \item are antetul \c{def| .nume (sablon)* \{block\}}
+    \item șabloanele pot fi
+      \begin{itemize}
+        \item instanțe ale unor clase care implementează interfața \c{IPattern}
+        \item simboluri — șabloane care se potrivesc peste orice valoare
+      \end{itemize}
+    \item funcții care întorc șabloane: \c{|=}, \c{|is}, etc.
+    \item fiecare apel al \c{def|} definește o nouă variantă, un nou set de șabloane pentru o funcție
+    \item exemplu de utilizare:
+      \color{blue}
+      \begin{verbatim}
+  def| .factorial (|= .zero 0) { 1 }
+  def| .factorial .a { a .* (factorial (a .- 1)) }\end{verbatim}
+        \color{black}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Structuri de date declarative}
+  
+\end{frame}
+
+\begin{frame}[containsverbatim]
+  \frametitle{Un exemplu de program}
+  \color{blue}
+  \begin{verbatim}
+  defun .make_counter .start {
+    defun .add .increment {
+      = .start (start .+ increment)
+      start
+    }
+    ref .add
+  }
+  = .c1 (make_counter 0)
+  = .c2 (make_counter 10)
+  print (c1 2)                         -> 2
+  print (c2 5)                         -> 15
+  print (c1 2)                         -> 4
+  print (c2 5)                         -> 20
+  \end{verbatim}
+  \color{black}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Runtime-ul}
+  
+\end{frame}
+
+\end{document}
+
+- Exemplu de cod (ceva cu lexical scoping, functii, etc) + Explicații în 2-3 slides
+- Toate operațiile sunt apeluri de funcții
+- Operații matematice 
+
+- Definirea funcțiilor
+
+- Pattern matching
+
+- Structuri de date declarative
+
+- Programare orientată obiect
+
+- Apelarea bibliotecilor .NET
+- Îmbunătățiri
