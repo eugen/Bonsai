@@ -1,8 +1,12 @@
 \documentclass{beamer}
 \usepackage[romanian]{babel}
-\usetheme{Copenhagen}
-%% \usecolortheme{beaver}
-\usepackage{beamerthemesplit}
+%% Antibes Bergen Berkeley Berlin
+%% Boadilla Copenhagen Darmstadt Dresden
+%% Frankfurt Goettingen Hannover Ilmenau
+%% Juanlespins Madrid Malmoe Marburg
+%% Montpellier Paloalto Pittsburgh Rochester
+%% Singapore
+\usetheme{Dresden}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{fontspec}
@@ -25,9 +29,19 @@
 \frame{\titlepage}
 
 \begin{frame}
+  \frametitle{Cuprins}
+  \tableofcontents
+\end{frame}
+
+\begin{frame}
   \frametitle{Introducere}
   Bonsai este un limbaj:
   \begin{itemize}
+  \item 
+    Dinamic
+    \begin{itemize}
+      \item apelurile sunt rezolvate la rulare
+    \end{itemize}
   \item 
     Funcțional
     \begin{itemize}
@@ -51,6 +65,7 @@
   \end{itemize}
 \end{frame}
 
+\section{Tehnologii utilizate}
 \begin{frame}
   \frametitle{Tehnologii utilizate}
   \begin{itemize}
@@ -74,9 +89,31 @@
   \end{itemize}
 \end{frame}
 
+\section{Runtime}
+\begin{frame}
+  \frametitle{Runtime-ul}
+  Runtime-ul Bonsai
+  \begin{itemize}
+  \item AST -> expresii LINQ
+    \begin{itemize}
+      \item Tratarea contextului
+    \end{itemize}
+  \item Compilarea expresiilor
+    \begin{itemize}
+      \item Dynamic Language Runtime
+    \end{itemize}
+  \item Clasa \c{BonsaiBinder}
+    \begin{itemize}
+      \item rezolvarea apelurilor
+      \item integrarea cu platforma .NET
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\section{Sintaxa}
 \begin{frame}
   \frametitle{Sintaxa}
-  Număr redus de elemente de sintaxă:
+  Elemente de sintaxă:
   \begin{itemize}
   \item identificatori: \c{name}, \c{name\_2}, \c{+}
   \item simboluri: \c{.name}, \c{.name\_2}, \c{.+}
@@ -86,12 +123,10 @@
   \item structuri de date: \c{[| 1 2 3 ]}
   \item blocuri: \c{\{ user .call \}}, \c{\{ print "done" \}}
   \end{itemize}
-  \vskip8pt
-  Orice expresie este un apel de funcție, inclusiv operațiile matematice, definirea funcțiilor și instrucțiunile condiționale
 \end{frame}
 
 \begin{frame}[containsverbatim]
-  \frametitle{Sintaxa - 2}
+  \frametitle{Sintaxa (2)}
   Orice expresie este un apel de funcție, inclusiv operațiile matematice, definirea funcțiilor și instrucțiunile condiționale:
   \begin{itemize}
     \item
@@ -122,78 +157,116 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[containsverbatim]
-  \frametitle{Sintaxa - 3}
-  Apelurile sunt separate de unul din caracterele \c{'\textbackslash n'} sau \c{';'}.
+\section{Funcții}
+\begin{frame}
+  \frametitle{Funcții standard}
+  Funcții standard în Bonsai
   \begin{itemize}
-    \item 
-      codul \\
-      \c{\ \ print a; print b}
-    \item 
-      este echivalent cu \\
-      \c{\ \ print a}\\
-      \c{\ \ print b}
+    \item \c{=} și \c{=:}: asignarea variabilelor
+    \item \c{==}, \c{>}, \c{<}, etc: comparare 
+    \item \c{if}, \c{when} și \c{unless}: funcții condiționale
+    \item \c{ref}: referențierea unei funcții
+    \item \c{import}: importul unui spațiu de nume sau al unei clase dintr-o bibliotecă .NET
+    \item \c{print}: afișează argumentele în consolă
+    \item \c{null}: întoarce valoarea null
+    \item etc.
   \end{itemize}
-  Pentru a apela o funcție cu argumente pe rânduri diferite se pot utiliza parantezele. 
-\begin{itemize}
-\item codul \c{f (a .+ b) (c .+ d)}
-\item este echivalent cu\\
-\c{\ \ f (}\\
-\c{\ \ \ \ a .+ b ) (}\\
-\c{\ \ \ \ c .+ d )}
-\end{itemize}
 \end{frame}
 
 \begin{frame}[containsverbatim]
   \frametitle{Definirea funcțiilor}
-  Funcția \c{defun}
+  Funcția \c{defun} crează o funcție
   \begin{itemize}
-    \item are antetul \c{defun .nume (.nume\_parametru)* \{block\}}
-    \item crează o funcție și o salvează în contextul curent, în variabila cu numele \c{nume}
-    \item \c{(.nume\_parametru)*} este o înșiruire de simboluri care conține numele parametrilor funcției
-    \item exemple de utilizare:
-      \begin{itemize}
-      \item
-        \color{blue}
-        \begin{verbatim}
+  \item
+    \color{blue}
+    \begin{verbatim}
   defun .sqr .n { n .* n }\end{verbatim}
-      \item
-        \begin{verbatim}
+  \item
+    \begin{verbatim}
   defun .hypotenuse .c1 .c2 { 
     Math .sqrt (sqr c1) (sqr c2) }\end{verbatim}
-        \color{black}
-      \end{itemize}
-    \item dacă variabila există deja atunci aceasta este suprascrisă
+    \color{black}
   \end{itemize}
+  \vskip8pt
+  Funcția \c{def|} definește o nouă variantă a unei funcții pentru un set de șabloane
+  \begin{itemize}
+  \item șabloanele sunt create prin apelul funcțiilor \c{|=}, \c{|is}, etc.
+  \item simboluri — șabloane care se potrivesc peste orice valoare
+  \item exemplu de utilizare:
+    \color{blue}
+    \begin{verbatim}
+  def| .factorial (|= .zero 0) { 1 }
+  def| .factorial .a { a .* (factorial (a .- 1)) }\end{verbatim}
+    \color{black}
+  \end{itemize}
+\end{frame}
+
+\section{Structuri de date}
+\begin{frame}[containsverbatim]
+  \frametitle{Structuri de date declarative}
+  Mecanism extensibil de declarare a structurilor de date
+  \begin{itemize}
+    \item Liste
+      \begin{itemize}
+        \item \c{[| 1 2 3 ]}
+        \item \c{|| "a" "b" "c" ]}
+      \end{itemize}
+    \item Dicționare
+      \begin{itemize}
+        \item \c{[\# .nume "Popescu" .prenume "Ion" ]}
+      \end{itemize}
+    \item Se poate defini o sintaxă pentru structuri noi de date
+      \color{blue}
+      \begin{verbatim}
+  defun .rgbDataHandler .r .g .b {
+    Color .FromArgb r g b }
+  dataHandlers .Add .rgb rgbDataHandler
+  = .white [rgb 255 255 255 ]
+  = .red [rgb 255 0 0 ]
+      \end{verbatim}
+  \end{itemize}
+\end{frame}
+
+\section{Programarea orientată obiect}
+\begin{frame}
+  \frametitle{Programarea orientată obiect}
+  Programare bazată pe prototipuri
+  \begin{itemize}
+    \item orice obiect nou se obține prin clonarea unui alt obiect (prototip)
+    \item unui obiect i se pot adăuga metode și câmpuri, care vor fi moștenite de obiectele clonate din el
+    \item conceptul de "clasă" nu este folosit
+  \end{itemize}
+  \vskip8pt
+  Modificatorii de acces nu sunt definiți
+  \begin{itemize}
+    \item prin convenție, metodele care încep cu caracterul \c{\_} sunt considerate private
+  \end{itemize}
+  \vskip8pt
+  Polimorfismul este prezent implicit (limbaj dinamic)
 \end{frame}
 
 \begin{frame}[containsverbatim]
-  \frametitle{Pattern matching}
-  Funcția \c{def|}
-  \begin{itemize}
-    \item crează o funcție cu pattern-matching și o salveaza în variabila \c{name}
-    \item are antetul \c{def| .nume (sablon)* \{block\}}
-    \item șabloanele pot fi
-      \begin{itemize}
-        \item instanțe ale unor clase care implementează interfața \c{IPattern}
-        \item simboluri — șabloane care se potrivesc peste orice valoare
-      \end{itemize}
-    \item funcții care întorc șabloane: \c{|=}, \c{|is}, etc.
-    \item fiecare apel al \c{def|} definește o nouă variantă, un nou set de șabloane pentru o funcție
-    \item exemplu de utilizare:
-      \color{blue}
-      \begin{verbatim}
-  def| .factorial (|= .zero 0) { 1 }
-  def| .factorial .a { a .* (factorial (a .- 1)) }\end{verbatim}
-        \color{black}
-  \end{itemize}
+  \frametitle{Programarea orientată obiect (exemplu)}
+  \color{blue}
+  \begin{verbatim}
+  # crează prototipul RectangleProto cu metoda area
+  = .RectangleProto (object .clone)
+  RectangleProto .method .area { 
+    (self .height) .* (self .width) }
+  # creaza o clona a RectangleProto
+  = .rectangle1 (RectangleProto .clone)
+  # defineste campurile width si height
+  rectangle1 .field .width 4
+  rectangle1 .field .height 5
+  # acceseaza campul width
+  rectangle1 .width                        -> 5
+  # apeleaza metoda area
+  rectangle1 .area                         -> 20\end{verbatim}
+  \color{black}
+
 \end{frame}
 
-\begin{frame}
-  \frametitle{Structuri de date declarative}
-  
-\end{frame}
-
+\section{Exemple}
 \begin{frame}[containsverbatim]
   \frametitle{Un exemplu de program}
   \color{blue}
@@ -215,24 +288,4 @@
   \color{black}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Runtime-ul}
-  
-\end{frame}
-
 \end{document}
-
-- Exemplu de cod (ceva cu lexical scoping, functii, etc) + Explicații în 2-3 slides
-- Toate operațiile sunt apeluri de funcții
-- Operații matematice 
-
-- Definirea funcțiilor
-
-- Pattern matching
-
-- Structuri de date declarative
-
-- Programare orientată obiect
-
-- Apelarea bibliotecilor .NET
-- Îmbunătățiri

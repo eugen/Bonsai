@@ -26,6 +26,13 @@ bin/bonsai.bbl : doc/bonsai.bib
 bin/bonsai.pdf : bin/bonsai.bbl doc/bonsai.tex
 	cd bin && $(TEX) ../doc/bonsai.tex
 
+### SLIDES
+TEX=xelatex -quiet
+slides : bin/slides.pdf
+
+bin/slides.pdf : doc/slides.tex
+	cd bin && $(TEX) ../doc/slides.tex
+
 ### BUILDS
 build: bin/Bonsai.Parser.dll bin/Bonsai.Runtime.dll bin/Bonsai.Tests.dll
 
