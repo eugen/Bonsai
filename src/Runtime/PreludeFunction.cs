@@ -24,6 +24,8 @@ namespace Bonsai.Runtime {
                 }
             }
             this.Dict.Add(SymbolTable.StringToId("null"), null);
+            this.Dict.Add(SymbolTable.StringToId("true"), true);
+            this.Dict.Add(SymbolTable.StringToId("false"), false);
             this.Dict.Add(SymbolTable.StringToId("object"), new BonsaiPrototypeFunction("MasterPrototype".ToSymbol(), null));
 
             InitDataHandlers();
@@ -86,11 +88,72 @@ namespace Bonsai.Runtime {
 
         [MapsToSymbol("==")]
         public object _Equals(object[] args) {
-            Debug.Assert(args.Length == 3);
+            Debug.Assert(args.Length >= 3);
             Debug.Assert(args[0] is DictionaryBonsaiFunction);
-            var a1 = args[1];
-            var a2 = args[2];
-            return (a1 == null && a2 == null) || (a1.Equals(a2));
+            for (int i = 1; i < args.Length - 1; i++) {
+                var a1 = args[i];
+                var a2 = args[i + 1];
+                if (!((a1 == null && a2 == null) || a1.Equals(a2)))
+                    return false;
+            }
+            return true;
+        }
+
+        [MapsToSymbol("<")]
+        public object Smaller(object[] args) {
+            Debug.Assert(args.Length >= 3);
+            Debug.Assert(args[0] is DictionaryBonsaiFunction);
+
+            for (int i = 1; i < args.Length - 1; i++) {
+                Debug.Assert(args[i] is IComparable);
+                var a1 = (IComparable)args[i];
+                var a2 = args[i + 1];
+                if (!(a1.CompareTo(a2) < 0))
+                    return false;
+            }
+            return true;
+        }
+        [MapsToSymbol("<=")]
+        public object SmallerOrEquals(object[] args) {
+            Debug.Assert(args.Length >= 3);
+            Debug.Assert(args[0] is DictionaryBonsaiFunction);
+
+            for (int i = 1; i < args.Length - 1; i++) {
+                Debug.Assert(args[i] is IComparable);
+                var a1 = (IComparable)args[i];
+                var a2 = args[i + 1];
+                if (!(a1.CompareTo(a2) <= 0))
+                    return false;
+            }
+            return true;
+        }
+        [MapsToSymbol(">")]
+        public object Greater(object[] args) {
+            Debug.Assert(args.Length >= 3);
+            Debug.Assert(args[0] is DictionaryBonsaiFunction);
+
+            for (int i = 1; i < args.Length - 1; i++) {
+                Debug.Assert(args[i] is IComparable);
+                var a1 = (IComparable)args[i];
+                var a2 = args[i + 1];
+                if (!(a1.CompareTo(a2) > 0))
+                    return false;
+            }
+            return true;
+        }
+        [MapsToSymbol(">=")]
+        public object GreaterOrEquals(object[] args) {
+            Debug.Assert(args.Length >= 3);
+            Debug.Assert(args[0] is DictionaryBonsaiFunction);
+
+            for (int i = 1; i < args.Length - 1; i++) {
+                Debug.Assert(args[i] is IComparable);
+                var a1 = (IComparable)args[i];
+                var a2 = args[i + 1];
+                if (!(a1.CompareTo(a2) >= 0))
+                    return false;
+            }
+            return true;
         }
 
         // Fetches an object from the scope without evaluating it. Used to return functions.
@@ -144,21 +207,51 @@ namespace Bonsai.Runtime {
         }
 
         [MapsToSymbol("if")]
-        public object When(object[] args) {
+        public object If(object[] args) {
             Debug.Assert(args.Length == 4);
             var scope = (DictionaryBonsaiFunction)args[0];
-            var condition = args[1];
+            bool condition = args[1] != null && !args[1].Equals(false);
             var thenAction = args[2];
             var elseAction = args[3];
 
             object result = null;
-            if (condition != null) {
+            if (condition) {
                 result = thenAction;
             } else {
                 result = elseAction;
             }
             if (result != null && result is BlockBonsaiFunction) {
                 result = ((BlockBonsaiFunction)result).Invoke();
+            }
+            return result;
+        }
+
+        [MapsToSymbol("when")]
+        public object When(object[] args) {
+            Debug.Assert(args.Length == 3);
+            var scope = (DictionaryBonsaiFunction)args[0];
+            bool condition = args[1] != null && !args[1].Equals(false);
+            Debug.Assert(args[2] is BlockBonsaiFunction);
+            var action = (BlockBonsaiFunction)args[2];
+            
+            object result = null;
+            if (condition) {
+                result = action.Invoke();
+            }
+            return result;
+        }
+
+        [MapsToSymbol("unless")]
+        public object Unless(object[] args) {
+            Debug.Assert(args.Length == 3);
+            var scope = (DictionaryBonsaiFunction)args[0];
+            bool condition = args[1] != null && !args[1].Equals(false);
+            Debug.Assert(args[2] is BlockBonsaiFunction);
+            var action = (BlockBonsaiFunction)args[2];
+
+            object result = null;
+            if (!condition) {
+                result = action.Invoke();
             }
             return result;
         }

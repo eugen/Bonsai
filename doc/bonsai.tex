@@ -19,11 +19,6 @@
 % include subsections in the TOC
 \setcounter{tocdepth}{4}
 
-\title{Bonsai\\Un limbal dinamic funcțional peste DLR}
-\author{Eugen Anghel}
-
-\begin{document}
-
 \newcommand{\draft}{\textcolor{red}}
 
 % footnotes with symbols instead of numbers
@@ -47,21 +42,87 @@
 \endshaded
 }
 
-\maketitle
 
-\draft{TODO:
-  \begin{itemize}
-    \item rename "primitives" to "extensions"
-    \item rename "curly\_expr" to "block\_expr"
-    \item rename "square\_expr" to "data\_expr"
-    \item remove the "arguments" grammar rule
-    \item add "when" and "unless"
-    \item add ==, ===, <, >, etc
-  \end{itemize}
-}
+\begin{document}
 
-\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Header
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\thispagestyle{empty}
+\vspace*{-4cm}
+\begin{centering}
+\textbf{\textsc{\Large{Universitatea Alexandru Ioan Cuza Iași\\Facultatea de Informatică}}}
+
+\vspace{7cm}
+
+\textbf{\HUGE{Bonsai}\\[0.5cm]
+\LARGE{Un limbaj dinamic funcțional peste DLR}}
+\\[3cm]
+
+\flushleft
+\begin{minipage}{0.4\linewidth}
+\centering
+\large
+\emph{Autor:}\\
+Eugen \textsc{Anghel}
+\end{minipage}
+\hspace{0.5cm}
+\flushright
+\vspace{-1.5cm}
+\begin{minipage}{0.5\linewidth}
+\centering
+\large
+\emph{Coordonator Științific:} \\
+Prof. Dr. Gheorghe \textsc{Grigoraș}
+\end{minipage}
+\vfill
+\centering\large{\textsc{Februarie 2010}}\\
+\end{centering}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Declarațiile
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+\thispagestyle{empty}
+\begin{centering}
+\LARGE{\textbf{Declaraţie privind originalitate şi respectarea drepturilor de autor}}
+\end{centering}
+
+\vspace{2cm}
+
+Prin prezenta declar că Lucrarea de licență cu titlul „Bonsai - Un limbaj dinamic funcțional peste DLR” este scrisă de mine și nu a mai fost prezentată niciodată la o altă facultate sau instituție de învățământ superior din țară sau străinătate. De asemenea, declar că toate sursele utilizate, inclusiv cele preluate de pe Internet, sunt indicate în lucrare, cu respectarea regulilor de evitare a plagiatului: toate fragmentele de text reproduse exact, chiar și în traducere proprie din altă limbă, sunt scrise între ghilimele şi dețin referința precisă a sursei; reformularea în cuvinte proprii a textelor scrise de către alți autori deține referința precisă; codul sursă, imagini etc. preluate din proiecte open-source sau alte surse sunt utilizate cu repsectarea drepturilor de autor şi dețin referințe precise; rezumarea ideilor altor autori precizează referința precisă la textul original.
+\\[2cm]
+Iași, 19 februarie 2010
+\\[1cm]
+\begin{flushright}
+Absolvent \emph{Eugen Anghel}\\[1.4cm]
+\rule{0.31\linewidth}{0.2mm}
+\end{flushright}
+
+\cleardoublepage
+\thispagestyle{empty}
+\begin{centering}
+\LARGE{\textbf{Declaraţie de consimțământ}}
+\end{centering}
+
+\vspace{2cm}
+
+Prin prezenta declar că sunt de acord ca Lucrarea de licență cu titlul „Bonsai - Un limbaj dinamic funcțional peste DLR”, codul sursă al programelor și celelalte conținuturi (grafice, multimedia, date de test etc.) care însoțesc această lucrare să fie utilizate în cadrul Facultății de Informatică. De asemenea, sunt de acord ca Facultatea de Informatică de la Universitatea Alexandru Ioan Cuza Iași să utilizeze, modifice, reproducă și să distribuie în scopuri necomerciale programele-calculator, format executabil și sursă, realizate de mine în cadrul prezentei lucrări de licență.
+\\[2cm]
+Iași, 19 februarie 2010
+\\[1cm]
+\begin{flushright}
+Absolvent \emph{Eugen Anghel}\\[1.4cm]
+\rule{0.31\linewidth}{0.2mm}
+\end{flushright}
+\cleardoublepage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cuprins
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \tableofcontents
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introducere}
@@ -421,6 +482,34 @@ b
 \end{code}
 Apelul primului bloc modifică variabila \c{a} definită în contextul exterior, pe când cel de-al doilea definește o nouă variabilă \c{b}, diferită de cea exterioară.
 
+\section{Comparatori}
+
+Bonsai definește următoarele funcții pentru efectuarea comparațiilor între două valori:
+
+\begin{description}
+\item[\c{==}]\hfill\\Testarea de egalitate
+\item[\c{>}]\hfill\\Operatorul "mai mare"
+\item[\c{>=}]\hfill\\Operatorul "mai mare sau egal"
+\item[\c{<}]\hfill\\Operatorul "mai mic"
+\item[\c{<=}]\hfill\\Operatorul "mai mic sau egal"
+\end{description}
+
+Toate acestea pot primi oricâte argumente (dar cel puțin 2); operația de comparare va fi executată pentru toate perechile de argumente consecutive:
+\begin{code}
+== "1" (1 .ToString)
+  -> True
+== 1 1 1
+  -> True
+== 1 1 3
+  -> False
+< 1 2 3
+  -> True
+<= 1 2 3 3 4
+  -> True
+> 3 2 2
+  -> False
+\end{code}
+
 \section{Blocuri}
 
 Un bloc în Bonsai reprezintă o secvență de instrucțiuni cuprinsă între paranteze acolade. Ca orice alt obiect, un bloc poate fi stocat într-o variabilă, trimis ca argument către alte funcții sau apelat:
@@ -507,24 +596,42 @@ adder 6 -> 10
 
 \section{Instrucțiuni condiționale}
 
-Funcția \c{if} primește 3 parametri: o valoare de test, un bloc sau o valoare pentru cazul True și un bloc sau o valoare pentru cazul False. 
+\subsection{Funcția \c{if}}
 
-Singura valoare pentru care rezultatul testului va fi False este valoare nulă (\c{null} din C\#). Orice altă valoare, inclusiv \c{Boolean.False} din CLR va fi recunoscută ca True.
+Funcția \c{if} primește 3 parametri: o valoare de test, un bloc sau o valoare pentru ramura True și un bloc sau o valoare pentru ramura False. 
 
-După testare, dacă argumentul corespunzător rezultatului testului este o valoare atunci aceasta este returnată. Dacă este un bloc, atunci este evaluat și rezultatul evaluării blocului este returnat.
+Valorile pentru care funcția \c{if} execută ramura \c{False} sunt \c{null} și \c{false}. Orice altă valoare va duce la execuția ramurei \c{True}.
+
+Odată aleasă ramura, dacă argumentul corespunzător este o valoare atunci aceasta este returnată. Dacă este un bloc, atunci el este evaluat iar rezultatul evaluării este returnat.
 
 Fragmentul următor de cod oferă exemple de utilizare:
 \begin{code}
-= .a null
+= .a false
 if a "a nu e null" "a e null"
   -> "a e null"
 if a "a nu e null" { = a 1 }
   -> "a" va fi setat la valoarea 1
-if a { print "a nu e null" } { "a e null" }
+if a { print "a nu e null" } { print "a e null" }
   -> "a nu e null"
 \end{code}
 
-\draft{TODO: definește funcțiile when și unless}
+\subsection{Funcțiile \c{when} și \c{unless}}
+
+Funcția \c{when} are 2 parametri: o condiție de test și un bloc care va fi evaluat în cazul în care condiția este True (diferită de \c{null} și \c{false}). Dacă condiția este False, \c{when} va returna valoarea \c{null}.
+\begin{code}
+when true { "da" }
+  -> "da"
+when false { "nu" }
+  -> null
+\end{code}
+
+\c{unless} funcționează în mod invers, executând blocul doar dacă condiția este False:
+\begin{code}
+unless false { "nu" }
+  -> "nu"
+unless true { "da" }
+  -> null
+\end{code}
 
 \section{Alte funcții}
 
@@ -532,6 +639,7 @@ if a { print "a nu e null" } { "a e null" }
 \item[\c{import}]\hfill\\ Funcția \c{import} este folosită la utilizarea bibliotecilor de clase .NET existente. Capitolul \ref{ch:IntegratingWithDotNet} explică această funcție în detaliu.
 \item[\c{print}]\hfill\\ Funcția \c{print} afișează în consolă toate argumentele primite (cu\\ \c{Console.WriteLine}).
 \item[\c{null}]\hfill\\ Funcția \c{null} întoarce valoarea nulă. Null este utilizat ca unică valoare falsă în instrucțiunile condiționale.
+\item[\c{true} și \c{false}]\hfill\\ Aceste funcții întorc cele două posibile valori ale clasei \c{System.Boolean}: \c{True} și \c{False}.
 \end{description}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
