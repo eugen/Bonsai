@@ -64,8 +64,15 @@ namespace Bonsai.Tests {
         [TestMethod]
         public void TestCallIndexer() {
             Assert.AreEqual(
-                42,
+                42M,
                 Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .Add 42 \n l .Item 0"));
+        }
+
+        [TestMethod]
+        public void TestIndexerSetter() {
+            Assert.AreEqual(
+                42M,
+                Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .Add 3 ; l .Item= 0 42 ; l .Item 0"));
         }
     }
 }

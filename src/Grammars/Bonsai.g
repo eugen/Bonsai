@@ -34,9 +34,8 @@ expression
 
 
 square_expr
-		/* tecnically, there should be 'IDENTIFIER' below and not 'atom', but that crashes the C# parser; 
-		   TODO: investigate why that happens */
-    :   '[' datatype=atom SEPARATOR* (exp+=expression SEPARATOR*)* ']' -> ^(SQUARE $datatype $exp*)
+    :   '[' datatype=atom SEPARATOR* (exp+=expression SEPARATOR*)* ']' 
+            -> ^(SQUARE $datatype $exp*)
     ;
 curly_expr
     :   '{' statements? '}' -> ^(BLOCK statements)

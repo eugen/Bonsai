@@ -89,12 +89,18 @@ Prof. Dr. Gheorghe \textsc{Grigoraș}
 
 \vspace{2cm}
 
-Prin prezenta declar că Lucrarea de licență cu titlul „Bonsai - Un limbaj dinamic funcțional peste DLR” este scrisă de mine și nu a mai fost prezentată niciodată la o altă facultate sau instituție de învățământ superior din țară sau străinătate. De asemenea, declar că toate sursele utilizate, inclusiv cele preluate de pe Internet, sunt indicate în lucrare, cu respectarea regulilor de evitare a plagiatului: toate fragmentele de text reproduse exact, chiar și în traducere proprie din altă limbă, sunt scrise între ghilimele şi dețin referința precisă a sursei; reformularea în cuvinte proprii a textelor scrise de către alți autori deține referința precisă; codul sursă, imagini etc. preluate din proiecte open-source sau alte surse sunt utilizate cu repsectarea drepturilor de autor şi dețin referințe precise; rezumarea ideilor altor autori precizează referința precisă la textul original.
-\\[2cm]
+Prin prezenta declar că Lucrarea de licență cu titlul „Bonsai - Un limbaj dinamic funcțional peste DLR” este scrisă de mine și nu a mai fost prezentată niciodată la o altă facultate sau instituție de învățământ superior din țară sau străinătate. De asemenea, declar că toate sursele utilizate, inclusiv cele preluate de pe Internet, sunt indicate în lucrare, cu respectarea regulilor de evitare a plagiatului
+\begin{itemize}
+\item toate fragmentele de text reproduse exact, chiar și în traducere proprie din altă limbă, sunt scrise între ghilimele şi dețin referința precisă a sursei;
+\item reformularea în cuvinte proprii a textelor scrise de către alți autori deține referința precisă;
+\item codul sursă, imagini etc. preluate din proiecte \emph{open-source} sau alte surse sunt utilizate cu respectarea drepturilor de autor şi dețin referințe precise;
+\item rezumarea ideilor altor autori precizează referința precisă la textul original.
+\end{itemize}
+\vspace{2cm}
 Iași, 19 februarie 2010
 \\[1cm]
 \begin{flushright}
-Absolvent \emph{Eugen Anghel}\\[1.4cm]
+Absolvent \emph{Eugen \textsc{Anghel}}\\[1.4cm]
 \rule{0.31\linewidth}{0.2mm}
 \end{flushright}
 
@@ -111,7 +117,7 @@ Prin prezenta declar că sunt de acord ca Lucrarea de licență cu titlul „Bon
 Iași, 19 februarie 2010
 \\[1cm]
 \begin{flushright}
-Absolvent \emph{Eugen Anghel}\\[1.4cm]
+Absolvent \emph{Eugen \textsc{Anghel}}\\[1.4cm]
 \rule{0.31\linewidth}{0.2mm}
 \end{flushright}
 \cleardoublepage
@@ -121,6 +127,7 @@ Absolvent \emph{Eugen Anghel}\\[1.4cm]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Cuprins
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setcounter{page}{1}
 \tableofcontents
 
 
@@ -138,7 +145,7 @@ Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă
 
 Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. 
 
-Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .NET, transparența referențială a funcțiilor nu poate fi garantată. Bonsai nu este, așadar, un limbaj pur funcțional.}, dar se integrează bine cu alte limbaje orientate obiect. OOP-ul este simulat în întregime prin apeluri de funcții.
+Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .NET, transparența referențială a funcțiilor nu poate fi garantată. Bonsai nu este, așadar, un limbaj pur funcțional.}, dar se integrează bine cu alte limbaje orientate obiect, OOP-ul fiind simulat în întregime prin apeluri de funcții. Bonsai implementează de asemenea o formă de programare bazată pe prototipuri, inspirată din JavaScript.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Parsarea și generarea arborilor}
@@ -193,13 +200,18 @@ După rulare, variabila \c{statements} va conține o listă de instanțe ale cla
 \chapter{Introducere în DLR}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\draft{TODO: introductory text}
+Dynamic Language Runtime\cite{dlr} este un framework open-source dezvoltat de Microsoft cu scopul de a simplifica și uniformiza implementarea limbajelor dinamice pe platforma .NET. DLR oferă API-uri pentru:
+\begin{itemize}
+\item Rezolvarea într-un mod standard a apelurilor dinamice la rulare
+\item Caching-ul expresiilor Linq compilate
+\item Găzduirea unui program dinamic în înteriorul unui proces .NET obișnuit (Hosting API)
+\end{itemize}
 
 \section{CallSites}
 
 Un \c{CallSite} reprezinta un context în care sunt rezolvate call-uri dinamice. Acesta poate fi asociat cu o singură linie de cod care conține un apel către o instanță a tipului \c{dynamic} din C\# 4.0\cite{csharp_4_specs} sau cu un întreg program scris într-un limbaj dynamic. 
 
-Scopul principal al \c{CallSite}-urilor este de a mări performanța legaturilor dinamice prin păstrarea rezultatelor anterioare într-un cache. Când este nevoie de rezolvarea unui call, \c{CallSite}-ul caută mai întâi în cache un rezultat potrivit (prin testarea \c{BindingRestrictions}-urilor) și, dacă acesta este găsit, îl returnează imediat. Dacă nu (în cazul unui cache-miss), cererea este înaintată către un \c{Binder}.
+Scopul principal al \c{CallSite}-urilor este de a mări performanța apelurilor dinamice prin păstrarea rezultatelor anterioare într-un cache. Când este nevoie de rezolvarea unui call, \c{CallSite}-ul caută mai întâi în cache un rezultat potrivit (prin testarea \c{BindingRestrictions}-urilor) și, dacă acesta este găsit, îl returnează imediat. Dacă nu (în cazul unui cache-miss), cererea este înaintată către un \c{Binder}.
 
 \section{DynamicMetaObject, Binders și BindingRestrictions}
 
@@ -264,8 +276,8 @@ public static class BonsaiExpressionGenerator {
   Expression Walk(Expression currentScopeVar, String str);
   Expression Walk(Expression currentScopeVar, Symbol symbol);
   Expression Walk(Expression currentScopeVar, Block block);
-  Expression Walk(Expression currentScopeVar, Reference reference);
-  Expression Walk(Expression currentScopeVar, Sequence sequence);
+  Expression Walk(Expression currentScopeVar, Reference ref);
+  Expression Walk(Expression currentScopeVar, Sequence seq);
   Expression Walk(Expression currentScopeVar, DataDecl decl);
 }
 \end{code}
@@ -301,7 +313,7 @@ currentScope[someVariable]
 
 Deoarece totul în Bonsai este privit ca un apel de funcție, clasa \c{BonsaiBinder} implementează clasa abstractă \c{InvokeBinder}. Aceasta este o unealtă ajutătoare din DLR, potrivită cazurilor în care un implementator nu este interesat decât de apelurile dinamice care reprezintă invocări de funcții. 
 
-Singura metodă din \c{InvokeBinder} care trebuie supraîncărcată este \c{FallbackInvoke}:
+Singura metodă din \c{InvokeBinder} care trebuie supraîncărcată este\\ \c{FallbackInvoke}:
 \begin{code}
 public override DynamicMetaObject FallbackInvoke(
   DynamicMetaObject target,
@@ -309,7 +321,7 @@ public override DynamicMetaObject FallbackInvoke(
 \end{code}
 Primul parametru reprezintă obiectul apelat, iar al doilea un vector cu argumentele apelului.
 
-Dacă \c{target} implementează interfața \c{IDynamicMetaObjectProvider}, \c{InvokeBinder} redirectează rezolvarea apelului către \c{target}. \c{FallbackInvoke} este apelat numai în cazul în care \c{target} nu poate rezolva apelul.
+Dacă \c{target} implementează interfața \c{IDynamicMetaObjectProvider}, \\\c{InvokeBinder} redirectează rezolvarea apelului către \c{target}. \c{FallbackInvoke} este apelat doar în cazul în care \c{target} nu poate rezolva apelul singur.
 
 \c{BonsaiBinder.FallbackInvoke} testează dacă apelul întră într-una din următoarele categorii:
 \begin{enumerate}
@@ -343,7 +355,25 @@ Pentru ca un apel dinamic să poate fi tratat de către binder ca un call static
 \item Tipul argumentelor din apel (mai puțin primul, simbolul) trebuie să fie compatibile cu parametrii metodei sau proprietății.
 \end{enumerate}
 
-În cazul proprietăților, binder-ul consideră că dacă lista de argumente conține doar simbolul atunci este vorba de accesarea \c{getter}-ului, iar în caz contrar al \c{setter}-ului. 
+Notă: În cazul în care simbolul se termină cu caracterul „\c{=}”, binder-ul consideră apelul curent ca fiind accesarea unui setter. 
+
+Fragmentul de code de mai jos ofera câteva exemple de apelare a metodelor și proprietăților CLR:
+\begin{code}
+= .list [| 1 2 3 ]
+  -> [ 1 2 3 ]
+# accesarea getter-ului proprietatii Item (indexerul listei)
+list .Item 0
+  -> 1
+# accesarea getter-ului proprietatii Count
+list .Count
+  -> 3
+# apelarea metodei Add
+list .Add 4
+  -> [ 1 2 3 4 ]
+# apelarea setter-ului proprietatii Item
+list .Item= 3 5
+  -> [ 1 2 3 5 ]
+\end{code}
 
 Notă: binder-ul caută metode și proprietăți atât statice cât și non-statice, ale instanței. 
 
@@ -395,7 +425,7 @@ public static IList<T> IListShuffle<T>(
 }
 \end{code}
 
-Metodele ce implementează primitive trebuie să aibă trei parametri (după cum se poate observa și din exemplele de mai sus):
+Metodele ce implementează primitive trebuie să aibă trei parametri (după cum se poate observa și din exemplu):
 \begin{description}
 \item[target]\hfill\\ obiectul apelat
 \item[scope]\hfill\\ contextul apelului
@@ -420,9 +450,7 @@ Binderul verifică dacă apelul curent este un apel al unei primitive dupa valoa
 
 \section{Clasa BonsaiFunction}
 
-Pe lângă cazurile tratate direct de către \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața\\ \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele Bonsai sau, mai bine zis, pentru funcțiile din Bonsai.
-
-Pentru că binderul \c{BonsaiBinder} moștenește clasa \c{InvokeBinder}, toate apelurile în care \c{target}-ul are tipul \c{BonsaiFunction} vor fi redirectate implicit către \c{target}.
+Pe lângă cazurile tratate de \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața\\ \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele Bonsai sau, mai bine zis, pentru funcțiile din Bonsai.
 
 O mare parte din semantica Bonsai este implementată în subclase ale \c{BonsaiFunction}. 
 
@@ -457,7 +485,7 @@ Fragmentul de mai jos conține câteva exemple de simboluri valide:
 
 \section{Asignarea variabilelor}
 
-Bonsai are două functii pentru asignarea și declararea variabilelor, \c{=} și \c{=:}. Ambele primesc ca parametri un simbol cu numele variabilei și un obiect cu valoarea acesteia:
+Bonsai dispune de două functii pentru asignarea și declararea variabilelor, \c{=} și \c{=:}. Ambele primesc ca parametri un simbol cu numele variabilei și un obiect cu valoarea acesteia:
 \begin{code}
 =: .a 5
 = .b "abc"
@@ -488,10 +516,10 @@ Bonsai definește următoarele funcții pentru efectuarea comparațiilor între 
 
 \begin{description}
 \item[\c{==}]\hfill\\Testarea de egalitate
-\item[\c{>}]\hfill\\Operatorul "mai mare"
-\item[\c{>=}]\hfill\\Operatorul "mai mare sau egal"
-\item[\c{<}]\hfill\\Operatorul "mai mic"
-\item[\c{<=}]\hfill\\Operatorul "mai mic sau egal"
+\item[\c{>}]\hfill\\Operatorul „mai mare”
+\item[\c{>=}]\hfill\\Operatorul „mai mare sau egal”
+\item[\c{<}]\hfill\\Operatorul „mai mic”
+\item[\c{<=}]\hfill\\Operatorul „mai mic sau egal”
 \end{description}
 
 Toate acestea pot primi oricâte argumente (dar cel puțin 2); operația de comparare va fi executată pentru toate perechile de argumente consecutive:
@@ -524,17 +552,17 @@ Metoda din fragmentul de mai sus, \c{Invoke}, este singura acceptată de blocuri
 
 Funcția \c{defun} este folosită pentru definirea de noi funcții. Parametrii acesteia sunt un simbol ce reprezintă numele funcției, urmat de N simboluri care conțin numele parametrilor, iar la final un bloc care constituie corpul noii funcții:
 \begin{code}
-\# definirea functiei f
+# definirea functiei f
 defun .f .a .b {
   a .+ b 
 }
-\# apelarea ei
+# apelarea ei
 f 2 3
   -> 5
 \end{code}
 \c{.f} este numele noii funcții iar \c{.a} și \c{.b} numele parametrilor. Blocul \c{\{a .+ b\}} referențiază cei doi parametri, apelând metoda \c{.+} a lui \c{a} cu \c{b} ca argument.
 
-Funcția \c{defun} poate fi apelată de mai multe ori pentru același nume de funcție. Fiecare apel va suprascrie valoarea anterioară a funcției în contextul curent.
+Funcția \c{defun} poate fi apelată de mai multe ori pentru același nume de funcție. Fiecare apel va suprascrie valoarea anterioară din contextul curent.
 
 \section{Pattern-matching cu \c{def|}}
 
@@ -554,8 +582,8 @@ Pentru specificarea șabloanelor există o serie de funcții standard:
 \begin{description}
 \item[\c{|=}]\hfill\\ Testare de egalitate cu o altă valoare. Tipul șablonului este \c{EqPattern}.
 \item[\c{|is}]\hfill\\ Testare a tipului parametrului. Tipul șablonului este \c{IsPattern}.
+\item[\c{|>}, \c{|<}, \c{|>=}, \c{|<=}]\hfill\\ Șabloane pentru comparații cu o altă valoare
 \end{description}
-\draft{TODO: definește mai multe șabloane, ex.  |<, |>, |!=, etc.}
 
 Alegerea unei variante dintre cele specificate se face la runtime. Variantele sunt verificate, în ordinea definirii, prin testarea șabloanelor peste lista de argumente. Dacă nici una dintre variante nu se potrivește atunci este aruncată o excepție.
 
@@ -569,8 +597,6 @@ Fragmentul de cod definește două variante ale funcției \c{factorial}:
 \item un apel cu un singur parametru (asociat în interiorul funcției variabilei \c{zero}); șablonul testează ca acesta să fie egal cu \c{0}.
 \item un apel cu un singur parametru (asociat în interiorul funcției variabilei \c{a}); nu există nici un șablon, deci această variantă se va potrivi oricărui apel cu un singur parametru.
 \end{enumerate}
-
-\draft{TODO: arată cum se definește un nou șablon}
 
 \section{Funcția \c{ref}}
 
@@ -600,7 +626,7 @@ adder 6 -> 10
 
 Funcția \c{if} primește 3 parametri: o valoare de test, un bloc sau o valoare pentru ramura True și un bloc sau o valoare pentru ramura False. 
 
-Valorile pentru care funcția \c{if} execută ramura \c{False} sunt \c{null} și \c{false}. Orice altă valoare va duce la execuția ramurei \c{True}.
+Valorile pentru care funcția \c{if} execută ramura \c{False} sunt \c{null} și \c{false}. Orice altă valoare va duce la executarea ramurei \c{True}.
 
 Odată aleasă ramura, dacă argumentul corespunzător este o valoare atunci aceasta este returnată. Dacă este un bloc, atunci el este evaluat iar rezultatul evaluării este returnat.
 
@@ -638,9 +664,11 @@ unless true { "da" }
 \begin{description}
 \item[\c{import}]\hfill\\ Funcția \c{import} este folosită la utilizarea bibliotecilor de clase .NET existente. Capitolul \ref{ch:IntegratingWithDotNet} explică această funcție în detaliu.
 \item[\c{print}]\hfill\\ Funcția \c{print} afișează în consolă toate argumentele primite (cu\\ \c{Console.WriteLine}).
-\item[\c{null}]\hfill\\ Funcția \c{null} întoarce valoarea nulă. Null este utilizat ca unică valoare falsă în instrucțiunile condiționale.
+\item[\c{null}]\hfill\\ Funcția \c{null} întoarce valoarea nulă.
 \item[\c{true} și \c{false}]\hfill\\ Aceste funcții întorc cele două posibile valori ale clasei \c{System.Boolean}: \c{True} și \c{False}.
 \end{description}
+
+Notă: Funcțiile \c{null}, \c{true} și \c{false} sunt necesare deoarece Bonsai nu deține o listă de cuvinte cheie.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Structuri de date}
@@ -674,14 +702,14 @@ Clasa \c{PreludeFunction} (contextul rădăcină) inițializează variabila \c{d
 
 \section{Liste}
 
-Listele sunt una dintre cele două structuri de date care pot fi declarate în codul Bonsai pentru care există suport în biblioteca standard. Identificatorul asociat este \c{|}. Acestea pot fi declarate în felul următor:
+Listele sunt una dintre cele două structuri de date care pot fi declarate în codul Bonsai pentru care există suport în biblioteca standard. Identificatorul asociat este \c{|}. Fragmentul următor oferă un exemplu de utilizare:
 \begin{code}
 = .numberList [| 1 2 3 ]
 = .stringList [| "a" "b" "c" ]
 = .mixedList [| 1 "a" .s ]
 \end{code}
 
-Toate variabilele de mai sus vor avea tipul \c{List<object>}. Din acest motiv, chiar dacă în declarație toate elementele au același tip, în listă pot fi adăugate instanțe de orice tip:
+Toate listele declarate vor avea tipul \c{List<object>}. Din acest motiv, chiar dacă în declarație toate elementele au același tip, în listă vor putea fi adăugate instanțe de orice tip:
 
 \begin{code}
 = .list [| 1 2 3 ]
@@ -721,11 +749,14 @@ weekdays 9
   -> "duminica"
 \end{code}
 
+Dicționarele declarate vor avea tipul \c{Dictionary<object, object>}.
+
 \section{Definirea unui nou tip de structuri de date}
 
 Pentru adăugarea unei sintaxe noi pentru o altă structură de date trebuie ales un identificator asociat nefolosit și definită o funcție care convertește lista de expresii dintre parantezele pătrate într-o instanță a structurii.
 
-Să presupunem că se dorește facilitarea lucrului cu culorile și definirea unei sintaxe speciale pentru acestea folosind identificatorul ales este \c{rgb}. Codul pentru adăugarea handler-ului de culori este următorul:
+Să presupunem că se dorește facilitarea lucrului cu instanțe ale clasei \c{System.Drawing.Color} și definirea unei sintaxe speciale pentru aceasta. Identificatorul ales este \c{rgb}. Codul pentru adăugarea handler-ului de culori este următorul:
+\newpage
 \begin{code}
 loadAssembly "System.Drawing, Version=2.0.0.0, Culture=neutral,
     PublicKeyToken=b03f5f7f11d50a3a"
@@ -737,7 +768,7 @@ defun .rgbDataHandler .r .g .b {
 
 dataHandlers .Add .rgb rgbDataHandler
 \end{code}
-Primele două linii încarcă assembly-ul \c{System.Drawing.dll} și importă clasa \c{Color} în contextul Bonsai. Urmeaza apoi definirea funcției \c{rgbDataHandler} care primește 3 parametri numiți \c{r}, \c{g} și \c{b} și returnează o instanță a clasei \c{Color}. Ultima linie conține adăugarea la dicționarul \c{dataHandlers} a acestei funcții cu identificatorul \c{rgb}. 
+Primele 3 linii încarcă assembly-ul \c{System.Drawing.dll} și importă clasa \c{Color} în contextul Bonsai. Urmeaza apoi definirea funcției \c{rgbDataHandler} care primește 3 parametri numiți \c{r}, \c{g} și \c{b} și returnează o instanță a clasei \c{Color}. Ultima linie conține adăugarea la dicționarul \c{dataHandlers} a acestei funcții cu identificatorul \c{rgb}. 
 
 Odată înregistrată, noua sintaxă poate fi utilizată astfel:
 \begin{code}
@@ -790,7 +821,7 @@ Gramatică Bonsai nu definește o regulă specială pentru operatori infix. De a
   -> 1024
 \end{code}
 
-Lista completă a primitivelor definite pentru clasa \c{System.Decimal} este următoarea:
+Lista primitivelor definite pentru clasa \c{System.Decimal} este următoarea:
 
 \begin{description}
 \item[\c{.+}]\hfill\\ adunare
@@ -798,15 +829,13 @@ Lista completă a primitivelor definite pentru clasa \c{System.Decimal} este urm
 \item[\c{.*}]\hfill\\ înmulțire
 \item[\c{./}]\hfill\\ împărțire
 \item[\c{.\textasciicircum}]\hfill\\ ridicare la putere
-\draft{
 \item[\c{.\%}]\hfill\\ modulo
 \item[\c{.round}]\hfill\\ rotunjire la cel mai apropiat întreg
 \item[\c{.floor}]\hfill\\ rotunjire la întregul imediat inferior
 \item[\c{.ceiling}]\hfill\\ rotunjire la întregul imediat superior
-}
 \end{description}
 
-Notă: alte funcții matematice precum \c{sin} și \c{cos} pot fi apelate prin importul clasei \c{System.Math} și apelarea metodelor sale statice (vezi capitolul \ref{ch:IntegratingWithDotNet}).
+Notă: alte funcții matematice (\c{sin}, \c{cos}, \c{log}, etc) pot fi apelate prin importul clasei \c{System.Math} și apelarea metodelor sale statice (vezi capitolul \ref{ch:IntegratingWithDotNet}).
 
 \subsection{Decimal, Int32, Double, etc.}
 
@@ -835,28 +864,48 @@ Bonsai nu conține primitive numerice decât pentru tipul \c{System.Decimal}, to
 \begin{description}
 \item[\c{.capitalize}]\hfill\\Transformă în majusculă prima literă din fiecare cuvânt
 \item[\c{.+}]\hfill\\Întoarce un nou șir obținut prin contactenarea strigului apelat cu toate argumentele primite.
-\draft{
-\item[\c{.upcase}]\hfill\\Transformă toate caracterele în majuscule
-\item[\c{.downcase}]\hfill\\Transformă toate caracterele în litere mici
-\item[\c{.contains}]\hfill\\Întoarce \texttt{true} dacă șirul conține subșirul căutat
-}
 \end{description}
 
-\section{Liste}
+Notă: metodele clasei \c{System.String} pot fi apelate în continuare:
+\begin{code}
+"bonsai" .ToUpper
+  -> "BONSAI"
+\end{code}
 
+\section{Liste și dicționare}
+
+\subsection{Primitive pentru tipul \c{IList<T>}}
 \begin{description}
 \item[\c{.shuffle}]\hfill\\Crează o copie a listei și rearanjează elementele pe poziții aleatoare.
+\item[\c{.join}]\hfill\\Crează un șir de caractere care va conține toate elementele listei. Separatorul este primit ca argument.
 \end{description}
 
-\draft{TODO: definește mai multe primitive pentru liste}
-
-\section{Dicționare}
-
+\subsection{Primitive pentru tipul \c{IDictionary<TKey, TValue>}}
 \begin{description}
-\item[\c{.tolist}]\hfill\\\draft{Convertește un dicționar într-o listă de tipul \c{List<Tuple<T1,T2>>}.}
+\item[\c{.tolist}]\hfill\\Convertește un dicționar într-o listă de tipul \c{List<Tuple<T1,T2>>}.
 \end{description}
 
-\draft{TODO: Adaugă mai multe primitive pentru dicționare}
+\subsection{Indexarea}
+
+Listele și dicționarele au în plus asociate câte o primitivă „specială” care este apelată de Binder ca ultimă instanță, în cazul în care rezolvarea apelului a eșuat pentru toate celelalte posibilități. Aceste primitive sunt folosite pentru indexare și așteaptă fie un index (pentru liste), fie o cheie (pentru dicționare).
+
+Fragmentul de mai jos ofera atât exemple de indexare obișnuită, prin apelarea proprietății \c{Item}, dar și de indexare prin utilizare acestor primitive:
+\begin{code}
+= .list [| 1 2 3 ]
+# accesarea obisnuită a indexerului
+list .Item 0
+  -> 1
+# apelarea primitivei
+list 0
+  -> 1
+= .dict [# .a 1 .b 2 .c 3 ]
+# accesarea proprietatii Item
+dict .Item .a
+  -> 1
+# apelarea primitivei
+dict .a 
+  -> 1
+\end{code}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Programarea orientată obiect}\label{ch:oop}
@@ -866,9 +915,10 @@ Spre deosebire de limbajele orientate obiect, unde orice instanță este un obie
 
 \section{Trimiterea mesajelor}
 
-Baza programarii orientate obiect o reprezinta message-passing-ul. Acesta este emulat în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul, mesajul trimis. Spre exemplu, un string apelat cu simbolul \c{.upcase} va returna un nou string cu toate caracterele transformate în majuscule:
+Baza programarii orientate obiect o reprezintă message-passing-ul. Acesta este emulat în Bonsai printr-un apel de funcție în care primul parametru este un simbol. Funcția reprezintă obiectul, iar simbolul mesajul trimis. De exemplu, un string apelat cu simbolul \c{.ToUpper} va returna un nou string cu toate caracterele transformate în majuscule:
 \begin{code}
-"bonsai!" .upcase
+"bonsai" .ToUpper
+  -> "BONSAI"
 \end{code}
 Acest cod Bonsai are același efect cu următorul cod C\#:
 \begin{code}
@@ -878,17 +928,15 @@ Acest cod Bonsai are același efect cu următorul cod C\#:
 \begin{code}
 stringBuilder .Append " sfarsit"
 \end{code}
-\c{stringBuilder} este o variabilă ce conține instanța apelată, \c{Append} este mesajul trimis (și în cazul obiectelor CLR, numele metodei apelate) iar \c{" sfarsit"} este unicul parametru trimis funcției.
-
-Tratarea mesajelor în acest fel poate părea primitivă și greoaie, dar în practică nu se face niciodată o tratare manuală (de tip \texttt{switch/case}): toate operațiile OOP sunt abstractizate printr-un set de funcții incluse în biblioteca standard a limbajului.
+\c{stringBuilder} este o variabilă ce conține instanța apelată, \c{Append} este mesajul trimis (și, în cazul obiectelor CLR, numele metodei apelate) iar \c{" sfarsit"} este unicul parametru trimis funcției.
 
 \section{Programarea bazată pe prototipuri}
 
-Bonsai implementează un model foarte simplu de programare bazată pe prototipuri\cite{prototype_based_programming} inspirat din JavaScript, spre deosebire de programarea bazată pe clase, utilizată in majoritatea limbajelor. Într-un model OOP bazat pe prototipuri, fiecare obiect are propria listă de metode și mesaje la care pot răspunde. Obiectele noi sunt create prin clonarea unui obiect existent (numit prototip) și moștenirea comportamentului (a metodelor) acestuia. Conceptul de „clasă” nu există, deși unele obiecte pot fi definite pentru a funcționa într-un mod similar. 
+Bonsai implementează un model foarte simplu de programare bazată pe prototipuri\cite{prototype_based_programming} inspirat din JavaScript, spre deosebire de majoritatea limbajelor, care utilizeaza programarea bazată pe clase. Într-un model OOP bazat pe prototipuri, fiecare obiect are propria listă de metode (mesaje) la care poate răspunde. Obiectele noi sunt create prin clonarea unui obiect existent (numit prototip) și moștenirea comportamentului (a metodelor) acestuia. Conceptul de „clasă” nu există, deși unele obiecte pot fi definite pentru a funcționa într-un mod similar. 
 
 \section{Crearea prototipurilor în Bonsai}
 
-Prototipul din care moștenesc toate obiectele Bonsai este stocat în variabila \c{object} din contextul rădăcină. Aceasta conține cele 4 metode comune tuturor obiectelor: \c{clone}, \c{=}, \c{field} și \c{method}.
+Prototipul din care moștenesc toate obiectele Bonsai este stocat în variabila \c{object} din contextul rădăcină. Aceasta conține cele trei metode comune tuturor obiectelor: \c{clone}, \c{field} și \c{method}.
 
 \subsection{Metoda \c{clone}}
 
@@ -910,16 +958,16 @@ Fragmentul următor de cod adaugă prototipului \c{RectangleProto} metoda \c{are
 RectangleProto .method .area { 
   (self .height) .* (self .width)
 }
-# creaza o clona a RectangleProto
-= .rect (RectangleProto .clone)
+# creaza o clona (sau instanta) a RectangleProto
+= .rectangle (RectangleProto .clone)
 # defineste campurile width si height
-rect .field .width 4
-rect .field .height 5
+rectangle .field .width 4
+rectangle .field .height 5
 # acceseaza campul width
-rect .width
+rectangle .width
   -> 5
 # apeleaza metoda area
-rect .area
+rectangle .area
   -> 20
 \end{code}
 
@@ -927,9 +975,9 @@ Notă: după clonare, obiectul nou creat nu păstreaza legătura cu prototipul. 
 
 \section{Principiile OOP în programarea bazată pe prototipuri}
 
-\subsection{Moșteneria}
+\subsection{Moștenirea}
 
-Moștenirea într-un sistem OOP bazat pe prototipuri se realizează prin clonarea obiectelor: clonele moștenesc metodele și câmpurile definite în prototip. De exemplu, în fragmentul de mai sus, obiectul \c{rect} moștenește metoda \c{area} de la prototipul \c{RectangleProto}.
+Moștenirea într-un sistem OOP bazat pe prototipuri se realizează prin clonarea obiectelor: clonele moștenesc metodele și câmpurile definite în prototip. De exemplu, în fragmentul de mai sus, obiectul \c{rectangle} moștenește metoda \c{area} de la prototipul \c{RectangleProto}.
 
 \subsection{Încapsularea}
 
@@ -1011,7 +1059,7 @@ Vom considera întâi cazul în care parametrul \c{typeName} conține numele une
 
 Clasa \c{BonsaiClrClassFunction} implementează o funcție specifică Bonsai care redirectează toate apelurile proprii către membri statici ai unei clase CLR, similar modului în care binder-ul \c{BonsaiBinder} redirectează apelurile dinamice către membrii instanțelor de obiecte CLR: Primul parametru din apel este un simbol care reprezintă o proprietate sau o metodă statică, în timp ce restul argumentelor sunt considerate valori ale parametrilor acesteia. 
 
-Mecanismul de căutare a membrilor este analog celui descris în secțiunea \ref{sec:invoking_clr_members}.
+Mecanismul de căutare a membrilor este analog celui descris în secțiunea \ref{sec:invoking_clr_members}.
 
 Fragmentul următor de cod oferă câțeva exemple de utilizare:
 \begin{code}
@@ -1027,7 +1075,7 @@ env .GetEnvironmentVariable "SYSTEMROOT"
 
 \subsection{Instanțierea obiectelor}
 
-Pe lângă invocarea proprietăților și metodelor statice, clasa \c{BonsaiClrClassFunction} implementează în plus următorul caz particular: dacă primul parametru conține simbolul \c{.new}, atunci se consideră că apelul reprezintă invocarea unui constructor. Regulile de potrivire a argumentelor peste metode CLR rămân aceleași, căutarea având loc în schimb pe lista de constructori ai clasei.
+Pe lângă invocarea proprietăților și metodelor statice, clasa \c{BonsaiClrClassFunction} implementează următorul caz particular: dacă primul parametru conține simbolul \c{.new}, atunci se consideră că apelul reprezintă invocarea unui constructor. Regulile de potrivire a argumentelor peste metode CLR rămân aceleași, căutarea având loc în schimb pe lista de constructori ai clasei.
 
 Exemplu de instanțiere a clasei \c{ArrayList}:
 \begin{code}
@@ -1065,19 +1113,15 @@ table .Add 1 "monday"
 table .Add 2 "tuesday"
 \end{code}
 
-% TODO: Do the following sections make sense here?
-% \section{Pasarea funcțiilor Bonsai către metode .NET}
-% \section{Integrarea cu alte limbaje dinamice}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Posibile îmbunătățiri}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Module}
 
-În stadiul actual, Bonsai nu oferă nici o posibilitate de structure a codului în mai multe module, assembly-uri sau spații de nume, funcționalitate absolut necesară oricărui limbaj de uz general.
+În stadiul actual, Bonsai nu oferă nici o posibilitate de structurare a codului în mai multe module, assembly-uri sau spații de nume, funcționalitate absolut necesară oricărui limbaj de uz general.
 
-Cea mai potrivită metodă pentru împărțirea codului dintre cele menționate mai sus pare a fi cea a modulelor — similar celor din limbajul Python. 
+Metoda cea mai potrivită pentru împărțirea codului Bonsai dintre cele menționate mai sus ar fi modulele — similare celor din limbajul Python. 
 
 \section{Metaprogramare}
 
@@ -1095,19 +1139,12 @@ Un set de funcții standard ar putea fi definite pentru obținerea, modificarea 
 \item[\c{compileCode .codeFragment .scope}]\hfill\\ Compilează un fragment de cod în contextul specificat de argumentul \c{scope}. 
 \end{description}
 
-Folosind aceste funcții standard, o funcție Bonsai și-ar putea accesa propriul cod sursă și aplica modificări asupra lui, pentru ca apoi să se înlocuiască singură cu o versiune modificată a sa prin compilarea codului.
+Folosind aceste funcții standard, o funcție Bonsai și-ar putea accesa propriul cod sursă și aplica modificări asupra lui, pentru ca apoi să se înlocuiască singură cu o versiune modificată a sa prin recompilarea codului.
 
 \subsection{Modificarea AST-ului la rulare}
 
-Pe lângă codul sursă, există posibilitatea de a oferi un set de funcții pentru obținerea și recompilarea arborilor de sintaxă abstractă. Comparat cu lucrul direct cu codul sursă, manipularea arborilor de sintaxă poate fi considerată "în spiritul Lisp", similară manipulării S-expresiilor.
+Pe lângă codul sursă, există posibilitatea de a oferi un set de funcții pentru obținerea și recompilarea arborilor de sintaxă abstractă. Comparat cu lucrul direct cu codul sursă, manipularea arborilor de sintaxă poate fi considerată „în spiritul Lisp”, similară manipulării S-expresiilor.
 
-% TODO: completely remove this section ?
-% \subsection{Debugger}
-% posibilități de realizare a unui debugger; integrarea cu VisualStudio?
-
-\subsection{Îmbunătățirea performanței}
-
-\draft{TODO}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

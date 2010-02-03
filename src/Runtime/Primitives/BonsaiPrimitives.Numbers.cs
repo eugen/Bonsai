@@ -54,5 +54,29 @@ namespace Bonsai.Runtime.Primitives {
             Debug.Assert(args.Length == 1 && args[0] is decimal);
             return (decimal)Math.Pow((double)target, (double)(decimal)args[0]);
         }
+
+        [Primitive(typeof(decimal), "%")]
+        public static decimal Modulo(decimal target, DictionaryBonsaiFunction scope, object[] args) {
+            Debug.Assert(args.Length == 1 && args[0] is decimal);
+            return (decimal)(target % (decimal)args[0]);
+        }
+
+        [Primitive(typeof(decimal), "round")]
+        public static decimal Round(decimal target, DictionaryBonsaiFunction scope, object[] args) {
+            Debug.Assert(args.Length == 0);
+            return Math.Round(target);
+        }
+
+        [Primitive(typeof(decimal), "ceiling")]
+        public static decimal Ceiling(decimal target, DictionaryBonsaiFunction scope, object[] args) {
+            Debug.Assert(args.Length == 1 && args[0] is decimal);
+            return Math.Ceiling(target);
+        }
+
+        [Primitive(typeof(decimal), "floor")]
+        public static decimal Floor(decimal target, DictionaryBonsaiFunction scope, object[] args) {
+            Debug.Assert(args.Length == 1 && args[0] is decimal);
+            return Math.Floor(target);
+        }
     }
 }

@@ -14,6 +14,11 @@ namespace Bonsai.Tests {
         }
 
         [TestMethod]
+        public void TestJoin() {
+            Assert.AreEqual("1, 2, 3", Execute("[| 1 2 3] .join ', '"));
+        }
+
+        [TestMethod]
         public void TestIndexer() {
             Assert.AreEqual(42M, Execute("[| 39 40 41 42 43 ] 3"));
             Assert.AreEqual(42M, Execute("[| 41 42 ] 1"));

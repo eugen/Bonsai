@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace Bonsai.Runtime.Primitives {
     public partial class BonsaiPrimitives {
@@ -11,6 +12,12 @@ namespace Bonsai.Runtime.Primitives {
                 return target[(TKey)args[0]];
             else
                 throw new MissingMethodException("Binding failed (on an IDictionary<TKey, TValue>)");
+        }
+
+        [Primitive(typeof(IDictionary<,>), "toList")]
+        public static List<Tuple<T1, T2>> ToList<T1, T2>(IDictionary<T1, T2> target, DictionaryBonsaiFunction scope, object[] args) {
+            Debug.Assert(args.Length == 0);
+            return target.Select(pair => Tuple.Create(pair.Key, pair.Value)).ToList();
         }
     }
 }

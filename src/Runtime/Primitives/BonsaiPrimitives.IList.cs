@@ -29,6 +29,20 @@ namespace Bonsai.Runtime.Primitives {
             return copy;
         }
 
+        [Primitive(typeof(IList<>), "join")]
+        public static string IListJoin<T>(IList<T> target, DictionaryBonsaiFunction scope, object[] args) {
+            Debug.Assert(args.Length == 1 && args[0] is string);
+            var separator = (string)args[0];
+            StringBuilder sb = new StringBuilder();
+            foreach(var e in target) {
+                sb.Append(e.ToString());
+                sb.Append(separator);
+            }
+            if(sb.Length > 0)
+                sb.Remove(sb.Length - separator.Length, separator.Length);
+            return sb.ToString();
+        }
+
         [CatchAllPrimitive(typeof(IList<>))]
         public static object IListGetItem<T>(IList<T> target, DictionaryBonsaiFunction scope, object[] args) {
             if (args.Length == 1 && args[0] is decimal)

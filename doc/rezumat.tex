@@ -1,0 +1,34 @@
+\documentclass[12pt,a4paper]{memoir}
+\usepackage[romanian]{babel}
+\usepackage[dvipsnames]{color}
+\usepackage{fancyvrb,fontspec,xunicode,xltxtra,hyperref,url,framed,verbatim}
+% nicer fonts
+\setmainfont{Calluna}
+\setmonofont{Inconsolata}
+
+\begin{document}
+\thispagestyle{empty}
+\begin{centering}
+\textbf{\HUGE{Bonsai}\\\Large{Un limbaj dinamic funcțional peste DLR}}
+\\[1.5cm]
+\end{centering}
+În ultimele doua decenii, programarea a fost în mare parte împărțită între două grupe de limbaje. Limbajele imperative, cu un sistem static de tipuri, multe dintre ele din familia C, au fost folosite pentru a obține performanță și scalabilitate. În schimb, flexibilitatea limbajelor precum Perl si PHP a fost apreciată pentru programarea scripturilor de sistem, a paginilor web și a altor programe pentru care eficiența nu reprezintă o prioritate.
+
+În ultimii ani însă, odată cu reducerea exponențială a costurilor hardware-ului — mulțumită legii lui Moore — accentul a început să se pună din ce în ce mai puțin pe eficiență și din ce în ce mai mult pe timpul de dezvoltare. Performanța limbajelor dinamice a devenit „suficientă”, ceea ce a condus la o adevărată renaștere a acestora.
+
+Atât Sun cât și Microsoft și-au arătat interesul pentru limbajele dinamice prin proiectele The Da Vinci Machine și Dynamic Language Runtime și sprijinirea dezvoltării limbajelor JRuby, Jython, IronRuby, IronPython, etc.
+
+Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Principalele sale caracteristici sunt:
+\begin{itemize}
+\item simplitate: gramatică minimală, zero cuvinte cheie
+\item orice instanță este privită ca o funcție;
+\item orice expresie este un apel de funcție;
+\item funcțiile și blocurile de cod pot fi trimise ca argumente altor funcții, returnate sau stocate în variabile;
+\item suportă o formă limitată de \emph{pattern-matching} peste parametrii funcțiilor
+\item deține un mecanism extensibil de declarare a structurilor de date 
+\item implementează o formă de programare orientată obiect bazată pe prototipuri
+\end{itemize}
+
+Platforma utilizată este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. 
+
+\end{document}

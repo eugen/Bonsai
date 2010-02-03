@@ -9,6 +9,7 @@ using System.Dynamic;
 using Microsoft.Scripting;
 using System.Reflection;
 using Bonsai.Runtime.Primitives;
+using System.Diagnostics;
 
 namespace Bonsai.Runtime {
     public class BonsaiBinder : InvokeBinder {
@@ -65,9 +66,12 @@ namespace Bonsai.Runtime {
             // static (as-in "non-dynamic") member named like the symbol
             if (args[1].Value is SymbolId) {
                 string name = ((SymbolId)args[1].Value).ToString();
+                bool isSetter = false;
                 // setters end with =, so remove that when searching for members
-                if (name.EndsWith("="))
-                    name = name.Substring(1, name.Length - 1);
+                if (name.EndsWith("=")) {
+                    name = name.Substring(0, name.Length - 1);
+                    isSetter = true;
+                }
 
                 var members = target.LimitType.GetMember(
                     name,
@@ -75,7 +79,7 @@ namespace Bonsai.Runtime {
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
 
                 // method call
-                if (members.Length > 0 && members[0] is MethodInfo) {
+                if (!isSetter && members.Length > 0 && members[0] is MethodInfo) {
                     var method = (MethodInfo)members[0];
                     var parms = method.GetParameters();
                     Expression[] callArgs = new Expression[args.Length-2];
@@ -100,25 +104,37 @@ namespace Bonsai.Runtime {
                         BindingRestrictions.Empty);
                 }
                 // getter
-                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 2) {
-                    return new DynamicMetaObject(
-                        Expression.Convert(
-                            Expression.Property(
-                                Expression.Convert(target.Expression, target.LimitType),
-                                (PropertyInfo)members[0]),
-                            this.ReturnType),
-                        BindingRestrictions.Empty);
+                if (!isSetter && members.Length == 1 && members[0] is PropertyInfo) {
+                    var property = (PropertyInfo)members[0];
+                    var propParams = property.GetIndexParameters();
+                    if (propParams.Length == args.Length - 2) {
+                        return new DynamicMetaObject(
+                            Expression.Convert(
+                                Expression.Property(
+                                    Expression.Convert(target.Expression, target.LimitType),
+                                    (PropertyInfo)members[0],
+                                    args.Subarray(2).Select((a, i) => Expression.Convert(a.Expression, propParams[i].ParameterType))),
+                                this.ReturnType),
+                            BindingRestrictions.Empty);
+                    }
                 }
                 // setter
-                if (members.Length == 1 && members[0] is PropertyInfo && args.Length == 3) {
-                    var callArg = Expression.Convert(args[0].Expression, ((PropertyInfo)members[0]).PropertyType);
-
-                    return new DynamicMetaObject(
-                        Expression.Call(
-                            target.Expression,
-                            ((PropertyInfo)members[0]).GetSetMethod(),
-                            new Expression[] { callArg }),
-                        BindingRestrictions.Empty);
+                if (isSetter && members.Length == 1 && members[0] is PropertyInfo) {
+                    var method = ((PropertyInfo)members[0]).GetSetMethod();
+                    var propParams = method.GetParameters();
+                    if (propParams.Length == args.Length - 2) {
+                        Expression callExpr =
+                            Expression.Call(
+                                Expression.Convert(target.Expression, target.LimitType),
+                                method,
+                                args.Subarray(2).Select((a, i) => Expression.Convert(a.Expression, propParams[i].ParameterType)));
+                        if (method.ReturnType == typeof(void)) {
+                            callExpr = Expression.Block(
+                                callExpr,
+                                Expression.Constant(null));
+                        }
+                        return new DynamicMetaObject(Expression.Convert(callExpr, this.ReturnType), BindingRestrictions.Empty);
+                    }
                 }
             }
 
