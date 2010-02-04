@@ -22,11 +22,37 @@ namespace Bonsai.Tests {
                     print ""Disposing of "" a
                     result
                 }
-                using .TOXIC_WASTE { 
-                    print ""IMA BLOCK!"" 
+                using .toxic { 
+                    print ""I am a block!"" 
                     42
                 }";
             Assert.AreEqual(42M, ScriptEngine.Execute(code));
+        }
+
+        [TestMethod]
+        public void FunTest() {
+            Assert.AreEqual(42M, Execute(@"
+                = .f (fun .a .b { a .+ b })
+                f 40 2
+                "));
+        }
+
+        [TestMethod]
+        public void FunTestClosure() {
+            Assert.AreEqual(42M, Execute(@"
+                defun .make_counter .start {
+                    fun .increment {
+                        = .start (start .+ increment)
+                        start
+                    }
+                }
+                = .c1 (make_counter 400)
+                = .c2 (make_counter 5)
+                print (c1 5)
+                print (c2 2)
+                print (c1 5)
+                print (c2 2)
+                (c1 10) ./ (c2 1)"));
         }
 
         [TestMethod, ExpectedException(typeof(Exception), "The variable 'a' should not be declared after the call to 'f'", AllowDerivedTypes = true)]
@@ -37,16 +63,6 @@ namespace Bonsai.Tests {
                 print ""This variable should not be declared: "" a";
             ScriptEngine.Execute(code);
         }
-
-//        [TestMethod, Ignore]
-//        public void TestRecursion() {
-//            string code = @"
-//                defun .f .i { 
-//                    if { i .>= 0 } { f (i .- 1) } { .done }
-//                }
-//                f 10";
-//            Assert.AreEqual(SymbolTable.StringToId("done"), Execute(code));
-//        }
 
         [TestMethod]
         public void ClosureTest() {

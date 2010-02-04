@@ -74,5 +74,11 @@ namespace Bonsai.Tests {
                 42M,
                 Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .Add 3 ; l .Item= 0 42 ; l .Item 0"));
         }
+
+        [TestMethod]
+        public void TestLinq() {
+            Assert.IsTrue((bool)Execute(@"[| 1 2 3 ] .Exists (fun .a { a == 2 })"));
+            
+        }
     }
 }

@@ -41,12 +41,25 @@ namespace Bonsai.Runtime {
 
             var scope = (DictionaryBonsaiFunction)args[0];
             var name = (SymbolId)args[1];
-            var parameters = new SymbolId[args.Length - 3];
-            for (int i = 2; i < args.Length - 1; i++)
-                parameters[i - 2] = (SymbolId)args[i];
+            var newArgs = new object[args.Length - 1];
+            newArgs[0] = scope;
+            Array.Copy(args, 2, newArgs, 1, args.Length - 2);
+            scope[name] = Fun(newArgs);
+            return scope[name];
+        }
+
+        [MapsToSymbol("fun")]
+        public static object Fun(object[] args) {
+            Debug.Assert(args.Length >= 2, "A call to defun should have at least one parameter: its block");
+            Debug.Assert(args[0] is DictionaryBonsaiFunction);
+            Debug.Assert(args[args.Length - 1] is BlockBonsaiFunction, "The last arguments should be a block");
+            
+            var parameters = new SymbolId[args.Length - 2];
+            for (int i = 1; i < args.Length - 1; i++)
+                parameters[i - 1] = (SymbolId)args[i];
             var block = (BlockBonsaiFunction)args[args.Length - 1];
 
-            scope[name] = new DelegateBonsaiFunction(callArgs => {
+            return new DelegateBonsaiFunction(callArgs => {
                 Debug.Assert(callArgs.Length - 1 == parameters.Length, "The number of arguments should equal the number of parameters");
 
                 var blockLocalVariables = new DictionaryBonsaiFunction();
@@ -56,8 +69,6 @@ namespace Bonsai.Runtime {
 
                 return block.Invoke(blockLocalVariables);
             });
-
-            return scope[name];
         }
 
         [MapsToSymbol("print")]

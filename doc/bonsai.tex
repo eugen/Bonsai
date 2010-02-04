@@ -143,7 +143,7 @@ Atât Sun cât și Microsoft și-au arătat interesul pentru limbajele dinamice 
 
 Lucrarea de față prezintă un limbaj dinamic numit Bonsai. Cea mai importantă caracteristică a sa este simplitatea, limbajele Lisp, Javascript și Io\cite{io} reprezentând principalele surse de inspirație.
 
-Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul in care au fost ele scrise. 
+Platforma aleasă este .NET Framework, împreună cu Dynamic Language Runtime. Întreaga suită de biblioteci .NET este astfel disponibilă, indiferent de limbajul în care au fost ele scrise. 
 
 Bonsai este un limbaj funcțional\footnote{Datorită utilizării bibliotecilor .NET, transparența referențială a funcțiilor nu poate fi garantată. Bonsai nu este, așadar, un limbaj pur funcțional.}, dar se integrează bine cu alte limbaje orientate obiect, OOP-ul fiind simulat în întregime prin apeluri de funcții. Bonsai implementează de asemenea o formă de programare bazată pe prototipuri, inspirată din JavaScript.
 
@@ -548,7 +548,9 @@ print (a_block .Invoke)
 \end{code}
 Metoda din fragmentul de mai sus, \c{Invoke}, este singura acceptată de blocuri și nu primește nici un parametru. 
 
-\section{Definirea funcțiilor cu \c{defun}}\label{sec:defun}
+\section{Definirea funcțiilor}\label{sec:defun}
+
+\subsection{Funcția \c{defun}}
 
 Funcția \c{defun} este folosită pentru definirea de noi funcții. Parametrii acesteia sunt un simbol ce reprezintă numele funcției, urmat de N simboluri care conțin numele parametrilor, iar la final un bloc care constituie corpul noii funcții:
 \begin{code}
@@ -563,6 +565,19 @@ f 2 3
 \c{.f} este numele noii funcții iar \c{.a} și \c{.b} numele parametrilor. Blocul \c{\{a .+ b\}} referențiază cei doi parametri, apelând metoda \c{.+} a lui \c{a} cu \c{b} ca argument.
 
 Funcția \c{defun} poate fi apelată de mai multe ori pentru același nume de funcție. Fiecare apel va suprascrie valoarea anterioară din contextul curent.
+
+\subsection{Funcția \c{fun}}
+
+Funcția \c{fun} crează și returneaza o funcție, fără a o salva în contextul curent. Parametrii acceptați sunt N simboluri care conțin numele parametrilor și un bloc. Fragmentul din secțiunea precedentă poate fi rescris astfel:
+\begin{code}
+# functia creata cu fun este salvata in variabila f
+= .f (fun .a .b { a .+ b })
+# variabila este apelata ca o functie obisnuita
+f 2 3
+  -> 5
+\end{code}
+
+Cele două fragmente sunt complet echivalente, \c{defun} apelând intern \c{fun}.
 
 \section{Pattern-matching cu \c{def|}}
 
