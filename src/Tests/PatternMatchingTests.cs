@@ -14,8 +14,8 @@ namespace Bonsai.Tests {
 def| .pf .a (|= .b 42) { 42 }
 def| .pf .a .b { a }
 ";
-            Assert.AreEqual(SymbolTable.StringToId("zomg"), Execute(defun + "pf .zomg 41"));
-            Assert.AreEqual(42M, Execute(defun + "pf .zomg 42"));
+            Assert.AreEqual(SymbolTable.StringToId("da"), Execute(defun + "pf .da 41"));
+            Assert.AreEqual(42M, Execute(defun + "pf .da 42"));
         }
 
         [TestMethod]
