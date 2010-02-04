@@ -52,5 +52,25 @@ namespace Bonsai.Runtime {
             Debug.Assert(args.Length == 3);
             return new IsPattern((SymbolId)args[1], args[2]);
         }
+        [MapsToSymbol("|<")]
+        public object LessPattern(object[] args) {
+            Debug.Assert(args.Length == 3);
+            return new LessPattern((SymbolId)args[1], args[2]);
+        }
+        [MapsToSymbol("|<=")]
+        public object LessEqPattern(object[] args) {
+            Debug.Assert(args.Length == 3);
+            return new LessEqPattern((SymbolId)args[1], args[2]);
+        }
+        [MapsToSymbol("|>")]
+        public object GreaterPattern(object[] args) {
+            Debug.Assert(args.Length == 3);
+            return new GreaterPattern((SymbolId)args[1], args[2]);
+        }
+        [MapsToSymbol("|>=")]
+        public object GreaterEqPattern(object[] args) {
+            Debug.Assert(args.Length == 3);
+            return new GreaterEqPattern((SymbolId)args[1], args[2]);
+        }
     }
 }

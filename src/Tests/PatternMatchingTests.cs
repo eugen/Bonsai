@@ -39,5 +39,14 @@ def| .stringornull ._ { .null }
             Assert.AreEqual(nulll, Execute(defun + "stringornull .sym"));
             Assert.AreEqual(nulll, Execute(defun + "stringornull 15"));
         }
+
+        [TestMethod]
+        public void TestComparisonPatternFactorial() {
+            var defun = @"
+def| .fact (|> .a 0) { a .* (fact (a .- 1)) }
+def| .fact .a { 1 }
+";
+            Assert.AreEqual(5040M, Execute(defun + "fact 7"));
+        }
     }
 }

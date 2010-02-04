@@ -62,6 +62,7 @@
     <Compile Include="ConditionalTests.cs" />
     <Compile Include="DataDeclTests.cs" />
     <Compile Include="FunctionTests.cs" />
+    <Compile Include="LoopTests.cs" />
     <Compile Include="MathTests.cs" />
     <Compile Include="OverridePrimitivesTest.cs" />
     <Compile Include="PatternMatchingTests.cs" />
