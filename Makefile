@@ -14,8 +14,11 @@ test : bin/Bonsai.Tests.dll
 TEX=xelatex -quiet
 doc : bin/bonsai.pdf
 
-bin/bonsai.bbl : doc/bonsai.bib
+bin/bonsai.bst : doc/bonsai.bst
+	-mkdir bin
 	cp doc/bonsai.bst bin/bonsai.bst
+
+bin/bonsai.bbl : bin/bonsai.bst doc/bonsai.bib
 	cd bin && $(TEX) ../doc/bonsai.tex 
 	cp doc/bonsai.bib bin/bonsai.bib
 	cd bin && bibtex bonsai
