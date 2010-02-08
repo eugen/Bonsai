@@ -155,9 +155,9 @@ Primul modul din componența Bonsai se numește \c{Bonsai.Parser} și se ocupă 
 
 \section{Scurtă descriere a ANTLR}
 
-ANTLR 3\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (care bazat pe algoritmul \c{LL(k)}), numărul de gramatici care pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendente-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript. 
+ANTLR 3\cite{antlr} este un instrument pentru construcția compilatoarelor și a translatoarelor care utilizează algoritmul de parsare \c{LL(*)} cu predicate\cite{definitive_antlr_reference}. Comparat cu ANTLR 2 (care bazat pe algoritmul \c{LL(k)}), numărul de gramatici care pot fi parsate este cu mult îmbunătățit. Parserele generate sunt descendent-recursive, iar lista de limbaje suportate\cite{antlr_targets} include C, C\#, Java, Python și Javascript. 
 
-În plus, spre deosebire de majoritatea generatoarelor de parser, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite[cap. 7]{definitive_antlr_reference}.
+În plus, spre deosebire de majoritatea generatoarelor de parsere, ANTLR oferă în afară de suportul pentru scrierea de acțiuni asociate fiecărei reguli și opțiunea de a returna direct o instanță a unui arbore de parsare. Modul în care un nod este creat în urma aplicării unei reguli de gramatică poate fi controlat printr-o serie de operatori\cite[cap. 7]{definitive_antlr_reference}.
 
 Începând cu versiunea 3.1, ANTLR oferă și posibilitatea de a efectua transformări arbitrare și succesive asupra arborilor: spre exemplu, pornind de la arborele de parsare, mai multe gramatici de arbori (tree grammars) pot fi înlănțuite pentru a obține un arbore de sintaxă abstractă cât mai convenabil sau pentru aplicarea a diverse optimizări\cite{antlr_tree_grammars}\cite[cap. 8]{definitive_antlr_reference}.
 
@@ -209,7 +209,7 @@ Dynamic Language Runtime\cite{dlr} este un framework open-source dezvoltat de Mi
 
 \section{CallSites}
 
-Un \c{CallSite} reprezinta un context în care sunt rezolvate call-uri dinamice. Acesta poate fi asociat cu o singură linie de cod care conține un apel către o instanță a tipului \c{dynamic} din C\# 4.0\cite{csharp_4_specs} sau cu un întreg program scris într-un limbaj dynamic. 
+Un \c{CallSite} reprezintă un context în care sunt rezolvate call-uri dinamice. Acesta poate fi asociat cu o singură linie de cod care conține un apel către o instanță a tipului \c{dynamic} din C\# 4.0\cite{csharp_4_specs} sau cu un întreg program scris într-un limbaj dinamic. 
 
 Scopul principal al \c{CallSite}-urilor este de a mări performanța apelurilor dinamice prin păstrarea rezultatelor anterioare într-un cache. Când este nevoie de rezolvarea unui call, \c{CallSite}-ul caută mai întâi în cache un rezultat potrivit (prin testarea \c{BindingRestrictions}-urilor) și, dacă acesta este găsit, îl returnează imediat. Dacă nu (în cazul unui cache-miss), cererea este înaintată către un \c{Binder}.
 
@@ -256,7 +256,7 @@ Expresiile LINQ pot fi de asemenea descompuse, analizate sau combinate cu alte e
 
 Pe lângă Bindere, DLR-ul oferă și posibilitatea ca un obiect să rezolve singur apelurile dinamice asupra lui, precum invocarea ca funcție sau apelul unui membru. Pentru aceasta, el trebuie să implementeze interfața \\ \c{IDynamicMetaObjectProvider}\cite{i_dynamic_meta_object_provider}. Binder-ele pot scurtcircuita acest mecanism și returna propriul rezultat, dar recomandat este ca rezolvarea unui apel către un obiect care implementează \c{IDynamicMetaObjectProvider} să fie prelucrată de acesta, și nu de Binder.
 
-Acest mecanism este deosebit de important pentru interoperabilitatea între limbaje dinamice diferite. De exemplu, un Binder din IronPython ar trebui să lase un obiect IronRuby să rezolve apelurile cu semantica proprie, de Ruby, și să nu încerce aplicarea semanticii Python. Astfel, toate obiectele cu semantică Ruby trebuie vor implementa interfața \c{IDynamicMetaObjectProvider}.
+Acest mecanism este deosebit de important pentru interoperabilitatea diferitelor limbaje dinamice. De exemplu, un Binder din IronPython ar trebui să lase un obiect IronRuby să rezolve apelurile cu semantica proprie, de Ruby, și să nu încerce aplicarea semanticii Python. Astfel, toate obiectele cu semantică Ruby trebuie vor implementa interfața \c{IDynamicMetaObjectProvider}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Runtime-ul Bonsai}
@@ -323,7 +323,7 @@ Primul parametru reprezintă obiectul apelat, iar al doilea un vector cu argumen
 
 Dacă \c{target} implementează interfața \c{IDynamicMetaObjectProvider}, \\\c{InvokeBinder} redirectează rezolvarea apelului către \c{target}. \c{FallbackInvoke} este apelat doar în cazul în care \c{target} nu poate rezolva apelul singur.
 
-\c{BonsaiBinder.FallbackInvoke} testează dacă apelul întră într-una din următoarele categorii:
+\c{BonsaiBinder.FallbackInvoke} testează dacă apelul intră într-una din următoarele categorii:
 \begin{enumerate}
 \item Apelarea unui \c{Delegate}
 \item Referențierea unui obiect CLR
@@ -335,7 +335,7 @@ Dacă \c{target} implementează interfața \c{IDynamicMetaObjectProvider}, \\\c{
 
 \subsection{Apelarea unui Delegate}
 
-Dacă tipul \c{target}-ului este o subclasă a \c{System.Delegate}, \c{BonsaiBinder} consideră acest apel dinamic ca fiind un apel static al unui delegate, iar Expresia generată va fi de tipul \c{InvocationExpression}.
+Dacă tipul \c{target}-ului este o subclasă a \c{System.Delegate}, \c{BonsaiBinder} consideră acest apel dinamic ca fiind un apel static (non-dinamic) al unui delegate, iar expresia generată va fi de tipul \c{InvocationExpression}.
 
 \subsection{Referențierea obiectelor CLR}
 
@@ -450,7 +450,7 @@ Binderul verifică dacă apelul curent este un apel al unei primitive dupa valoa
 
 \section{Clasa BonsaiFunction}
 
-Pe lângă cazurile tratate de \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața\\ \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele Bonsai sau, mai bine zis, pentru funcțiile din Bonsai.
+Pe lângă cazurile tratate de \c{BonsaiBinder}, apelurile dinamice pot fi rezolvate direct de obiectele din \c{target}. Așa cum a fost menționat în secțiunea \ref{sec:IDynamicMetaObjectProvider}, acestea trebuie doar să implementeze interfața \c{IDynamicMetaObjectProvider}. Clasa abstractă \c{BonsaiFunction} implementează această interfață și este clasa de bază pentru toate obiectele Bonsai sau, mai bine zis, pentru funcțiile din Bonsai.
 
 O mare parte din semantica Bonsai este implementată în subclase ale \c{BonsaiFunction}. 
 
@@ -602,7 +602,7 @@ Pentru specificarea șabloanelor există o serie de funcții standard:
 
 Alegerea unei variante dintre cele specificate se face la runtime. Variantele sunt verificate, în ordinea definirii, prin testarea șabloanelor peste lista de argumente. Dacă nici una dintre variante nu se potrivește atunci este aruncată o excepție.
 
-Un exemplu clasic de utilizare al pattern-matching-ului este funcția factorial:
+Un exemplu clasic de utilizare a pattern-matching-ului este funcția factorial:
 \begin{code}
 def| .factorial (|= .zero 0) { 1 }
 def| .factorial .a { a .* (factorial (a .- 1)) }
@@ -737,7 +737,7 @@ list .Add .simbol
 
 \section{Dicționare}
 
-Dicționarele reprezintă cea de-a doua structură de date imlementată în biblioteca standard. Identificatorul asociat este \c{\#}. Lista elementelor cuprinse între paranteze pătrate conține pe pozițiile impare cheile, iar pe cele pare valorile. Dacă numărul de elemente este impar, atunci o excepție va fi aruncată.
+Dicționarele reprezintă cea de-a doua structură de date implementată în biblioteca standard. Identificatorul asociat este \c{\#}. Lista elementelor cuprinse între paranteze pătrate conține pe pozițiile impare cheile, iar pe cele pare valorile. Dacă numărul de elemente este impar, atunci o excepție va fi aruncată.
 
 Fragmentul următor oferă un exemplu de utilizare a dicționarelor:
 \begin{code}
@@ -828,7 +828,7 @@ Așa cum a fost menționat în secțiunea \ref{ch:runtime_sec:primitives}, primi
 
 \section{Numere}
 
-Gramatică Bonsai nu definește o regulă specială pentru operatori infix. De aceea, operațiile matematice uzuale precum adunarea și scăderea sunt implementate ca primitive peste tipul \c{System.Decimal}. Sintaxa pentru efectuarea unei operații este astfel aceeasi cu apelarea metodelor unui număr: primul argument este un simbol care reprezintă operatorul, urmat de cel de-al doilea operand (numărul în sine reprezentând primul operand):
+Gramatică Bonsai nu definește o regulă specială pentru operatori infix. De aceea, operațiile matematice uzuale precum adunarea și scăderea sunt implementate ca primitive peste tipul \c{System.Decimal}. Sintaxa pentru efectuarea unei operații este astfel aceeași cu apelarea metodelor unui număr: primul argument este un simbol care reprezintă operatorul, urmat de cel de-al doilea operand (numărul în sine reprezentând primul operand):
 \begin{code}
 1 .+ 3 
   -> 4
@@ -854,7 +854,7 @@ Notă: alte funcții matematice (\c{sin}, \c{cos}, \c{log}, etc) pot fi apelate 
 
 \subsection{Decimal, Int32, Double, etc.}
 
-Toate constantele numerice din codul sursă Bonsai sunt parsate într-un singur tip de numere: raționale, reprezentate in virgulă fixă, mai precis tipul \c{System.Decimal} din .NET Framework. Motivația o reprezintă elimitarea erorilor cauzate de reprezentarea in virgulă mobilă:
+Toate constantele numerice din codul sursă Bonsai sunt parsate într-un singur tip de numere: raționale, reprezentate în virgulă fixă, mai precis tipul \c{System.Decimal} din .NET Framework. Motivația o reprezintă elimitarea erorilor cauzate de reprezentarea în virgulă mobilă:
 \begin{code}
 // C#
 float a = 1000f;
@@ -951,11 +951,11 @@ Bonsai implementează un model foarte simplu de programare bazată pe prototipur
 
 \section{Crearea prototipurilor în Bonsai}
 
-Prototipul din care moștenesc toate obiectele Bonsai este stocat în variabila \c{object} din contextul rădăcină. Aceasta conține cele trei metode comune tuturor obiectelor: \c{clone}, \c{field} și \c{method}.
+Prototipul din care moștenesc toate obiectele Bonsai este stocat în variabila \c{object} din contextul rădăcină, care conține cele trei metode comune tuturor obiectelor: \c{clone}, \c{field} și \c{method}.
 
 \subsection{Metoda \c{clone}}
 
-Metoda \c{clone} crează o clonă a obiectului apelat prin copierea tuturor metodelor și a câmpurilor într-un nou obiect. 
+Metoda \c{clone} crează o clonă a obiectului apelat prin copierea tuturor metodelor și câmpurilor într-un nou obiect. 
 \begin{code}
 = .ShapeProto (object .clone)
 = .RectangleProto (ShapeProto .clone)
@@ -1000,7 +1000,7 @@ Bonsai nu oferă suport explicit pentru definirea metodelor non-publice. Este ut
 
 Notă: aceeași convenție este folosită și de limbajul Python\cite{python_classes}.
 
-\subsection{Polimormismul}
+\subsection{Polimorfismul}
 
 Polimorfismul se poate obține în Bonsai prin definirea unor metode cu acelasi nume și aceeași listă de parametri în mai multe obiecte (sau prototipuri). Între acestea nu este necesar să existe o legătură, așa cum de exemplu în Java toate instanțele trebuie să moștenească aceeași clasă sau interfață de bază.
 
