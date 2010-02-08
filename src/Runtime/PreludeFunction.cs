@@ -237,6 +237,26 @@ namespace Bonsai.Runtime {
             return result;
         }
 
+        [MapsToSymbol("foreach")]
+        public object Foreach(object[] args) {
+            Debug.Assert(args.Length == 4);
+            Debug.Assert(args[1] is SymbolId);
+            Debug.Assert(args[2] is System.Collections.IEnumerable);
+            Debug.Assert(args[3] is BlockBonsaiFunction);
+
+            var scope = (DictionaryBonsaiFunction)args[0];
+            var varName = (SymbolId)args[1];
+            var enumerable = (System.Collections.IEnumerable)args[2];
+            var block = (BlockBonsaiFunction)args[3];
+            object result = null;
+            foreach (var e in enumerable) {
+                var locals = new DictionaryBonsaiFunction();
+                locals[varName] = e;
+                result = block.Invoke(locals);
+            }
+            return result;
+        }
+
         [MapsToSymbol("when")]
         public object When(object[] args) {
             Debug.Assert(args.Length == 3);

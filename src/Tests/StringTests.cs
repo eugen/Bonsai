@@ -9,14 +9,14 @@ namespace Bonsai.Tests {
     public class StringTests : BonsaiTestClass {
         [TestMethod]
         public void TestStringMethods() {
-            Assert.AreEqual("ZOMG", Execute("\"zomg\" .upcase"));
-            Assert.AreEqual("zomg", Execute("\"ZOMG\" .downcase"));
-            Assert.AreEqual("Omg Wtf Bbq", Execute("\"omg wtf bbq\" .capitalize"));
+            Assert.AreEqual("BONSAI", Execute("\"bonsai\" .upcase"));
+            Assert.AreEqual("bonsai", Execute("\"BONSAI\" .downcase"));
+            Assert.AreEqual("Bonsai Is A Language", Execute("\"bonsai is a language\" .capitalize"));
 
-            Assert.AreEqual(true, Execute("\"omgwtfbbq\" .contains \"wtf\""));
-            Assert.AreEqual(false, Execute("\"omgwtfbbq\" .contains \"bogus\""));
+            Assert.AreEqual(true, Execute("\"bonsai\" .contains \"on\""));
+            Assert.AreEqual(false, Execute("\"bonsai\" .contains \"lalala\""));
 
-            Assert.AreEqual("omgwtfbbq", Execute("\"omg\" .+ \"wtf\" \"bbq\""));
+            Assert.AreEqual("bonsai", Execute("\"bo\" .+ \"ns\" \"ai\""));
         }
     }
 }

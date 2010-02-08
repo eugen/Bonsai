@@ -10,15 +10,15 @@ test : bin/Bonsai.Tests.dll
 	-rm bin/testresults.xml
 	@MSTest.exe -noisolation -nologo -resultsfile:bin/testresults.xml -testcontainer:"bin/Bonsai.Tests.dll" -detail:errormessage -detail:errorstacktrace -detail:stdout
 
-retest : bin/testresults.xml
-	echo zomg
-
 ### DOC
 TEX=xelatex -quiet
 doc : bin/bonsai.pdf
 
-bin/bonsai.bbl : doc/bonsai.bib
+bin/bonsai.bst : doc/bonsai.bst
+	-mkdir bin
 	cp doc/bonsai.bst bin/bonsai.bst
+
+bin/bonsai.bbl : bin/bonsai.bst doc/bonsai.bib
 	cd bin && $(TEX) ../doc/bonsai.tex 
 	cp doc/bonsai.bib bin/bonsai.bib
 	cd bin && bibtex bonsai

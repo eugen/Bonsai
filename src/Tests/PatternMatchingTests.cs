@@ -14,8 +14,8 @@ namespace Bonsai.Tests {
 def| .pf .a (|= .b 42) { 42 }
 def| .pf .a .b { a }
 ";
-            Assert.AreEqual(SymbolTable.StringToId("zomg"), Execute(defun + "pf .zomg 41"));
-            Assert.AreEqual(42M, Execute(defun + "pf .zomg 42"));
+            Assert.AreEqual(SymbolTable.StringToId("da"), Execute(defun + "pf .da 41"));
+            Assert.AreEqual(42M, Execute(defun + "pf .da 42"));
         }
 
         [TestMethod]
@@ -38,6 +38,15 @@ def| .stringornull ._ { .null }
             var nulll = SymbolTable.StringToId("null");
             Assert.AreEqual(nulll, Execute(defun + "stringornull .sym"));
             Assert.AreEqual(nulll, Execute(defun + "stringornull 15"));
+        }
+
+        [TestMethod]
+        public void TestComparisonPatternFactorial() {
+            var defun = @"
+def| .fact (|> .a 0) { a .* (fact (a .- 1)) }
+def| .fact .a { 1 }
+";
+            Assert.AreEqual(5040M, Execute(defun + "fact 7"));
         }
     }
 }
