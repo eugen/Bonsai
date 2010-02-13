@@ -15,7 +15,11 @@ namespace Bonsai.Runtime {
 
         public override object Call(object[] arguments) {
             Debug.Assert(arguments.Length == 2);
-            return new BonsaiClrClassFunction(Type.GetType(Namespace + "." + ((SymbolId)arguments[1])));
+            var clazzStr = Namespace + "." + ((SymbolId)arguments[1]);
+            var clazz = Type.GetType(clazzStr);
+            if (clazz == null)
+                throw new ArgumentException(String.Format("Could not find class named '{0}' in namespace '{1}'", clazzStr, Namespace));
+            return new BonsaiClrClassFunction(clazz);
         }
     }
 }

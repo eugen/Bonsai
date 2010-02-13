@@ -6,6 +6,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bonsai.Runtime;
 
 namespace Bonsai.Tests {
+    public class ClrIntegrationTestsDummyClass<T1> {
+        public string JoinTypes<T2>() {
+            return typeof(T1).Name + " " + typeof(T2).Name;
+        }
+    }
+
     [TestClass]
     public class ClrIntegrationTests : BonsaiTestClass {
         [TestMethod]
@@ -73,6 +79,37 @@ namespace Bonsai.Tests {
             Assert.AreEqual(
                 42M,
                 Execute("import .list .System.Collections.ArrayList \n = .l (list .new) \n l .Add 3 ; l .Item= 0 42 ; l .Item 0"));
+        }
+
+        [TestMethod]
+        public void TestGenericInstantiation() {
+            Assert.IsInstanceOfType(
+                Execute("import .list .System.Collections.Generic.List .System.Int32 ; list .new"),
+                typeof(List<int>));
+            Assert.IsInstanceOfType(
+                Execute("import .dict .System.Collections.Generic.Dictionary .System.Int32 .System.String ; dict .new"),
+                typeof(Dictionary<int, string>));
+        }
+
+        [TestMethod]
+        public void TestGenericMethodsWithSameParamsAsClass() {
+            Assert.AreEqual(
+                3M,
+                Execute(@"
+                    import .list .System.Collections.Generic.List .System.Decimal 
+                    = .l (list .new) 
+                    l .Add 3 
+                    l 0"));
+        }
+
+        [TestMethod]
+        public void TestGenericMethodsWithDifferentParamsFromClass() {
+            Assert.AreEqual(
+                "Int32 Object",
+                Execute(@"
+                    import .dummy .Bonsai.Tests.ClrIntegrationTestsDummyClass .System.Int32
+                    = .d (dummy .new) 
+                    d .JoinTypes"));
         }
     }
 }

@@ -178,23 +178,48 @@ namespace Bonsai.Runtime {
 
         [MapsToSymbol("import")]
         public object Import(object[] args) {
-            Debug.Assert(args.Length == 3);
+            Debug.Assert(args.Length >= 3);
             Debug.Assert(args[1] is SymbolId);
             Debug.Assert(args[2] is SymbolId || args[2] is string);
-
+            for (int i = 3; i < args.Length; i++)
+                Debug.Assert(args[i] is SymbolId || args[i] is string || args[i] is BonsaiClrClassFunction);
+            
             var scope = (DictionaryBonsaiFunction)args[0];
             var alias = (SymbolId)args[1];
             var importedTypeStr = args[2].ToString();
-            Type importedType = null;
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                importedType = assembly.GetType(importedTypeStr, false);
-                if (importedType != null)
-                    break;
-            }
+            if (args.Length > 3)
+                importedTypeStr += "`" + (args.Length - 3);
+            Func<string, Type> loadType = typeStr => {
+                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
+                    var type = assembly.GetType(typeStr, false);
+                    if (type != null)
+                        return type;
+                }
+                return null;
+            };
+
+            Type importedType = loadType(importedTypeStr);
             if (importedType != null) {
+                if (args.Length > 3) {
+                    Type[] genericArgs = new Type[args.Length - 3];
+                    for (int i = 3; i < args.Length; i++) {
+                        var par = args[i];
+                        Type genArg = null;
+                        if(par is SymbolId || par is string) {
+                            genArg = loadType(par.ToString());
+                            if(genArg == null) 
+                                throw new ArgumentException("Cound not find a generic type argument for the type " + genArg);
+                        } else
+                            genArg = ((BonsaiClrClassFunction)par).Class;
+                        genericArgs[i-3] = genArg;
+                    }
+                    importedType = importedType.MakeGenericType(genericArgs);
+                }
                 scope[alias] = new BonsaiClrClassFunction(importedType);
                 return importedType;
             } else { // we'll assume it's a namespace and not a class
+                if (args.Length > 3)
+                    throw new ArgumentException("Generic parameters specified, but generic class was not found");
                 var nameSpace = new BonsaiClrNamespaceFunction(importedTypeStr);
                 scope[alias] = nameSpace;
                 return nameSpace;

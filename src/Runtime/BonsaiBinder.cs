@@ -81,6 +81,12 @@ namespace Bonsai.Runtime {
                 // method call
                 if (!isSetter && members.Length > 0 && members[0] is MethodInfo) {
                     var method = (MethodInfo)members[0];
+                    if (method.IsGenericMethod) {
+                        var genericArgs = new Type[method.GetGenericArguments().Length];
+                        for (int i = 0; i < genericArgs.Length; i++)
+                            genericArgs[i] = typeof(object);
+                        method = method.MakeGenericMethod(genericArgs);
+                    }
                     var parms = method.GetParameters();
                     Expression[] callArgs = new Expression[args.Length-2];
                     // skip the target and the scope
