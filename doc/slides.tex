@@ -23,7 +23,7 @@
 \subtitle{Un limbaj funcțional peste DLR}
 \author{Eugen Anghel}
 \institute{Coordonator științific  \\Profesor Doctor Gheorghe Grigoraș}
-\date{\today}
+\date{19 Februarie 2010}
 \begin{document}
 
 \frame{\titlepage}
@@ -164,6 +164,7 @@
   \begin{itemize}
     \item \c{=} și \c{=:}: asignarea variabilelor
     \item \c{==}, \c{>}, \c{<}, etc: comparare 
+    \item \c{defun}: definirea de funcții
     \item \c{if}, \c{when} și \c{unless}: funcții condiționale
     \item \c{ref}: referențierea unei funcții
     \item \c{import}: importul unui spațiu de nume sau al unei clase dintr-o bibliotecă .NET
@@ -266,7 +267,8 @@
 
 \end{frame}
 
-\section{Exemple}
+\section{Concluzii}
+
 \begin{frame}[containsverbatim]
   \frametitle{Un exemplu de program}
   \color{blue}
@@ -286,6 +288,42 @@
   print (c2 5)                         -> 20
   \end{verbatim}
   \color{black}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Concluzii}
+  \begin{itemize}
+  \item
+    O sintaxă minimală și un runtime cât mai reflectiv sunt opțiuni viabile chiar și pentru un limbaj de uz general.
+  \item
+    DLR faciliteaza enorm dezvoltarea limbajelor dinamice peste platforma .NET Framework
+  \item 
+    .NET Framework 4.0 demonstrează angajamentul Microsoft pentru modernizarea limbajelor (nu doar cele dinamice)
+  \item
+    ANTLR nu este doar un generator de parsere, ci poate fi utilizat și pentru generarea arborelui de sintaxă abstractă
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bibliografie}
+  \begin{itemize}
+  \item
+    \emph{The Definitive ANTLR Reference: Building Domain-Specific Languages.}
+    Terence Parr. Pragmatic Bookshelf, 2007.
+  \item
+    \emph{The ANTLR Parser Generator}
+    \\\url{http://www.antlr.org}
+  \item 
+    \emph{Dynamic Language Runtime}
+    \\\url{http://www.codeplex.com/dlr}
+  \item
+    \emph{Expression Trees}
+    \\\mbox{\url{http://msdn.microsoft.com/en-us/library/bb397951.aspx}}
+  \item
+    \emph{The \texttt{System.Linq.Expressions} Namespace}
+    \\\url{http://msdn.microsoft.com/en-us/library/system.linq.expressions.aspx}
+
+  \end{itemize}
 \end{frame}
 
 \end{document}

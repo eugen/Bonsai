@@ -285,9 +285,9 @@ namespace Bonsai.Runtime {
         [MapsToSymbol("when")]
         public object When(object[] args) {
             Debug.Assert(args.Length == 3);
-            var scope = (DictionaryBonsaiFunction)args[0];
+            Debug.Assert(args[2] is BlockBonsaiFunction); 
+            
             bool condition = args[1] != null && !args[1].Equals(false);
-            Debug.Assert(args[2] is BlockBonsaiFunction);
             var action = (BlockBonsaiFunction)args[2];
             
             object result = null;
