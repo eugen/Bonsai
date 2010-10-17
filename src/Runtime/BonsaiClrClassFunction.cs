@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,7 +72,7 @@ namespace Bonsai.Runtime {
             }
 
             // if we've reached this point but we still have a partially matching method, 
-            // just try to forcefully case the args to what the method expects
+            // just try to forcefully cast the args to what the method expects
             if (candidates.Count > 0) {
                 var mi = candidates[0];
                 var miParams = mi.GetParameters();
